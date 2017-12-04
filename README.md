@@ -3,5 +3,5 @@
 
 ## 開発環境
 * IDE: Android Studio 3.0以上
-* APIレベル: 19以上
+* APIレベル: 19以上 (Android 4.4以上)
 * 使用API & Google Maps Android API
