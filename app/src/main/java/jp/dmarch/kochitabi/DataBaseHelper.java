@@ -319,6 +319,35 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         return spotText;
     }
 
+    /* ローカル環境テーブルの特定の環境データを取得 */
+    public Map<String, Object> getEnvironmentData(String environmentId) {
+        Map<String, Object> environmentData = new HashMap<String, Object>();
+        SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
+
+        try {
+            // ローカル環境テーブルの特定の環境データを取得
+            Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
+                    new String[]{"environment_id","weather","temperature"},
+                    "environment_id == ?",
+                    new String[]{environmentId},
+                    null,null,null
+            );
+
+            cursor.moveToFirst(); // カーソルを一番最初に持ってくる
+
+            environmentData.put("environment_id", cursor.getString(cursor.getColumnIndex("environment_id")));
+            environmentData.put("weather", cursor.getString(cursor.getColumnIndex("weather")));
+            environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
+
+            cursor.close();
+        }
+        finally {
+            db.close(); // DBを切断
+        }
+
+        return environmentData;
+    }
+
     /* ローカルアクセスポイントテーブルから特定の観光地内のAPの座標を取得 */
     public ArrayList<Double[]> getAccessPointLocations(String spotId) {
         ArrayList<Double[]> accessPointLocations = new ArrayList<Double[]>();
@@ -377,35 +406,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         }
 
         return accessPointGuide;
-    }
-
-    /* ローカル環境テーブルの特定の環境データを取得 */
-    public Map<String, Object> getEnvironmentData(String environmentId) {
-        Map<String, Object> environmentData = new HashMap<String, Object>();
-        SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
-
-        try {
-            // ローカル環境テーブルの特定の環境データを取得
-            Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
-                    new String[]{"environment_id","weather","temperature"},
-                    "environment_id == ?",
-                    new String[]{environmentId},
-                    null,null,null
-            );
-
-            cursor.moveToFirst(); // カーソルを一番最初に持ってくる
-
-            environmentData.put("environment_id", cursor.getString(cursor.getColumnIndex("environment_id")));
-            environmentData.put("weather", cursor.getString(cursor.getColumnIndex("weather")));
-            environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
-
-            cursor.close();
-        }
-        finally {
-            db.close(); // DBを切断
-        }
-
-        return environmentData;
     }
 
     /* ローカルキャラクターテーブルから特定のキャラクターデータを取得 */
