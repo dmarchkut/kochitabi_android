@@ -70,6 +70,16 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 +");"
         );
 
+        // ローカル環境テーブルを作成
+        db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
+                +"environment_id TEXT PRIMARY KEY NOT NULL ,"
+                +"weather TEXT ,"
+                +"temperature REAL ,"
+                +"created_at INTEGER NOT NULL ,"
+                +"updated_at INTEGER NOT NULL"
+                +");"
+        );
+
         // ローカルアクセスポイントテーブルを作成
         db.execSQL("CREATE TABLE "+ACCESS_POINT_TABLE_NAME+" ("
                 +"access_point_id TEXT PRIMARY KEY NOT NULL ,"
@@ -79,16 +89,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 +"longitude REAL NOT NULL ,"
                 +"raspberry_pi_number TEXT NOT NULL ,"
                 +"text_data TEXT NOT NULL ,"
-                +"created_at INTEGER NOT NULL ,"
-                +"updated_at INTEGER NOT NULL"
-                +");"
-        );
-
-        // ローカル環境テーブルを作成
-        db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
-                +"environment_id TEXT PRIMARY KEY NOT NULL ,"
-                +"weather TEXT ,"
-                +"temperature REAL ,"
                 +"created_at INTEGER NOT NULL ,"
                 +"updated_at INTEGER NOT NULL"
                 +");"
