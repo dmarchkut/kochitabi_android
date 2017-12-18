@@ -495,7 +495,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             // 観光地の座標データを取得
             Double[] spotLocation = new Double[2];
             spotLocation[0] = (Double)spotData.get("latitude");
-            spotLocation[1] = (Double)spotData.get("latitude");
+            spotLocation[1] = (Double)spotData.get("longitude");
             // 現在地と観光地の距離を計算
             Double distance = LocationAcqisition.getDistance(currentLocation, spotLocation);
 
