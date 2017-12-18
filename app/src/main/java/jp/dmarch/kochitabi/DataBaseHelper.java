@@ -23,6 +23,18 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private final static String ENVIRONMENT_TABLE_NAME = "local_environments"; // ローカル環境テーブルの名前
     private final static String CHARACTER_TABLE_NAME = "local_characters"; // ローカルキャラクターテーブルの名前
 
+    private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
+            = new String[]{ "spot_id", "environment_id", "spot_name", "spot_phoname", "street_address",
+                            "latitude", "longitude", "photo_file_path", "text_data", "create_at", "update_at"};
+    private final static String environmentKeys[] // ローカル環境テーブルのレコードのキー
+            = new String[]{ "environment_id", "weather", "temperature", "create_at", "update_at"};
+    private final static String accessPointKeys[] // ローカルアクセスポイントテーブルのレコードのキー
+            = new String[]{ "access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
+                            "raspberry_pi_number", "text_data", "create_at", "update_at"};
+    private final static String characterKeys[] // ローカルキャラクターテーブルのレコードのキー
+            = new String[]{ "access_point_id", "character_name", "character_file_path",
+                            "create_at", "update_at"};
+
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
@@ -56,51 +68,51 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public void setLocalDataBaseOption(){
         // ローカル観光地テーブルを作成
         db.execSQL("CREATE TABLE "+ SPOT_TABLE_NAME +" ("
-                +"spot_id TEXT PRIMARY KEY NOT NULL,"
-                +"environment_id TEXT NOT NULL ,"
-                +"spot_name TEXT NOT NULL ,"
-                +"spot_phoname TEXT NOT NULL ,"
-                +"street_address TEXT NOT NULL ,"
-                +"latitude REAL NOT NULL ,"
-                +"longitude REAL NOT NULL ,"
-                +"photo_file_path TEXT NOT NULL ,"
-                +"text_data TEXT NOT NULL ,"
-                +"created_at INTEGER NOT NULL ,"
-                +"updated_at INTEGER NOT NULL"
+                +spotKeys[0]+" TEXT PRIMARY KEY NOT NULL,"
+                +spotKeys[1]+" TEXT NOT NULL ,"
+                +spotKeys[2]+" TEXT NOT NULL ,"
+                +spotKeys[3]+" TEXT NOT NULL ,"
+                +spotKeys[4]+" TEXT NOT NULL ,"
+                +spotKeys[5]+" REAL NOT NULL ,"
+                +spotKeys[6]+" REAL NOT NULL ,"
+                +spotKeys[7]+" TEXT NOT NULL ,"
+                +spotKeys[8]+" TEXT NOT NULL ,"
+                +spotKeys[9]+" INTEGER NOT NULL ,"
+                +spotKeys[10]+" INTEGER NOT NULL"
                 +");"
         );
 
         // ローカル環境テーブルを作成
         db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
-                +"environment_id TEXT PRIMARY KEY NOT NULL ,"
-                +"weather TEXT ,"
-                +"temperature REAL ,"
-                +"created_at INTEGER NOT NULL ,"
-                +"updated_at INTEGER NOT NULL"
+                +environmentKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
+                +environmentKeys[1]+" TEXT ,"
+                +environmentKeys[2]+" REAL ,"
+                +environmentKeys[3]+" INTEGER NOT NULL ,"
+                +environmentKeys[4]+" INTEGER NOT NULL"
                 +");"
         );
 
         // ローカルアクセスポイントテーブルを作成
         db.execSQL("CREATE TABLE "+ACCESS_POINT_TABLE_NAME+" ("
-                +"access_point_id TEXT PRIMARY KEY NOT NULL ,"
-                +"spot_id TEXT NOT NULL ,"
-                +"access_point_name TEXT NOT NULL ,"
-                +"latitude REAL NOT NULL ,"
-                +"longitude REAL NOT NULL ,"
-                +"raspberry_pi_number TEXT NOT NULL ,"
-                +"text_data TEXT NOT NULL ,"
-                +"created_at INTEGER NOT NULL ,"
-                +"updated_at INTEGER NOT NULL"
+                +accessPointKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
+                +accessPointKeys[1]+" TEXT NOT NULL ,"
+                +accessPointKeys[2]+" TEXT NOT NULL ,"
+                +accessPointKeys[3]+" REAL NOT NULL ,"
+                +accessPointKeys[4]+" REAL NOT NULL ,"
+                +accessPointKeys[5]+" TEXT NOT NULL ,"
+                +accessPointKeys[6]+" TEXT NOT NULL ,"
+                +accessPointKeys[7]+" INTEGER NOT NULL ,"
+                +accessPointKeys[8]+" INTEGER NOT NULL"
                 +");"
         );
 
         // ローカルキャラクターテーブルを作成
         db.execSQL("CREATE TABLE "+CHARACTER_TABLE_NAME+" ("
-                +"access_point_id TEXT PRIMARY KEY NOT NULL ,"
-                +"character_name TEXT NOT NULL ,"
-                +"character_file_path TEXT NOT NULL ,"
-                +"created_at INTEGER NOT NULL ,"
-                +"updated_at INTEGER NOT NULL"
+                +characterKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
+                +characterKeys[1]+" TEXT NOT NULL ,"
+                +characterKeys[2]+" TEXT NOT NULL ,"
+                +characterKeys[3]+" INTEGER NOT NULL ,"
+                +characterKeys[4]+" INTEGER NOT NULL"
                 +");"
         );
 
@@ -130,6 +142,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
                 }
+            }
+
+            // すべてのキーの要素を設定できたか確認
+            for (String key: spotKeys) {
+                if (!(insertValues.containsKey(key))) insertFlag = false;
             }
 
             // レコードの追加
@@ -169,6 +186,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 }
             }
 
+            // すべてのキーの要素を設定できたか確認
+            for (String key: environmentKeys) {
+                if (!(insertValues.containsKey(key))) insertFlag = false;
+            }
+
             // レコードの追加
             if (insertFlag) {
                 try {
@@ -206,6 +228,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 }
             }
 
+            // すべてのキーの要素を設定できたか確認
+            for (String key: accessPointKeys) {
+                if (!(insertValues.containsKey(key))) insertFlag = false;
+            }
+
             // レコードの追加
             if (insertFlag) {
                 try {
@@ -240,6 +267,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
                 }
+            }
+
+            // すべてのキーの要素を設定できたか確認
+            for (String key: characterKeys) {
+                if (!(insertValues.containsKey(key))) insertFlag = false;
             }
 
             // レコードの追加
