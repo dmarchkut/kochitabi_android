@@ -149,6 +149,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 if (!(insertValues.containsKey(key))) insertFlag = false;
             }
 
+            // キーの要素数が適切か確認
+            if (insertValues.size() != spotKeys.length) insertFlag = false;
+
             // レコードの追加
             if (insertFlag) {
                 try {
@@ -190,6 +193,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             for (String key: environmentKeys) {
                 if (!(insertValues.containsKey(key))) insertFlag = false;
             }
+
+            // キーの要素数が適切か確認
+            if (insertValues.size() != environmentKeys.length) insertFlag = false;
 
             // レコードの追加
             if (insertFlag) {
@@ -233,6 +239,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
                 if (!(insertValues.containsKey(key))) insertFlag = false;
             }
 
+            // キーの要素数が適切か確認
+            if (insertValues.size() != accessPointKeys.length) insertFlag = false;
+
             // レコードの追加
             if (insertFlag) {
                 try {
@@ -273,6 +282,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             for (String key: characterKeys) {
                 if (!(insertValues.containsKey(key))) insertFlag = false;
             }
+
+            // キーの要素数が適切か確認
+            if (insertValues.size() != characterKeys.length) insertFlag = false;
 
             // レコードの追加
             if (insertFlag) {
