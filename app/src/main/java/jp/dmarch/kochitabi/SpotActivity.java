@@ -1,5 +1,6 @@
 package jp.dmarch.kochitabi;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,8 +8,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
 
-/*
+/* 参考Webサイト
  * http://androhi.hatenablog.com/entry/2015/06/17/083000
  * https://qiita.com/furu8ma/items/1602a4bbed4303fec5b1
  */
@@ -25,15 +28,16 @@ public class SpotActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        setSpotFragment();      // setSpotFragment呼び出し
+        this.setSpotFragment();     // setSpotFragment呼び出し
 
     }
 
     /* SpotFragmenクラスを使用するための設定を行うメソッド */
     private void setSpotFragment() {
         // xml要素読み込み
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.spotTabs);
-        ViewPager viewPager = (ViewPager)findViewById(R.id.spotPager);
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.spot_tabs);
+        ViewPager viewPager = (ViewPager)findViewById(R.id.spot_pager);
+
 
         // タブ名称設定
         final String[] pageTitle = {"五十音順", "近い順"};
@@ -52,10 +56,10 @@ public class SpotActivity extends AppCompatActivity {
             // タブ名称取得
             @Override
             public CharSequence getPageTitle(int position) {
-                return pageTitle[position];
+                return null;
             }
 
-            // タブ長さ（名称設定の個数に応じて変動）
+            // タブ個数（名称設定の個数に応じて変動）
             @Override
             public int getCount() {
                 return pageTitle.length;
@@ -63,10 +67,22 @@ public class SpotActivity extends AppCompatActivity {
 
         };
 
-        // 調整するよ！
+
         viewPager.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(viewPager);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        // タブ左画面構成
+        TabLayout.Tab tab1 = tabLayout.getTabAt(0);
+        View tab1View = inflater.inflate(R.layout.spot_tab1, null);
+        tab1.setCustomView(tab1View);
+
+        // タブ右画面構成
+        TabLayout.Tab tab2 = tabLayout.getTabAt(1);
+        View tab2View = inflater.inflate(R.layout.spot_tab2, null);
+        tab2.setCustomView(tab2View);
 
     }
 
