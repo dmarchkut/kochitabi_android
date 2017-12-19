@@ -597,9 +597,20 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* 観光地データ、環境データの天気・気温情報、距離情報を結合 */
     private Map<String, Object> addSpotEnvironmentDistanceData(Map<String, Object> spotData, Map<String, Object> environmentData, Double distance) {
-        spotData.put("weather", environmentData.get("weather"));
-        spotData.put("temperature", environmentData.get("temperature"));
-        spotData.put("distance", distance);
+
+        // 観光地データに観光地IDがなければ(違うデータを第一引数に渡しているなら)nullを返す
+        if (!(spotData.containsKey("spot_id"))) return null;
+
+        // 環境データに天気と気温がなければ（違うデータを第二引数に渡しているなら）nullを返す
+        if (!(environmentData.containsKey("weather"))&&!(environmentData.containsKey("temperature"))) return null;
+
+        // 観光地データと環境データの環境IDが一致していなければnullを返す
+        if (!(spotData.get("environment_id").equals(environmentData.get("environment_id")))) return null;
+
+        spotData.put("weather", environmentData.get("weather")); // 天気データを追加
+        spotData.put("temperature", environmentData.get("temperature")); // 気温データを追加
+        spotData.put("distance", distance); // 距離データを追加
+
         return spotData;
     }
 
