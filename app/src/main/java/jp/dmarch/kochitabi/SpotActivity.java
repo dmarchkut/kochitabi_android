@@ -63,6 +63,7 @@ public class SpotActivity extends AppCompatActivity {
 
         };
 
+        // 調整するよ！
         viewPager.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(viewPager);
