@@ -616,6 +616,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* キャラクターデータとアクセスポイント案内データの案内テキスト情報を結合 */
     private Map<String, Object> addCharacterGuideData(Map<String, Object> characterData, String guideText) {
+
+        // キャラクターデータにキャラクター名がなければ(違うデータを第一引数に渡しているなら)nullを返す
+        if (!(characterData.containsKey("character_name"))) return null;
+
         characterData.put("text_data", guideText);
         return characterData;
     }
