@@ -496,8 +496,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             Double[] spotLocation = new Double[2];
             spotLocation[0] = (Double)spotData.get("latitude");
             spotLocation[1] = (Double)spotData.get("longitude");
+
+            // 座標データが多いまたは少ない場合nullを返す
+            if ((currentLocation.length != 2) || (currentLocation[0] == null) || (currentLocation[1] == null)) return null;
+
             // 現在地と観光地の距離を計算
             Double distance = LocationAcqisition.getDistance(currentLocation, spotLocation);
+
+            // 距離が計算できていなければnullを返す
+            if (distance == null) return null;
 
             // 観光地データ、環境データ、距離を結合
             Map<String, Object> spotEnvironmentDistanceData = addSpotEnvironmentDistanceData(spotData, environmentData, distance);
