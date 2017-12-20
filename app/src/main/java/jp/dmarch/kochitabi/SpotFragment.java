@@ -10,9 +10,8 @@ import android.widget.TextView;
 public class SpotFragment extends Fragment {
 
     private static final String ARG_PARAM = "page";
-    private String mParam;
-    //private OnFragmentInteractionListener mListener;
 
+    // コンストラクタ
     public SpotFragment() {
     }
 

@@ -21,6 +21,7 @@ public class SpotActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
+        setTitle("観光地一覧");
         setContentView(R.layout.activity_spot);     // xml読み込み
 
     }
