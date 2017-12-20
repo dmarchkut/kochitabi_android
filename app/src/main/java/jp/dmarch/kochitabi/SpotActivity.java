@@ -9,9 +9,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 /* 参考Webサイト
+ * http://rikisha-android.hatenablog.com/entry/2014/04/04/202207
  * http://androhi.hatenablog.com/entry/2015/06/17/083000
  * https://qiita.com/furu8ma/items/1602a4bbed4303fec5b1
  */
@@ -24,6 +26,18 @@ public class SpotActivity extends AppCompatActivity {
         setTitle("観光地一覧");
         setContentView(R.layout.activity_spot);     // xml読み込み
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // バックボタン追加
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {       // バックボタンタップ時処理
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
