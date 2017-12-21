@@ -11,10 +11,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataBaseHelper extends SQLiteOpenHelper{
+public class DataBaseHelper extends SQLiteOpenHelper {
     private Context context;
     private ServerExchange serverExchange;
-    private SQLiteDatabase db;
 
     private final static String DB_NAME = "kochitabi_db";   // データベース名
     private final static int DB_VERSION = 1;    // データベースのバージョン
@@ -24,15 +23,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private final static String CHARACTER_TABLE_NAME = "local_characters"; // ローカルキャラクターテーブルの名前
 
     private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
-            = new String[]{ "spot_id", "environment_id", "spot_name", "spot_phoname", "street_address",
+            = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address",
                             "latitude", "longitude", "photo_file_path", "text_data", "create_at", "update_at"};
     private final static String environmentKeys[] // ローカル環境テーブルのレコードのキー
-            = new String[]{ "environment_id", "weather", "temperature", "create_at", "update_at"};
+            = new String[] {"environment_id", "weather", "temperature", "create_at", "update_at"};
     private final static String accessPointKeys[] // ローカルアクセスポイントテーブルのレコードのキー
-            = new String[]{ "access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
+            = new String[] {"access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
                             "raspberry_pi_number", "text_data", "create_at", "update_at"};
     private final static String characterKeys[] // ローカルキャラクターテーブルのレコードのキー
-            = new String[]{ "access_point_id", "character_name", "character_file_path",
+            = new String[] {"access_point_id", "character_name", "character_file_path",
                             "create_at", "update_at"};
 
     public DataBaseHelper(Context context) {
@@ -44,8 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     // データベースがなかったときに場合に実行される
     @Override
     public void onCreate(SQLiteDatabase db) {
-        this.db = db;
-        setRegisterData();
+        setRegisterData(db);
     }
 
     // データベースをアップグレードする場合に実行される
@@ -54,8 +52,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {}
 
     /* 4つのデータテーブルを取得し、ローカルDBに登録 */
-    void setRegisterData() {
-        setLocalDataBaseOption(); // ４つのテーブル作成
+    public void setRegisterData(SQLiteDatabase db) {
+        setLocalDataBaseOption(db); // ４つのテーブル作成
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
         setSpotTable(localDataBaseTables[0]); // ローカル観光地テーブルにデータを登録
@@ -65,9 +63,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
 
     /* ローカルDBの設定を行う */
-    public void setLocalDataBaseOption(){
+    private void setLocalDataBaseOption(SQLiteDatabase db){
         // ローカル観光地テーブルを作成
-        db.execSQL("CREATE TABLE "+ SPOT_TABLE_NAME +" ("
+        db.execSQL("CREATE TABLE "+SPOT_TABLE_NAME+" ("
                 +spotKeys[0]+" TEXT PRIMARY KEY NOT NULL,"
                 +spotKeys[1]+" TEXT NOT NULL ,"
                 +spotKeys[2]+" TEXT NOT NULL ,"
@@ -306,10 +304,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
             // ローカル観光地テーブルから観光地データをすべて取得
             Cursor cursor = db.query(   SPOT_TABLE_NAME,
-                                        new String[]{"spot_id","environment_id","spot_name","spot_phoname","street_address","postal_code","latitude","longitude","photo_file_path"},
+                                        new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code", "latitude", "longitude", "photo_file_path"},
                                         null,
                                         null,
-                                        null,null,null
+                                        null, null, null
                                     );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -333,11 +331,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             db.close(); // DBを切断
         }
 
+        // データが一つもなければnullを返す
+        if (spotsData.size() == 0) return null;
+
         return  spotsData;
     }
 
     /* ローカル観光地テーブルからローカルテキストデータ取得 */
     public String getSpotText(String spotId) {
+
         String spotText = null;
 
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
@@ -345,10 +347,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
             // ローカル観光地テーブルから特定の観光地テキストデータを取得
             Cursor cursor = db.query(   SPOT_TABLE_NAME,
-                    new String[]{"spot_id","text_data"},
-                    "spot_id == ?",
-                    new String[]{spotId},
-                    null,null,null
+                                        new String[] {"spot_id", "text_data"},
+                                        "spot_id == ?",
+                                        new String[] {spotId},
+                                        null, null, null
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -365,16 +367,17 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* ローカル環境テーブルの特定の環境データを取得 */
     public Map<String, Object> getEnvironmentData(String environmentId) {
+
         Map<String, Object> environmentData = new HashMap<String, Object>();
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
         try {
             // ローカル環境テーブルの特定の環境データを取得
             Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
-                    new String[]{"environment_id","weather","temperature"},
-                    "environment_id == ?",
-                    new String[]{environmentId},
-                    null,null,null
+                                        new String[] {"environment_id", "weather", "temperature"},
+                                        "environment_id == ?",
+                                        new String[] {environmentId},
+                                        null, null, null
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -389,11 +392,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             db.close(); // DBを切断
         }
 
+        // データが一つもなければnullを返す
+        if (environmentData.size() == 0) return null;
+
         return environmentData;
     }
 
     /* ローカルアクセスポイントテーブルから特定の観光地内のAPの座標を取得 */
     public ArrayList<Double[]> getAccessPointLocations(String spotId) {
+
         ArrayList<Double[]> accessPointLocations = new ArrayList<Double[]>();
 
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
@@ -401,10 +408,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
             // ローカル観光地テーブルから観光地データをすべて取得
             Cursor cursor = db.query(   ACCESS_POINT_TABLE_NAME,
-                    new String[]{"access_point_id","spot_id","latitude","longitude"},
-                    "spot_id == ?",
-                    new String[] {spotId},
-                    null,null,null
+                                        new String[]{"access_point_id", "spot_id", "latitude", "longitude"},
+                                        "spot_id == ?",
+                                        new String[] {spotId},
+                                        null, null, null
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -421,21 +428,25 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             db.close(); // DBを切断
         }
 
+        // データが一つもなければnullを返す
+        if (accessPointLocations.size() == 0) return null;
+
         return accessPointLocations;
     }
 
     /* ローカルアクセスポイントテーブルから特定のアクセスポイントの案内情報を取得 */
     public Map<String, Object> getAccessPointGuide(String raspberrypiNumber) {
+
         Map<String, Object> accessPointGuide = new HashMap<String, Object>();
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
         try {
             // ローカルアクセスポイントテーブルから特定のアクセスポイントの案内情報を取得
             Cursor cursor = db.query(   ACCESS_POINT_TABLE_NAME,
-                    new String[]{"access_point_id","raspberry_pi_number","text_data"},
-                    "raspberry_pi_number == ?",
-                    new String[] {raspberrypiNumber},
-                    null,null,null
+                                        new String[] {"access_point_id", "raspberry_pi_number", "text_data"},
+                                        "raspberry_pi_number == ?",
+                                        new String[] {raspberrypiNumber},
+                                        null, null, null
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -449,21 +460,25 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             db.close(); // DBを切断
         }
 
+        // データが一つもなければnullを返す
+        if (accessPointGuide.size() == 0) return null;
+
         return accessPointGuide;
     }
 
     /* ローカルキャラクターテーブルから特定のキャラクターデータを取得 */
     public Map<String, Object> getCharacterData(String accessPointId) {
+
         Map<String, Object> characterData = new HashMap<String, Object>();
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
         try {
             // ローカルキャラクターテーブルから特定のキャラクターデータを取得
             Cursor cursor = db.query(   CHARACTER_TABLE_NAME,
-                    new String[]{"access_point_id","character_name","character_file_path"},
-                    "access_point_id == ?",
-                    new String[]{accessPointId},
-                    null,null,null
+                                        new String[] {"access_point_id", "character_name", "character_file_path"},
+                                        "access_point_id == ?",
+                                        new String[] {accessPointId},
+                                        null, null, null
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -477,11 +492,16 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         finally {
             db.close(); // DBを切断
         }
+
+        // データが一つもなければnullを返す
+        if (characterData.size() == 0) return null;
+
         return characterData;
     }
 
     /* 天気・気温、距離情報を付加した観光地データを取得 */
     public ArrayList<Map<String, Object>> getSpotsEnvironmentDistanceData(Double[] currentLocation) {
+
         ArrayList<Map<String, Object>> spotsEnvironmentDistanceData = new ArrayList<Map<String, Object>>();
 
         ArrayList<Map<String, Object>> spotsData = getSpotsData(); // 全ての観光地データを取得
@@ -518,6 +538,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* 案内テキストデータを付加したキャラクターデータを取得 */
     public Map<String, Object> getCharacterGuide(String raspberrypiNumber) {
+
         Map<String, Object> characterGuideData;
 
         // RaspberryPi識別番号に対応したアクセスポイント案内データを取得
@@ -535,6 +556,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* ローカル環境テーブルの更新の可否を判定 */
     private Boolean isEnvironmentTableTime() {
+
         Boolean timeCourse = false;
 
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
@@ -542,10 +564,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
             // ローカル環境テーブルの環境データを1つ取得
             Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
-                    new String[]{"environment_id","created_at","updated_at"},
-                    null,
-                    null,
-                    null,null,null,"limit 1"
+                                        new String[] {"environment_id", "created_at", "updated_at"},
+                                        null,
+                                        null,
+                                        null, null, null,
+                                        "limit 1"
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -570,6 +593,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* ローカルキャラクターテーブルの更新の可否を判定 */
     private Boolean isCharacterTableTime() {
+
         Boolean timeCourse = false;
 
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
@@ -577,10 +601,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
             // ローカルキャラクターテーブルのキャラクターデータを1つ取得
             Cursor cursor = db.query(   CHARACTER_TABLE_NAME,
-                    new String[]{"access_point_id","created_at","updated_at"},
-                    null,
-                    null,
-                    null,null,null,"limit 1"
+                                        new String[]{"access_point_id", "created_at", "updated_at"},
+                                        null,
+                                        null,
+                                        null, null, null,
+                                        "limit 1"
             );
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
@@ -599,6 +624,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         finally {
             db.close(); // DBを切断
         }
+
         return timeCourse;
     }
 
@@ -609,7 +635,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         if (!(spotData.containsKey("spot_id"))) return null;
 
         // 環境データに天気と気温がなければ（違うデータを第二引数に渡しているなら）nullを返す
-        if (!(environmentData.containsKey("weather"))&&!(environmentData.containsKey("temperature"))) return null;
+        if (!(environmentData.containsKey("weather")) && !(environmentData.containsKey("temperature"))) return null;
 
         // 観光地データと環境データの環境IDが一致していなければnullを返す
         if (!(spotData.get("environment_id").equals(environmentData.get("environment_id")))) return null;
@@ -633,6 +659,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     /* ローカルDBのデータをすべて削除 */
     public void deleteRegisterData() {
+
+        SQLiteDatabase db = this.getWritableDatabase(); // データベースと接続
+
         try {
             db.deleteDatabase(context.getDatabasePath(this.getDatabaseName()));
         }
