@@ -2,28 +2,33 @@ package jp.dmarch.kochitabi;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 
+import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
 
 
-public class LocationAcquisition implements LocationListener{
+public abstract class LocationAcquisition implements LocationListener{
 
-    private final double NO_DATA = Double.parseDouble(null);
+    private final double NO_DATA = NaN; // データが入っていない状態を示す
     private final int REQUEST_PERMISSION = 1000;
 
     private Context context;
-    private Double[] currentLocation = {NO_DATA, NO_DATA};
+    private Double[] currentLocation = {NO_DATA, NO_DATA}; // 現在地
     private LocationManager locationManager;
 
+    // コンストラクタ
     public LocationAcquisition(Context context) {
         this.context = context;
     }
@@ -34,16 +39,39 @@ public class LocationAcquisition implements LocationListener{
         // Managerの設定
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        // アプリでGPSの使用が許可されていないなら
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        // Android 6.0以上の端末ならパーミッションチェックを行う
+        if (Build.VERSION.SDK_INT >= 23) {
 
-            // GPSの使用許可を要求
-            ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},REQUEST_PERMISSION);
+            // アプリでGPSの使用が許可されていないなら
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
+                if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // GPSの使用許可を要求
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                }
+
+            }
+
         }
 
-        // GPSが無効であればGPS設定画面へ遷移
-        if(!isLocationAcquisition()) displayLocationAcquisition();
+        // GPSが無効であればGPSエラーダイアログを表示
+        if(!isLocationAcquisition()) {
+
+            // GPSエラーダイアログを表示
+            new AlertDialog.Builder(context)
+                    .setMessage("位置情報が取得できませんでした\nGPSを有効にします")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            displayLocationAcquisition(); // 設定画面へ遷移
+                        }
+                    })
+                    .setNegativeButton("キャンセル", null)
+                    .show();
+
+        }
 
         // 計測を開始
         locationManager.requestLocationUpdates(
@@ -65,6 +93,7 @@ public class LocationAcquisition implements LocationListener{
     /* GPS機能が使用可能であるか判断 */
     private Boolean isLocationAcquisition() {
 
+        // GPS機能が使えるか否か
         Boolean checkedLocation = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         return checkedLocation;
 
@@ -74,15 +103,18 @@ public class LocationAcquisition implements LocationListener{
     public Double[] getCurrentLocation() {
 
         // 現在地の測定がまだ行われていないならば
-        if (currentLocation[0] == NO_DATA
-                || currentLocation[1] == NO_DATA) {
+        if (currentLocation[0] == NO_DATA || currentLocation[1] == NO_DATA) {
 
             // アプリでGPSの使用が許可されていないなら
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                // GPSの使用許可を要求
-                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,},REQUEST_PERMISSION);
+                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
+                if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // GPSの使用許可を要求
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                }
+
             }
 
             // Wifiで過去に取得した最新の現在地を取得
@@ -106,14 +138,35 @@ public class LocationAcquisition implements LocationListener{
     /* 現在地と観光地との距離を計算 */
     public Double getDistance(Double[] currentLocation, Double[] spotLocation) {
 
+        // 現在地の測定がまだ行われていないならば
+        if (currentLocation[0] == NO_DATA || currentLocation[1] == NO_DATA) {
+
+            // アプリでGPSの使用が許可されていないなら
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
+                if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // GPSの使用許可を要求
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                }
+
+            }
+
+            // Wifiで過去に取得した最新の現在地を取得
+            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            currentLocation[0] = location.getLatitude(); // 緯度を取得
+            currentLocation[1] = location.getLongitude(); // 経度を取得
+        }
+
         double latitudeCurrent = currentLocation[0]; // 現在地の緯度
-        double longitudeCurret = currentLocation[1]; // 現在地の経度
+        double longitudeCurrent = currentLocation[1]; // 現在地の経度
         double latitudeSpot = spotLocation[0]; // 観光地の緯度
         double longitudeSpot = spotLocation[1]; // 観光地の経度
 
         // 三角形の隣辺、対辺の長さの計算
         double side1 = (latitudeCurrent > latitudeSpot)? latitudeCurrent - latitudeSpot : latitudeSpot - latitudeCurrent;
-        double side2 = (longitudeCurret > longitudeSpot)? longitudeCurret - longitudeSpot : longitudeSpot - longitudeCurret;
+        double side2 = (longitudeCurrent > longitudeSpot)? longitudeCurrent - longitudeSpot : longitudeSpot - longitudeCurrent;
 
         double distance = Math.sqrt(Math.pow(side1, 2) + Math.pow(side2, 2)); // 距離の計算
         return distance;
