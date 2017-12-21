@@ -1,11 +1,10 @@
-document.write("aaaaaaaa");
+document.write("js読み込まれてる");
 
 var World = {
     loaded: false,
     rotating: false,
 
     init: function initFn() {
-        document.write("ARcreate");
 
         this.createModelAtLocation();
     },
@@ -15,8 +14,6 @@ var World = {
 
         var location = new AR.RelativeLocation(null, 1, 1, 0);
 
-
-        document.write("AR読み込み");
         var modelMashu = new AR.Model("assets/cube.wt3", {
             onLoaded: this.worldLoaded,
             scale: {
@@ -26,7 +23,6 @@ var World = {
             }
         });
 
-        document.write("AR表示の前");
 
 
         var obj = new AR.GeoObject(location, {
@@ -35,8 +31,6 @@ var World = {
             }
         });
 
-
-        document.write("AR表示のとこ");
     },
 
     worldLoaded: function worldLoadedFn() {
