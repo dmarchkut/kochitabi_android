@@ -138,26 +138,8 @@ public abstract class LocationAcquisition implements LocationListener{
     /* 現在地と観光地との距離を計算 */
     public Double getDistance(Double[] currentLocation, Double[] spotLocation) {
 
-        // 現在地の測定がまだ行われていないならば
-        if (currentLocation[0] == NO_DATA || currentLocation[1] == NO_DATA) {
-
-            // アプリでGPSの使用が許可されていないなら
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
-                if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // GPSの使用許可を要求
-                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
-                }
-
-            }
-
-            // Wifiで過去に取得した最新の現在地を取得
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            currentLocation[0] = location.getLatitude(); // 緯度を取得
-            currentLocation[1] = location.getLongitude(); // 経度を取得
-        }
+        // 受け取ったデータが想定外のものである際にnullを返す
+        if ((currentLocation.length != 2) || (spotLocation.length != 2)) return null;
 
         double latitudeCurrent = currentLocation[0]; // 現在地の緯度
         double longitudeCurrent = currentLocation[1]; // 現在地の経度
