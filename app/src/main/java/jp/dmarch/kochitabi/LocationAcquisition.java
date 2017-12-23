@@ -68,7 +68,12 @@ public abstract class LocationAcquisition implements LocationListener{
                             displayLocationAcquisition(); // 設定画面へ遷移
                         }
                     })
-                    .setNegativeButton("キャンセル", null)
+                    .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            return;
+                        }
+                    })
                     .show();
 
         }
