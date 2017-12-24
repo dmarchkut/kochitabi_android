@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+/*
+ * Bluetoothによる距離推定
+ * http://db-event.jpn.org/deim2011/proceedings/pdf/b9-4.pdf
+ */
+
 public class BluetoothAcquisition {
 
     private Context context;
@@ -20,7 +25,7 @@ public class BluetoothAcquisition {
     private BroadcastReceiver broadcastReceiver; // レシーバ
     private HashMap<String, Integer> deviceList; //  Bluetooth接続可能な端末のリスト
 
-    private final static Double INNER_INTENSITY_OF_ACCESSPOINT = 0.0; // アクセスポイント内の電波強度
+    private final static Double INNER_INTENSITY_OF_ACCESSPOINT = -65.0; // アクセスポイント内の電波強度の最低値
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
