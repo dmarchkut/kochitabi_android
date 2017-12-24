@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import static android.util.Half.NaN;
+
 /*
  * Bluetoothによる距離推定
  * http://db-event.jpn.org/deim2011/proceedings/pdf/b9-4.pdf
@@ -25,7 +27,7 @@ public class BluetoothAcquisition {
     private BroadcastReceiver broadcastReceiver; // レシーバ
     private HashMap<String, Integer> deviceList; //  Bluetooth接続可能な端末のリスト
 
-    private final static Double INNER_INTENSITY_OF_ACCESSPOINT = -65.0; // アクセスポイント内の電波強度の最低値
+    private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
@@ -36,10 +38,8 @@ public class BluetoothAcquisition {
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
-        // 端末がBluetoothに対応していなければ
-        if (bluetoothAdapter == null) {
-            return;
-        }
+        // 端末がBluetoothに対応していなければ何もせずに終わる
+        if (bluetoothAdapter == null) return;
 
         // Bluetooth機能が無効の時、有効化を促すダイアログを表示
         if (!isBluetoothAcquisition()) {
@@ -66,8 +66,6 @@ public class BluetoothAcquisition {
                     .show();
 
         }
-
-        deviceList = new HashMap<String, Integer>(); // インスタンス化
 
         //  端末の検索設定
         broadcastReceiver = new BroadcastReceiver() {
@@ -100,9 +98,9 @@ public class BluetoothAcquisition {
         };
 
         // 検索中であれば一度止める
-        if (bluetoothAdapter.isDiscovering()) {
-            endSearchDevice();
-        }
+        endSearchDevice();
+
+        deviceList = new HashMap<String, Integer>(); // インスタンス化
 
         IntentFilter filter = new IntentFilter(); // インテントフィルタを作成
         filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -116,8 +114,13 @@ public class BluetoothAcquisition {
     /* Bluetooth接続可能な端末の検索終了 */
     public void endSearchDevice() {
 
+        // もし検索中なければ何もせずに終わる
+        if (!(bluetoothAdapter.isDiscovering())) return;
+
         bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
         context.unregisterReceiver(broadcastReceiver); // レシーバの解除
+
+
 
     }
 
@@ -132,6 +135,9 @@ public class BluetoothAcquisition {
     /* Bluetooth接続可能なRaspberryPi端末のリストを取得 */
     public ArrayList<String> getDeviceList() {
 
+        // もし検索中なければ何もせずに終わる
+        if (!(bluetoothAdapter.isDiscovering())) return null;
+
         ArrayList<String> raspberrypiNumberList = new ArrayList<String>(); // RaspberryPi識別番号のリスト
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
 
@@ -139,7 +145,7 @@ public class BluetoothAcquisition {
         for (String deviceName : deviceList.keySet()) {
 
             // こちたびARで用いる端末の端末名ならばリストに追加
-            if ((pattern.matcher(deviceName).find())) {
+            if (pattern.matcher(deviceName).find()) {
                 raspberrypiNumberList.add(deviceName);
             }
 
@@ -152,6 +158,10 @@ public class BluetoothAcquisition {
     /* 特定のBluetooth接続可能な端末の電波強度を取得 */
     public int getIntensity(String raspberypiNumber) {
 
+        // 電波強度を取得する端末がRaspberryPi端末でなければNaNを返す
+        Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
+        if (pattern.matcher(raspberypiNumber).find()) return NaN;
+
         // 取得済みの端末リストを検索
         for (String deviceName : deviceList.keySet()) {
 
@@ -163,8 +173,8 @@ public class BluetoothAcquisition {
 
         }
 
-        // 見つからなかったため、-1を返す
-        return -1;
+        // 見つからなかったため、NaNを返す
+        return NaN;
 
     }
 
@@ -173,10 +183,16 @@ public class BluetoothAcquisition {
 
         ArrayList<String> raspberrypiNumberList =  getDeviceList(); // RaspberryPi端末リスト
 
+        // RaspberryPi端末をまだ発見していなければnullを返す
+        if (raspberrypiNumberList.size() == 0) return null;
+
         // アクセスポイント内にいるか判断する
         for (String raspberrypiNumber : raspberrypiNumberList) {
 
             int raspberrypiIntensity = getIntensity(raspberrypiNumber); // 電波強度
+
+            // 電波強度が取得できていなければ次のアクセスポイントの判定へ
+            if (raspberrypiIntensity == NaN) continue;
 
             // アクセスポイント内にいるとき、端末名を返す
             if (raspberrypiIntensity >= INNER_INTENSITY_OF_ACCESSPOINT) {
