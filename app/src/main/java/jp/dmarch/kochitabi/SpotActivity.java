@@ -25,19 +25,21 @@ public class SpotActivity extends AppCompatActivity {
         super.onCreate(saveInstanceState);
         setTitle("観光地一覧");
         setContentView(R.layout.activity_spot);     // xml読み込み
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // バックボタン追加
 
     }
 
+    // バックボタンタップ時処理
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {       // バックボタンタップ時処理
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
+
         }
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -53,7 +55,6 @@ public class SpotActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout)findViewById(R.id.spot_tabs);
         ViewPager viewPager = (ViewPager)findViewById(R.id.spot_pager);
 
-
         // タブ名称設定
         final String[] pageTitle = {"五十音順", "近い順"};
 
@@ -68,7 +69,7 @@ public class SpotActivity extends AppCompatActivity {
                 return SpotFragment.newInstance(position + 1);
             }
 
-            // タブ名称取得
+            // タブ内容取得
             @Override
             public CharSequence getPageTitle(int position) {
                 return null;
@@ -82,7 +83,7 @@ public class SpotActivity extends AppCompatActivity {
 
         };
 
-
+        // 画面表示
         viewPager.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(viewPager);
