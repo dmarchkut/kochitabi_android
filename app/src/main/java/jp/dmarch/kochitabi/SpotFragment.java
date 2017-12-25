@@ -1,15 +1,16 @@
 package jp.dmarch.kochitabi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,6 +22,8 @@ import java.util.Map;
  * https://teratail.com/questions/49896
  * https://java-reference.com/java_collection_sort_original.html
  * http://d.hatena.ne.jp/nattou_curry_2/20090829/1251558484#sort
+ * http://android.tecc0.com/?p=170
+ * https://qiita.com/t-kashima/items/9462af782fb5f1a2a7da
  */
 
 public class SpotFragment extends Fragment {
@@ -30,14 +33,22 @@ public class SpotFragment extends Fragment {
 
     // メンバ変数
     private ArrayList<Map<String, Object>> spotsData;
-    private LocationAcqisition locationAcqisition;
+    private LocationAcquisition locationAcquisition;
 
-    // サンプルデータ
+    /* サンプルデータ */
     private String[] spot_name = {"高知工科大学", "高知城", "ひろめ市場", "室戸岬", "四万十川", "桂浜", "早明浦ダム"};
-    private String[] spot_photoname = {"コウチコウカダイガク", "コウチジョウ", "ヒロメイチバ", "ムロトミサキ", "シマントガワ", "カツラハマ", "サメウラダム"};
-    private String[] photo_file_path = {""};
+    private String[] spot_phoname = {"コウチコウカダイガク", "コウチジョウ", "ヒロメイチバ", "ムロトミサキ", "シマントガワ", "カツラハマ", "サメウラダム"};
+    private String[] photo_file_path = {"kut",
+                                        "kochi",
+                                        "hirome",
+                                        "muroto",
+                                        "shimanto",
+                                        "katurahama",
+                                        null };
+                                        //"Users/Kai/Documents/git_dmarch/kochitabi_andoid/app/src/main/res/drawable/sameura.jpg" };
     private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
     private String[] weather = {"雨", "晴", "曇", "曇", "晴", "晴", "曇", "雨"};
+    /* */
 
     // コンストラクタ
     public SpotFragment() {
@@ -71,18 +82,33 @@ public class SpotFragment extends Fragment {
 
         int page = getArguments().getInt(ARG_PARAM, 0);     // タブページ
 
-        // spotsDataサンプルデータ代入
+        /* サンプル */
+        // spotsDataデータ代入
         spotsData = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < spot_name.length; i++) {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("spot_name", spot_name[i]);
-            map.put("spot_photoname", spot_photoname[i]);
+            map.put("spot_phoname", spot_phoname[i]);
             map.put("distance", distance[i]);
             map.put("weather", weather[i]);
+            // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
+            if (photo_file_path[i] != null) {
+                map.put("photo_file_path", this.getResources().getIdentifier(photo_file_path[i], "drawable", "jp.dmarch.kochitabi"));
+            }
+            else {
+                map.put("photo_file_path", this.getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi"));
+            }
 
             spotsData.add(map);
 
         }
+        /* */
+
+        //　現在地情報取得
+        //Double[] currentLocation = new LocationAcqisition(getActivity()).getCurrentLocation();
+
+        // 観光地情報取得
+        //spotsData = new DataBaseHelper(getActivity()).getSpotsEnvironmentDistanceData(currentLocation);
 
         if(page == 1) {
             this.sortSyllabary(spotsData);      // タブが1ページ(五十音順)ならsortSyllabary呼び出し
@@ -96,7 +122,7 @@ public class SpotFragment extends Fragment {
     }
 
     /* 観光地一覧を設定、表示するためのメソッド */
-    private void displaySpotsList(ArrayList<Map<String, Object>> spotsData) {
+    private void displaySpotsList(final ArrayList<Map<String, Object>> spotsData) {
         ListView spotsList = (ListView) getView().findViewById(R.id.spot_list);     // ListView読み込み
 
         // ListViewにArrayListの中身を表示させるためのAdapter
@@ -105,12 +131,49 @@ public class SpotFragment extends Fragment {
                 getActivity(),
                 spotsData,
                 R.layout.spot_item,
-                new String[]{ "spot_name", "distance", "weather"},
-                new int[] { R.id.spot_name, R.id.spot_distance, R.id.spot_weather}
+                new String[]{ "photo_file_path", "spot_name", "distance", "weather", "weather" },
+                new int[] { R.id.spot_image, R.id.spot_name, R.id.spot_distance, R.id.spot_weather, R.id.spot_frame }
 
         );
 
+        adapter.setViewBinder(new ColorFrameViewBinder());      // フレーム色変更
+
         spotsList.setAdapter(adapter);      // ListViewにAdapterを設定
+
+        // 項目タップ時Detailへ画面遷移
+        spotsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent,
+                                    View view, int pos, long id) {
+
+                Intent intent = new Intent(getActivity(), SpotDetailActivity.class);        // 遷移Activity設定
+
+                // Mapからデータ取り出し
+                Map<String, Object> spotData = spotsData.get(pos);
+                //String spotId = spotData.get("spot_id").toString();
+                //String environmentId = spotData.get("environment_id").toString();
+                String spotName = spotData.get("spot_name").toString();
+                //String spotPhoname = spotData.get("spot_phoname").toString();
+                //String streetAddress = spotData.get("street_address").toString();
+                //Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                //Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                //Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                String photoFilePath = spotData.get("photo_file_path").toString();
+
+                // 渡すデータ付与
+                //intent.putExtra("spot_id", spotId);
+                //intent.putExtra("environment_id", environmentId);
+                intent.putExtra("spot_name", spotName);
+                //intent.putExtra("spot_phoname", spotPhoname);
+                //intent.putExtra("street_address", streetAddress);
+                //intent.putExtra("postal_code", postalCode);
+                //intent.putExtra("latitude", latitude);
+                //intent.putExtra("longitude", longitude);
+                intent.putExtra("photo_file_path", photoFilePath);
+
+                startActivity(intent);      // 画面遷移
+
+            }
+        });
 
     }
 
@@ -120,8 +183,8 @@ public class SpotFragment extends Fragment {
             @Override
             public int compare(Map<String, Object> data1, Map<String, Object> data2) {
                 // spot_photoname取得
-                String photoname1 = data1.get("spot_photoname").toString();
-                String photoname2 = data2.get("spot_photoname").toString();
+                String photoname1 = data1.get("spot_phoname").toString();
+                String photoname2 = data2.get("spot_phoname").toString();
 
                 // 辞書順で昇順比較し返り値に
                 return photoname1.compareTo(photoname2);
