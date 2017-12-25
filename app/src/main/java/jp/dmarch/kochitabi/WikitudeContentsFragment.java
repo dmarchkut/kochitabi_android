@@ -1,12 +1,14 @@
 package jp.dmarch.kochitabi;
 
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import com.wikitude.architect.ArchitectView;
-import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.common.camera.CameraSettings;
 
-public class TestWikitude extends Fragment {
+import java.util.Map;
+
+public class WikitudeContentsFragment {
+
+    protected static void setWikitudeContents(Map<String, Object> characterGuideData) {
+        // ARキャラクターの表示処理やらなんやら...
+    }
 
     // ライセンス返す
     protected static String getWikitudeSDKLicenseKey() {
