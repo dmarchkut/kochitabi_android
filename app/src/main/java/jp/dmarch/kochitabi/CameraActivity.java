@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
@@ -25,6 +26,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // xmlファイルと紐付け
         setContentView(R.layout.activity_camera);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
 
         // ArchitectViewと紐付け
         this.architectView = (ArchitectView)this.findViewById(R.id.architectView);
@@ -127,6 +129,17 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // バックボタンタップ時処理
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // ホーム画面に戻る
+        Intent intent = new Intent(getApplication(), HomeActivity.class); // 切り替え準備
+        // 該当のActivity上にスタックされたタスクをクリア
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent); // Activity切り替え
+        return true;
     }
 
     @Override
