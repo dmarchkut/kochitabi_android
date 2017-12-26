@@ -26,7 +26,7 @@ public class SavePhotoActivity extends AppCompatActivity {
         /* 前の画面(CameraActivity)からのデータを受け取る */
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        final File screenCaptureFile = (File)bundle.get("bitmapData");
+        final File screenCaptureFile = (File)bundle.get("fileData");
         // 写真ファイルパスを取得
         final String filePath = screenCaptureFile.toString();
 
@@ -50,8 +50,7 @@ public class SavePhotoActivity extends AppCompatActivity {
                 // 写真の削除を行う
                 screenCaptureFile.delete();
                 // 画面遷移の処理
-                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);  // 切り替え準備
-                startActivity(intent);                                                      // Activity切り替え
+                finish();
             }
         });
 
@@ -64,8 +63,7 @@ public class SavePhotoActivity extends AppCompatActivity {
                 // 写真をギャラリーに保存する
                 addImageToGallery(filePath);
                 // 画面遷移の処理
-                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);  // 切り替え準備
-                startActivity(intent);
+                finish();
             }
         });
 

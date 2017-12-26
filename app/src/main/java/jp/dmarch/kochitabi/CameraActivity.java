@@ -46,6 +46,7 @@ public class CameraActivity extends AppCompatActivity {
         Button cameraButton = (Button)this.findViewById(R.id.camera_button);
         // AR案内ボタンとの紐付け
         Button arguideButton = (Button)this.findViewById(R.id.arguide_button);
+        // AR案内ボタンを非表示にする
         arguideButton.setVisibility(View.GONE);
 
         /* カメラボタンがクリックされた時の処理 */
@@ -63,17 +64,18 @@ public class CameraActivity extends AppCompatActivity {
                 captureScreen(screenCaptureFile);   // 画面のキャプチャを行う
                 // SavePhotoActivityに移動する
                 Intent intent = new Intent(getApplication(), SavePhotoActivity.class);
-                intent.putExtra("bitmapData", screenCaptureFile);
+                intent.putExtra("fileData", screenCaptureFile);
                 startActivity(intent);
             }
         });
 
         // アクセスポイント内：raspberrypiNumber、外：nullを受け取る
-        String raspberrypiNumber = BluetoothAcqisition.checkAccessPoint();
+        String raspberrypiNumber = new BluetoothAcqisition().checkAccessPoint();
 
+        /* アクセスポイント内にいる時の処理 */
         if (raspberrypiNumber != null) {
             // raspberrpiNumberに対応したAR案内情報を取得する
-            Map<String, Object> characterGuideData = DataBaseHelper.getCharacterGuide(raspberrypiNumber);
+            final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
 
             // ARキャラクターの表示を行う
             WikitudeContentsFragment.setWikitudeContents(characterGuideData);
@@ -84,6 +86,7 @@ public class CameraActivity extends AppCompatActivity {
             final Object characterFilePath = characterGuideData.get("character_file_path");
             final Object textData = characterGuideData.get("text_data");
 
+            //AR案内ボタンを表示させる
             arguideButton.setVisibility(View.VISIBLE);
             /* AR案内ボタンがクリックされた時の処理 */
             arguideButton.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +109,6 @@ public class CameraActivity extends AppCompatActivity {
         CameraActivity.this.architectView.captureScreen(ArchitectView.CaptureScreenCallback.CAPTURE_MODE_CAM_AND_WEBVIEW, new CaptureScreenCallback() {
             @Override
             public void onScreenCaptured(final Bitmap screenCapture) {
-
                 /* 写真の保存処理 */
                 try {
                     // 写真の保存処理を開始する
@@ -136,7 +138,7 @@ public class CameraActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // ホーム画面に戻る
         Intent intent = new Intent(getApplication(), HomeActivity.class); // 切り替え準備
-        // 該当のActivity上にスタックされたタスクをクリア
+        // 呼び出すActivity以外のActivityをクリアして起動させる
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent); // Activity切り替え
         return true;
