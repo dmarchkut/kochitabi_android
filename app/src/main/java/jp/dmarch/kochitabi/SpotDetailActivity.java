@@ -61,7 +61,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         setTitle(spotName); // ウインドウタイトルを観光地名に変更
 
         locationAcquisition = new LocationAcquisition(this); // LocationAcquisitionのインスタンス化
-        // locationAcquisition.beginLocationAcquisition(); // LocationAcquisitionのbeginLocationAcquisitionを呼び出し
+        locationAcquisition.beginLocationAcquisition(); // LocationAcquisitionのbeginLocationAcquisitionを呼び出し
 
         // MapActivityに飛ぶボタンを実装
         ImageButton sendButton = findViewById(R.id.imageButton);
@@ -132,10 +132,10 @@ public class SpotDetailActivity extends AppCompatActivity {
     private void displaySpotDetail (Map<String, Object> spotData, Map<String, Object> environmentData, String spotText, Double distance) {
 
         // spotDataから表示を行うデータを取得する
-        String spotName = spotData.get("spot_name").toString(); // 観光地名
-        String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
-        String weather = environmentData.get("weather").toString(); // 天気
-        Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
+        final String spotName = spotData.get("spot_name").toString(); // 観光地名
+        final String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
+        final String weather = environmentData.get("weather").toString(); // 天気
+        final Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
@@ -143,22 +143,25 @@ public class SpotDetailActivity extends AppCompatActivity {
         TextView weatherText = (TextView)findViewById(R.id.weatherTextView);  // 天気
         TextView temperatureText = (TextView)findViewById(R.id.temperatureTextView); // 気温
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
-        ImageView spotImage = (ImageView)findViewById(R.id.spotImageView); // 観光地写真
+        ImageView spotImage = findViewById(R.id.spotImageView); // 観光地写真
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        distanceText.setText(String.valueOf(distance)); // 距離
-        weatherText.setText(weather); // 天気
-        temperatureText.setText(String.valueOf(temperature)); // 気温
-        spotDetailText.setText(spotText); // 観光地案内テキスト(スクロール)
+        distanceText.setText("距離: " + String.valueOf(distance) + " km"); // 距離
+        weatherText.setText("天気: "+ weather); // 天気
+        temperatureText.setText("気温: " + String.valueOf(temperature) + " 度"); // 気温
+        spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
+        spotDetailText.setText(spotText); //　観光地案内テキスト
 
-        //
+        // プレビュの表示
+        Bitmap bitmap = BitmapFactory.decodeFile(photoFilePath);
+        spotImage.setImageBitmap(bitmap);
     }
 
     protected void onDestroy() {
         super.onDestroy();
         // LocationAcquisitionのendLocationAcquisitionを呼び出す
-        // locationAcquisition.endLocationAcquisition();
+        locationAcquisition.endLocationAcquisition();
     }
 
     // 戻るボタンをタップした時に実行される
