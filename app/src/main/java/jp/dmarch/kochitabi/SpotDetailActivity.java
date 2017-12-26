@@ -21,6 +21,8 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Double.NaN;
+
 public class SpotDetailActivity extends AppCompatActivity {
 
     private Map<String, Object> spotData;
@@ -124,7 +126,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // LocationAcquisitionのgetDistanceから現在地～観光地の距離を取得する
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
-        if (distance == null) distance = 0.0;
+        if (distance == null || distance.equals(NaN)) distance = 0.0;
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
         displaySpotDetail(spotData, environmentData, spotText, distance);
