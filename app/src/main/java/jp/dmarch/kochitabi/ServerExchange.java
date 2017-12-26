@@ -16,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,33 @@ import java.util.Map;
 
 
 public class ServerExchange {
+
+    // ローカルDBのデータすべてを取得するためのAPIのURL
+    private final static String GET_LOCAL_DATABASE_TABLES_URL = "http://dmarch.jp/get_local_database_tables.py";
+    // ローカル環境テーブルのデータを取得するためのAPIのURL
+    private final static String GET_ENVIRONMENT_TABLE_URL = "http://dmarch.jp/get_local_environment_table.py";
+    // ローカルキャラクターテーブルのデータを取得するためのAPIのURL
+    private final static String GET_CHARACTER_TABLE_URL = "http://dmarch.jp/get_local_character_table.py";
+
+    // テーブルのキー(観光地、環境、アクセスポイント、キャラクター)
+    private final static String[][] TABLE_KEYS = {
+            new String[] {  "spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code",
+                            "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"},
+            new String[] {  "environment_id", "weather", "temperature", "created_at", "updated_at"},
+            new String[] {  "access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
+                            "raspberry_pi_number", "text_data", "created_at", "updated_at"},
+            new String[] {  "access_point_id", "character_name", "character_file_path", "text_data", "created_at", "updated_at"}
+    };
+
+    // キーに対応するデータの種類
+    private final static String[] DOUBLE_DATA = {"latitude", "longitude", "temperature"};
+    private final static String[] INTEGER_DATA = {"created_at", "updated_at", "postal_code"};
+
+    // 各テーブルの添え字
+    private final static int SPOT_TABLE = 0;
+    private final static int ENVIRONMENT_TABLE = 1;
+    private final static int ACCESS_POINT_TABLE = 2;
+    private final static int CHARACTER_TABLE = 3;
 
     /* JSONを取得 */
     private String readInputStream(InputStream in) throws IOException, UnsupportedEncodingException {
@@ -107,18 +135,52 @@ public class ServerExchange {
 
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
 
-        JSONArray jsonData = getJSON("http://dmarch.jp/get_local_database_tables.py");
+        JSONArray jsonData = getJSON(GET_LOCAL_DATABASE_TABLES_URL);
+
+        for (int i = 0; i < jsonData.length(); i++) {
+            try {
+                JSONArray jsonTableData = jsonData.getJSONArray(i);
+                ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
+
+                for (int j = 0; j < jsonTableData.length(); j++) {
+                    JSONObject jsonObject = jsonTableData.getJSONObject(j);
+
+                    Map<String, Object> tableRecord = new HashMap<String, Object>();
+
+                    for (String key : TABLE_KEYS[i]) {
+
+                        if (Arrays.asList(INTEGER_DATA).contains(key)) {
+                            Integer data = jsonObject.getInt(key);
+                            tableRecord.put(key, data);
+                        } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
+                            Double data = jsonObject.getDouble(key);
+                            tableRecord.put(key, data);
+                        } else {
+                            String data = jsonObject.getString(key);
+                            tableRecord.put(key, data);
+                        }
+
+                    }
+
+                    // データを追加
+                    tableData.add(tableRecord);
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         return localDataBaseTables;
 
     }
 
     /* サーバからローカル環境テーブルデータを取得 */
-    public ArrayList<Map<String, Object>> getEnviornmentTable() {
+    public ArrayList<Map<String, Object>> getEnvironmentTable() {
 
         ArrayList<Map<String, Object>> environmentTable = new ArrayList<Map<String, Object>>();
 
-        JSONArray jsonData = getJSON("http://dmarch.jp/get_local_environment_table.py");
+        JSONArray jsonData = getJSON(GET_ENVIRONMENT_TABLE_URL);
 
         // すべてのレコードに対してJSONからMapオブジェクトへの変換
         for (int i = 0; i < jsonData.length(); i++) {
@@ -126,19 +188,22 @@ public class ServerExchange {
             try {
                 // JSONデータからそれぞれの要素を取得
                 JSONObject jsonObject = jsonData.getJSONObject(i);
-                String environmentId = jsonObject.getString("environment_id");
-                String weather = jsonObject.getString("weather");
-                Double temperature = jsonObject.getDouble("temperature");
-                Integer createAt = jsonObject.getInt("create_at");
-                Integer updateAt = jsonObject.getInt("update_at");
-
-                // Mapオブジェクトに入れる
                 Map<String, Object> environmentData = new HashMap<String, Object>();
-                environmentData.put("environment_id", environmentId);
-                environmentData.put("weather", weather);
-                environmentData.put("temperature", temperature);
-                environmentData.put("create_at", createAt);
-                environmentData.put("update_at", updateAt);
+
+                for (String key : TABLE_KEYS[ENVIRONMENT_TABLE]) {
+
+                    if (Arrays.asList(INTEGER_DATA).contains(key)) {
+                        Integer data = jsonObject.getInt(key);
+                        environmentData.put(key, data);
+                    } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
+                        Double data = jsonObject.getDouble(key);
+                        environmentData.put(key, data);
+                    } else {
+                        String data = jsonObject.getString(key);
+                        environmentData.put(key, data);
+                    }
+
+                }
 
                 // データを追加
                 environmentTable.add(environmentData);
@@ -158,7 +223,7 @@ public class ServerExchange {
 
         ArrayList<Map<String, Object>> characterTable = new ArrayList<Map<String, Object>>();
 
-        JSONArray jsonData = getJSON("http://dmarch.jp/get_local_character_table.py");
+        JSONArray jsonData = getJSON(GET_CHARACTER_TABLE_URL);
 
         // すべてのレコードに対してJSONからMapオブジェクトへの変換
         for (int i = 0; i < jsonData.length(); i++) {
@@ -166,21 +231,24 @@ public class ServerExchange {
             try {
                 // JSONデータからそれぞれの要素を取得
                 JSONObject jsonObject = jsonData.getJSONObject(i);
-                String accessPointId = jsonObject.getString("access_point_id");
-                String characterName = jsonObject.getString("character_name");
-                String characterFilePath = jsonObject.getString("character_file_path");
-                Integer createAt = jsonObject.getInt("create_at");
-                Integer updateAt = jsonObject.getInt("update_at");
-
-                // Mapオブジェクトに入れる
                 Map<String, Object> characterData = new HashMap<String, Object>();
-                characterData.put("access_point_id", accessPointId);
-                characterData.put("character_name", characterName);
-                characterData.put("character_file_path", characterFilePath);
-                characterData.put("create_at", createAt);
-                characterData.put("update_at", updateAt);
 
-                // データを追加
+                for (String key : TABLE_KEYS[CHARACTER_TABLE]) {
+
+                    if (Arrays.asList(INTEGER_DATA).contains(key)) {
+                        Integer data = jsonObject.getInt(key);
+                        characterData.put(key, data);
+                    } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
+                        Double data = jsonObject.getDouble(key);
+                        characterData.put(key, data);
+                    } else {
+                        String data = jsonObject.getString(key);
+                        characterData.put(key, data);
+                    }
+
+                }
+
+                    // データを追加
                 characterTable.add(characterData);
 
             } catch (JSONException e) {
