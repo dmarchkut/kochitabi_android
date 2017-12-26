@@ -114,6 +114,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // DataBaseHelperのgetSpotTextから観光地IDに対応した観光地案内テキストを取得する
         String spotText = dataBaseHelper.getSpotText(spotId);
+        if (spotText == null) spotText = "データがありません。";
 
         // LocationAcquisitionのgetCurrentLocationを呼び出し、現在地の緯度・経度を取得する
         Double[] currentLocation = locationAcquisition.getCurrentLocation();
@@ -123,6 +124,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // LocationAcquisitionのgetDistanceから現在地～観光地の距離を取得する
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
+        if (distance == null) distance = 0.0;
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
         displaySpotDetail(spotData, environmentData, spotText, distance);
@@ -132,10 +134,11 @@ public class SpotDetailActivity extends AppCompatActivity {
     private void displaySpotDetail (Map<String, Object> spotData, Map<String, Object> environmentData, String spotText, Double distance) {
 
         // spotDataから表示を行うデータを取得する
-        final String spotName = spotData.get("spot_name").toString(); // 観光地名
-        final String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
-        final String weather = environmentData.get("weather").toString(); // 天気
-        final Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
+        String spotName = spotData.get("spot_name").toString(); // 観光地名
+        String weather = environmentData.get("weather").toString(); // 天気
+        Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
+        String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
+        if (photoFilePath == null) photoFilePath = "NoImageDataが格納されているパスを指定";
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
