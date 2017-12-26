@@ -92,12 +92,12 @@ public class SpotActivity extends AppCompatActivity {
 
         // タブ左画面構成
         TabLayout.Tab tab1 = tabLayout.getTabAt(0);
-        View tab1View = inflater.inflate(R.layout.spot_tab1, null);
+        View tab1View = inflater.inflate(R.layout.spot_tab_left, null);
         tab1.setCustomView(tab1View);
 
         // タブ右画面構成
         TabLayout.Tab tab2 = tabLayout.getTabAt(1);
-        View tab2View = inflater.inflate(R.layout.spot_tab2, null);
+        View tab2View = inflater.inflate(R.layout.spot_tab_right, null);
         tab2.setCustomView(tab2View);
 
     }
