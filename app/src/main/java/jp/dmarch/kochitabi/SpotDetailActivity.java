@@ -1,5 +1,6 @@
 package jp.dmarch.kochitabi;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SpotDetailActivity extends AppCompatActivity{
+public class SpotDetailActivity extends AppCompatActivity {
 
     private Map<String, Object> spotData;
     private LocationAcquisition locationAcquisition;
@@ -29,23 +30,22 @@ public class SpotDetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotdetail);
 
-        // アクションバーに前画面に戻る機能をつける
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        // 前画面に戻る機能をつける
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // バックボタン追加
 
         // 前画面(SpotActivity)からのspotDataを受け取る
         Intent intent = getIntent();
-        String spotId = intent.getStringExtra("spot_id");
-        String environmentId = intent.getStringExtra("environment id");
-        String spotName = intent.getStringExtra("spot_name");
-        String spotPhoname = intent.getStringExtra("spot_phoname");
-        String streetAddress = intent.getStringExtra("street_address");
-        Integer postalCode = (Integer) intent.getIntExtra("postal_code",0);
-        Double latitude = intent.getDoubleExtra("latitude", 0);
+        final String spotId = intent.getStringExtra("spot_id");
+        final String environmentId = intent.getStringExtra("environment id");
+        final String spotName = intent.getStringExtra("spot_name");
+        final String spotPhoname = intent.getStringExtra("spot_phoname");
+        final String streetAddress = intent.getStringExtra("street_address");
+        final Integer postalCode = (Integer) intent.getIntExtra("postal_code", 0);
+        final Double latitude = intent.getDoubleExtra("latitude", 0);
         Double longitude = intent.getDoubleExtra("longitude", 0);
         String photoFilePath = intent.getStringExtra("photo_file_path");
+
+        spotData = new HashMap<String, Object>();
 
         // spotDataにデータを挿入
         spotData.put("spot_id", spotId);
@@ -61,7 +61,7 @@ public class SpotDetailActivity extends AppCompatActivity{
         setTitle(spotName); // ウインドウタイトルを観光地名に変更
 
         locationAcquisition = new LocationAcquisition(this); // LocationAcquisitionのインスタンス化
-        locationAcquisition.beginLocationAcquisition(); // LocationAcquisitionのbeginLocationAcquisitionを呼び出し
+        // locationAcquisition.beginLocationAcquisition(); // LocationAcquisitionのbeginLocationAcquisitionを呼び出し
 
         // MapActivityに飛ぶボタンを実装
         ImageButton sendButton = findViewById(R.id.imageButton);
@@ -71,17 +71,15 @@ public class SpotDetailActivity extends AppCompatActivity{
                 Intent intent = new Intent(getApplication(), MapActivity.class); // 遷移先のMapActivityを設定する
 
                 // キーの値を全てMapから取り出す
-                String spotId = (String) spotData.get("spot_id");
-                String environmentId = (String) spotData.get("environment id");
-                String spotName = (String) spotData.get("spot_name");
-                String spotPhoname = (String) spotData.get("spot_phoname");
-                String streetAddress = (String) spotData.get("street_address");
-                Integer postalCode = (Integer) spotData.get("postal_code");
-                Double latitude = (Double) spotData.get("latitude");
-                Double longitude = (Double) spotData.get("longitude");
-                String photoFilePath = (String) spotData.get("photo_file_path");
-
-                spotData = new HashMap<String, Object>();  // spotDataをインスタンス化する
+                String spotId = spotData.get("spot_id").toString();
+                String environmentId = spotData.get("environment id").toString();
+                String spotName = spotData.get("spot_name").toString();
+                String spotPhoname = spotData.get("spot_phoname").toString();
+                String streetAddress = spotData.get("street_address").toString();
+                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                String photoFilePath = spotData.get("photo_file_path").toString();
 
                 // MapActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
@@ -99,25 +97,15 @@ public class SpotDetailActivity extends AppCompatActivity{
         });
     }
 
-    // 戻るボタン(アクションバー)をタップした時に実行される
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     protected void onResume(){
         super.onResume();
 
         // Mapから観光地ID・環境データを取り出す
-        String spotId = (String) spotData.get("spot_id"); // 観光地ID
-        String environmentId = (String) spotData.get("environment_id"); //環境ID
-        Double latitude = (Double) spotData.get("latitude"); // 緯度
-        Double longitude = (Double) spotData.get("longitude"); // 経度
+        String spotId = spotData.get("spot_id").toString();
+        String environmentId = spotData.get("environment id").toString();
+        String spotName = spotData.get("spot_name").toString();
+        Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+        Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(); // DataBaseHelperをインスタンス化
 
@@ -137,18 +125,17 @@ public class SpotDetailActivity extends AppCompatActivity{
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
-        this.displaySpotDetail(spotData, environmentData, spotText, distance);
-
+        displaySpotDetail(spotData, environmentData, spotText, distance);
     }
 
     // 引数の情報を画面に表示するメソッド
     private void displaySpotDetail (Map<String, Object> spotData, Map<String, Object> environmentData, String spotText, Double distance) {
 
         // spotDataから表示を行うデータを取得する
-        String spotName = (String) spotData.get("spot_name"); // 観光地名
-        String photoFilePath = (String) spotData.get("photo_file_path"); // 観光地写真
-        String weather = (String) environmentData.get("weather"); // 天気
-        Double temperature = (Double) environmentData.get("temperature"); // 気温
+        String spotName = spotData.get("spot_name").toString(); // 観光地名
+        String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
+        String weather = environmentData.get("weather").toString(); // 天気
+        Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
@@ -165,15 +152,24 @@ public class SpotDetailActivity extends AppCompatActivity{
         temperatureText.setText(String.valueOf(temperature)); // 気温
         spotDetailText.setText(spotText); // 観光地案内テキスト(スクロール)
 
-        // 写真パスファイルから観光地写真の表示を行う(これで合っているか分からない)
-        Bitmap bmImg = BitmapFactory.decodeFile(photoFilePath);
-        spotImage.setImageBitmap(bmImg);
-
+        //
     }
 
-    protected void onDestroy(){
+    protected void onDestroy() {
+        super.onDestroy();
         // LocationAcquisitionのendLocationAcquisitionを呼び出す
-        locationAcquisition.endLocationAcquisition();
+        // locationAcquisition.endLocationAcquisition();
+    }
+
+    // 戻るボタンをタップした時に実行される
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
