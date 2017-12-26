@@ -156,19 +156,19 @@ public class BluetoothAcquisition {
     }
 
     /* 特定のBluetooth接続可能な端末の電波強度を取得 */
-    public int getIntensity(String raspberypiNumber) {
+    public int getIntensity(String raspberrypiNumber) {
 
         // 電波強度を取得する端末がRaspberryPi端末でなければNaNを返す
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
-        if (pattern.matcher(raspberypiNumber).find()) return NaN;
+        if (pattern.matcher(raspberrypiNumber).find()) return NaN;
 
         // 取得済みの端末リストを検索
         for (String deviceName : deviceList.keySet()) {
 
             // リストから見つかれば電波強度を返す
-            if (raspberypiNumber.equals(deviceName)) {
-                int deviceintensity = deviceList.get(deviceName);
-                return deviceintensity;
+            if (raspberrypiNumber.equals(deviceName)) {
+                int deviceIntensity = deviceList.get(deviceName);
+                return deviceIntensity;
             }
 
         }
