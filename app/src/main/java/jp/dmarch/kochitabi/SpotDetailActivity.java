@@ -42,8 +42,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         final String streetAddress = intent.getStringExtra("street_address");
         final Integer postalCode = (Integer) intent.getIntExtra("postal_code", 0);
         final Double latitude = intent.getDoubleExtra("latitude", 0);
-        Double longitude = intent.getDoubleExtra("longitude", 0);
-        String photoFilePath = intent.getStringExtra("photo_file_path");
+        final Double longitude = intent.getDoubleExtra("longitude", 0);
+        final String photoFilePath = intent.getStringExtra("photo_file_path");
 
         spotData = new HashMap<String, Object>();
 
@@ -71,15 +71,15 @@ public class SpotDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplication(), MapActivity.class); // 遷移先のMapActivityを設定する
 
                 // キーの値を全てMapから取り出す
-                String spotId = spotData.get("spot_id").toString();
-                String environmentId = spotData.get("environment id").toString();
-                String spotName = spotData.get("spot_name").toString();
-                String spotPhoname = spotData.get("spot_phoname").toString();
-                String streetAddress = spotData.get("street_address").toString();
-                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                String photoFilePath = spotData.get("photo_file_path").toString();
+                final String spotId = spotData.get("spot_id").toString();
+                final String environmentId = spotData.get("environment id").toString();
+                final String spotName = spotData.get("spot_name").toString();
+                final String spotPhoname = spotData.get("spot_phoname").toString();
+                final String streetAddress = spotData.get("street_address").toString();
+                final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                final String photoFilePath = spotData.get("photo_file_path").toString();
 
                 // MapActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
