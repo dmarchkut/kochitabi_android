@@ -101,11 +101,11 @@ public class SpotDetailActivity extends AppCompatActivity {
         super.onResume();
 
         // Mapから観光地ID・環境データを取り出す
-        String spotId = spotData.get("spot_id").toString();
-        String environmentId = spotData.get("environment id").toString();
-        String spotName = spotData.get("spot_name").toString();
-        Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-        Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+        final String spotId = spotData.get("spot_id").toString();
+        final String environmentId = spotData.get("environment id").toString();
+        final String spotName = spotData.get("spot_name").toString();
+        final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+        final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(); // DataBaseHelperをインスタンス化
 
