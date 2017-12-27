@@ -46,6 +46,7 @@
             android:label="@string/app_name" />
         <activity android:name=".AugmentedGuideActivity"
         android:label="@string/app_name" />
+        <service android:name=".AccessPointService"/>
     </application>
 
 </manifest>
