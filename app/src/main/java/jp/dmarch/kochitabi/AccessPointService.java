@@ -14,6 +14,7 @@ public class AccessPointService extends Service {
     private Handler handler = new Handler();
     private String lastRaspberrypiNumber;
     private String nowRaspberrypiNumber;
+    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(this);
 
     @Override
     public void onCreate() {
@@ -31,7 +32,7 @@ public class AccessPointService extends Service {
                 handler.post(new Runnable() {
                     public void run(){
                         // アクセスポイント内：raspberrypiNumber、外：nullを受け取る
-                        nowRaspberrypiNumber = new BluetoothAcqisition().checkAccessPoint();
+                        nowRaspberrypiNumber = bluetoothAcqisition.checkAccessPoint();
                         // アクセスポイントに入ってとき、出たときの処理
                         if (lastRaspberrypiNumber != nowRaspberrypiNumber) {
                             lastRaspberrypiNumber = nowRaspberrypiNumber;

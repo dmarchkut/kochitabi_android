@@ -24,6 +24,7 @@ import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 public class CameraActivity extends AppCompatActivity {
     private ArchitectView architectView;
     private Button arguideButton;
+    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class CameraActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        bluetoothAcqisition.beginSearchDevice();
         // レシーバーの設定を行う
         setReceiver();
     }
@@ -203,6 +205,7 @@ public class CameraActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
+        bluetoothAcqisition.endSearchDevice();
     }
 
     @Override
