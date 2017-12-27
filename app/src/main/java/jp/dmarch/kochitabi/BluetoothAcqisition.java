@@ -1,13 +1,14 @@
 package jp.dmarch.kochitabi;
 
-import java.util.Random;
+import java.util.Calendar;
 
 public class BluetoothAcqisition {
     protected String checkAccessPoint() {
-        Random rnd = new Random();
-        int ran = rnd.nextInt(10);
-        ran = ran % 2;
-        if (ran == 1) {
+        Calendar now = Calendar.getInstance(); //インスタンス化
+        int minute = now.get(now.MINUTE);     //分を取得
+        minute = minute % 2;
+
+        if (minute == 1) {
             return "pi0001";
         }
         return null;

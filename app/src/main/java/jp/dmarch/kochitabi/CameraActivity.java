@@ -1,6 +1,8 @@
 package jp.dmarch.kochitabi;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 
 import java.io.File;
@@ -20,6 +23,7 @@ import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 
 public class CameraActivity extends AppCompatActivity {
     private ArchitectView architectView;
+    private Button arguideButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,7 @@ public class CameraActivity extends AppCompatActivity {
         // カメラボタンと紐付け
         Button cameraButton = (Button)this.findViewById(R.id.camera_button);
         // AR案内ボタンとの紐付け
-        Button arguideButton = (Button)this.findViewById(R.id.arguide_button);
+        arguideButton = (Button)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
         arguideButton.setVisibility(View.GONE);
 
@@ -61,47 +65,16 @@ public class CameraActivity extends AppCompatActivity {
                 // 作成したkochitabiARの中に「kochitabiAR_時間.jpg」って名前の写真を格納する
                 final File screenCaptureFile = new File(fileName, "kochitabiAR_" + System.currentTimeMillis() + ".jpg");
 
-                captureScreen(screenCaptureFile);   // 画面のキャプチャを行う
+                // 画面のキャプチャを行う
+                captureScreen(screenCaptureFile);
                 // SavePhotoActivityに移動する
                 Intent intent = new Intent(getApplication(), SavePhotoActivity.class);
                 intent.putExtra("fileData", screenCaptureFile);
                 startActivity(intent);
             }
         });
-
-        // アクセスポイント内：raspberrypiNumber、外：nullを受け取る
-        String raspberrypiNumber = new BluetoothAcqisition().checkAccessPoint();
-
-        /* アクセスポイント内にいる時の処理 */
-        if (raspberrypiNumber != null) {
-            // raspberrpiNumberに対応したAR案内情報を取得する
-            final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
-
-            // ARキャラクターの表示を行う
-            WikitudeContentsFragment.setWikitudeContents(characterGuideData);
-
-            // Mapオブジェクトを分解する
-            final Object accessPointId = characterGuideData.get("access_point_id");
-            final Object characterName = characterGuideData.get("character_name");
-            final Object characterFilePath = characterGuideData.get("character_file_path");
-            final Object textData = characterGuideData.get("text_data");
-
-            //AR案内ボタンを表示させる
-            arguideButton.setVisibility(View.VISIBLE);
-            /* AR案内ボタンがクリックされた時の処理 */
-            arguideButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // AugmentedGuideActivityに移動する
-                    Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
-                    intent.putExtra("access_point_id", accessPointId.toString());
-                    intent.putExtra("character_name", characterName.toString());
-                    intent.putExtra("character_file_path", characterFilePath.toString());
-                    intent.putExtra("text_data", textData.toString());
-                    startActivity(intent);
-                }
-            });
-        }
+        // レシーバーの設定を行う
+        setReceiver();
     }
 
     /* 画面のキャプチャを行うメソッド */
@@ -133,7 +106,7 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
-    // バックボタンタップ時処理
+    /* バックボタンタップ時処理 */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // ホーム画面に戻る
@@ -144,8 +117,59 @@ public class CameraActivity extends AppCompatActivity {
         return true;
     }
 
+    /* レシーバーの設定を行う */
+    private void setReceiver() {
+        AccessPointReceiver receiver = new AccessPointReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("UPDATE_ACTION");
+        registerReceiver(receiver, intentFilter);
+        receiver.registerHandler (updateHandler);
+    }
+
+    /* サービスから値を受け取ったら動かしたい内容を書く */
+    private Handler updateHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            // データを受け取る
+            Bundle bundle = msg.getData();
+            String raspberrypiNumber = bundle.getString("raspberrypiNumber");
+
+            /* アクセスポイント内にいる時の処理 */
+            if (raspberrypiNumber != null) {
+                // raspberrpiNumberに対応したAR案内情報を取得する
+                final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
+
+                // ARキャラクターの表示を行う
+                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
+
+                // Mapオブジェクトを分解する
+                final Object accessPointId = characterGuideData.get("access_point_id");
+                final Object characterName = characterGuideData.get("character_name");
+                final Object characterFilePath = characterGuideData.get("character_file_path");
+                final Object textData = characterGuideData.get("text_data");
+
+                //AR案内ボタンを表示させる
+                arguideButton.setVisibility(View.VISIBLE);
+                /* AR案内ボタンがクリックされた時の処理 */
+                arguideButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // AugmentedGuideActivityに移動する
+                        Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            /* アクセスポイント外にいる時の処理 */
+            } else {
+                // AR案内ボタンを非表示にする
+                arguideButton.setVisibility(View.GONE);
+            }
+        }
+    };
+
     @Override
-    protected void onPostCreate( final Bundle savedInstanceState ) {
+    protected void onPostCreate(final Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         if ( this.architectView != null ) {
             // call mandatory live-cycle method of architectView
@@ -156,7 +180,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if ( this.architectView != null ) {
+        if (this.architectView != null) {
             // onResumeメソッドでArchitectViewのonResumeメソッドを実行
             this.architectView.onResume();
         }
@@ -165,7 +189,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if ( this.architectView != null ) {
+        if (this.architectView != null) {
             // onPauseメソッドでArchitectViewのonPauseメソッドを実行
             this.architectView.onPause();
         }
@@ -175,9 +199,25 @@ public class CameraActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // architectViewの必須のライフサイクルメソッドを呼び出す
-        if ( this.architectView != null ) {
+        if (this.architectView != null) {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
+    }
+
+    @Override
+    protected  void onStart() {
+        super.onStart();
+        // サービスクラスを開始する
+        Intent intent = new Intent(getApplication(), AccessPointService.class);
+        startService(intent);
+    }
+
+    @Override
+    protected  void onStop() {
+        super.onStop();
+        // サービスクラスを終了する
+        Intent intent = new Intent(getApplication(), AccessPointService.class);
+        stopService(intent);
     }
 }

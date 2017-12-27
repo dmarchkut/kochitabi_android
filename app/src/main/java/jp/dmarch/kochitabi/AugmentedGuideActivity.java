@@ -17,13 +17,6 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         // xmlファイルと紐付け
         setContentView(R.layout.activity_augmentedguide);
 
-        /* 前の画面(CameraActivity)からのデータを受け取る */
-        Intent intent = getIntent();
-        final String accessPointId = (String)intent.getStringExtra("access_point_id");
-        final String characterName = (String)intent.getStringExtra("character_name");
-        final String characterFilePath = (String)intent.getStringExtra("character_file_path");
-        final String textData = (String)intent.getStringExtra("text_data");
-
         // ArchitectViewと紐付け
         this.architectView = (ArchitectView)this.findViewById(R.id.architectView);
         final ArchitectStartupConfiguration config = new ArchitectStartupConfiguration();
