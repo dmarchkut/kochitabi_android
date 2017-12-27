@@ -14,7 +14,7 @@ var World = {
 
         var location = new AR.RelativeLocation(null, 1, 1, 0);
 
-        var modelMashu = new AR.Model("assets/cube.wt3", {
+        var modelMashu = new AR.Model("assets/masyu.wt3", {
             onLoaded: this.worldLoaded,
             scale: {
                 x: 0.001,
