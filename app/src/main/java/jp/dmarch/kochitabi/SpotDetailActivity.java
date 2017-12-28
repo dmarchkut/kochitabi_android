@@ -1,6 +1,5 @@
 package jp.dmarch.kochitabi;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -77,6 +76,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                 final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                 final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
                 final String photoFilePath = spotData.get("photo_file_path").toString();
+                final String activityName = "SpotDetailActivity"; // MapActivityでの遷移判断に使用する変数
 
                 // MapActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
@@ -88,6 +88,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
                 intent.putExtra("photo_file_path", photoFilePath);
+                intent.putExtra("activity_name", activityName);
 
                 startActivity(intent); // MapActivityに遷移する
             }
