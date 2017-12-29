@@ -15,6 +15,12 @@ public class DataBaseHelper {
         ArrayList<Map<String, Object>> spotsEnvironmentDistanceData = new ArrayList<Map<String, Object>>();
 
         return spotsEnvironmentDistanceData;
-    };
+    }
+
+    public ArrayList<Double[]> getAccessPointLocations(String spotId) {
+        ArrayList<Double[]> accessPointLocations = new ArrayList<Double[]>();
+
+        return accessPointLocations;
+    }
 
 }
