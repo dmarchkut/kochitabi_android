@@ -1,6 +1,7 @@
 package jp.dmarch.kochitabi;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -136,7 +137,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         String weather = environmentData.get("weather").toString(); // 天気
         Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
         String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
-        if (photoFilePath == null) photoFilePath = "NoImageDataが格納されているパスを指定";
+        if (photoFilePath == null) photoFilePath = "noimage";
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
@@ -154,9 +155,9 @@ public class SpotDetailActivity extends AppCompatActivity {
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
         spotDetailText.setText(spotText); //　観光地案内テキスト
 
-        // プレビュの表示
-        Bitmap bitmap = BitmapFactory.decodeFile(photoFilePath);
-        spotImage.setImageBitmap(bitmap);
+        // 写真の表示
+        int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi"); // リソースのIDをdrawableから取得
+        spotImage.setImageResource(imageId); // 表示
     }
 
     protected void onDestroy() {
