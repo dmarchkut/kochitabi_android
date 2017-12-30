@@ -18,6 +18,7 @@ public class AccessPointService extends Service {
 
     @Override
     public void onCreate() {
+        bluetoothAcqisition.beginSearchDevice();
         lastRaspberrypiNumber = null;
     }
 
@@ -61,6 +62,7 @@ public class AccessPointService extends Service {
             timer.cancel();
             timer = null;
         }
+        bluetoothAcqisition.endSearchDevice();
     }
 
     @Override
