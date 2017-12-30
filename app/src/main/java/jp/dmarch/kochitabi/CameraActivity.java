@@ -27,6 +27,7 @@ public class CameraActivity extends AppCompatActivity {
     private ArchitectView architectView;
     private Button arguideButton;
 
+    /* 外部からcontextを参照するときに使う */
     protected static Context getInstance() {
         return instance;
     }
@@ -211,7 +212,6 @@ public class CameraActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-        //bluetoothAcqisition.endSearchDevice();
     }
 
     @Override
