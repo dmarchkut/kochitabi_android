@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import java.io.File;
@@ -22,12 +23,19 @@ import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 
 public class CameraActivity extends AppCompatActivity {
+    private static CameraActivity instance;
     private ArchitectView architectView;
     private Button arguideButton;
+
+    protected static Context getInstance() {
+        return instance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
+
         // xmlファイルと紐付け
         setContentView(R.layout.activity_camera);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
@@ -203,6 +211,7 @@ public class CameraActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
+        //bluetoothAcqisition.endSearchDevice();
     }
 
     @Override

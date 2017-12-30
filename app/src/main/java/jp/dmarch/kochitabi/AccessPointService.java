@@ -4,7 +4,6 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.app.Service;
 import android.content.Intent;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,7 +13,7 @@ public class AccessPointService extends Service {
     private Handler handler = new Handler();
     private String lastRaspberrypiNumber;
     private String nowRaspberrypiNumber;
-    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(this);
+    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(CameraActivity.getInstance());
 
     @Override
     public void onCreate() {
