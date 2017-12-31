@@ -77,6 +77,8 @@ public class ServerExchange {
         return stringBuffer.toString();
     }
 
+    /* JSONをサーバから取得するメソッド */
+    @SuppressLint("StaticFieldLeak")
     private JSONArray getJSON(final String urlString) {
 
         final JSONArray[] json = new JSONArray[0];
@@ -109,11 +111,7 @@ public class ServerExchange {
 
                     json[0] = jsonData;
 
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -133,39 +131,37 @@ public class ServerExchange {
     /* サーバからすべてのテーブルデータを取得 */
     public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
 
+        // すべてのローカルデータベーステーブルのJSON
+        JSONArray jsonData = getJSON(GET_LOCAL_DATABASE_TABLES_URL);
+        // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
 
-        JSONArray jsonData = getJSON(GET_LOCAL_DATABASE_TABLES_URL);
-
+        // すべてのレコードに対してJSONからMapオブジェクトへの変換
+        // テーブルごとに処置
         for (int i = 0; i < jsonData.length(); i++) {
             try {
+                // 1つのテーブルのみを取り出し
                 JSONArray jsonTableData = jsonData.getJSONArray(i);
+                // テーブルデータ管理のArrayListオブジェクト
                 ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
 
+                // レコードごとに処理
                 for (int j = 0; j < jsonTableData.length(); j++) {
-                    JSONObject jsonObject = jsonTableData.getJSONObject(j);
 
-                    Map<String, Object> tableRecord = new HashMap<String, Object>();
+                    JSONObject jsonObject = jsonTableData.getJSONObject(j); // 1レコードのみ取り出し
+                    // 1レコードのデータを管理するためのMapオブジェクト
+                    Map<String, Object> tableRecord = convertJsonToMap(jsonObject, TABLE_KEYS[i]);
 
-                    for (String key : TABLE_KEYS[i]) {
-
-                        if (Arrays.asList(INTEGER_DATA).contains(key)) {
-                            Integer data = jsonObject.getInt(key);
-                            tableRecord.put(key, data);
-                        } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
-                            Double data = jsonObject.getDouble(key);
-                            tableRecord.put(key, data);
-                        } else {
-                            String data = jsonObject.getString(key);
-                            tableRecord.put(key, data);
-                        }
-
-                    }
-
-                    // データを追加
+                    // レコードデータ管理のMapオブジェクトを
+                    // テーブルデータ管理のArrayListオブジェクトに追加
                     tableData.add(tableRecord);
 
                 }
+
+                // テーブルデータを管理するArrayListオブジェクトを
+                // すべての観光地データを管理するArrayListオブジェクトに追加
+                localDataBaseTables.add(tableData);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -178,34 +174,22 @@ public class ServerExchange {
     /* サーバからローカル環境テーブルデータを取得 */
     public ArrayList<Map<String, Object>> getEnvironmentTable() {
 
+        // ローカル環境テーブルのJSON
+        JSONArray jsonData = getJSON(GET_ENVIRONMENT_TABLE_URL);
+        // ローカル環境テーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> environmentTable = new ArrayList<Map<String, Object>>();
 
-        JSONArray jsonData = getJSON(GET_ENVIRONMENT_TABLE_URL);
-
         // すべてのレコードに対してJSONからMapオブジェクトへの変換
+        // レコードごとに処理
         for (int i = 0; i < jsonData.length(); i++) {
 
             try {
-                // JSONデータからそれぞれの要素を取得
-                JSONObject jsonObject = jsonData.getJSONObject(i);
-                Map<String, Object> environmentData = new HashMap<String, Object>();
+                JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
+                // 1レコードのデータを管理するためのMapオブジェクト
+                Map<String, Object> environmentData = convertJsonToMap(jsonObject, TABLE_KEYS[ENVIRONMENT_TABLE]);
 
-                for (String key : TABLE_KEYS[ENVIRONMENT_TABLE]) {
-
-                    if (Arrays.asList(INTEGER_DATA).contains(key)) {
-                        Integer data = jsonObject.getInt(key);
-                        environmentData.put(key, data);
-                    } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
-                        Double data = jsonObject.getDouble(key);
-                        environmentData.put(key, data);
-                    } else {
-                        String data = jsonObject.getString(key);
-                        environmentData.put(key, data);
-                    }
-
-                }
-
-                // データを追加
+                // レコードデータを管理するMapオブジェクトを
+                // テーブルデータを管理するArrayListオブジェクトに追加
                 environmentTable.add(environmentData);
 
             } catch (JSONException e) {
@@ -221,34 +205,22 @@ public class ServerExchange {
     /* サーバからローカルキャラクターテーブルデータを取得 */
     public ArrayList<Map<String, Object>> getCharacterTable() {
 
+        // ローカルキャラクターテーブルのJSON
+        JSONArray jsonData = getJSON(GET_CHARACTER_TABLE_URL);
+        // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> characterTable = new ArrayList<Map<String, Object>>();
 
-        JSONArray jsonData = getJSON(GET_CHARACTER_TABLE_URL);
-
         // すべてのレコードに対してJSONからMapオブジェクトへの変換
+        // レコードごとに処理
         for (int i = 0; i < jsonData.length(); i++) {
 
             try {
-                // JSONデータからそれぞれの要素を取得
-                JSONObject jsonObject = jsonData.getJSONObject(i);
-                Map<String, Object> characterData = new HashMap<String, Object>();
+                JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
+                // 1レコードのデータを管理するためのMapオブジェクト
+                Map<String, Object> characterData = convertJsonToMap(jsonObject, TABLE_KEYS[CHARACTER_TABLE]);
 
-                for (String key : TABLE_KEYS[CHARACTER_TABLE]) {
-
-                    if (Arrays.asList(INTEGER_DATA).contains(key)) {
-                        Integer data = jsonObject.getInt(key);
-                        characterData.put(key, data);
-                    } else if (Arrays.asList(DOUBLE_DATA).contains(key)) {
-                        Double data = jsonObject.getDouble(key);
-                        characterData.put(key, data);
-                    } else {
-                        String data = jsonObject.getString(key);
-                        characterData.put(key, data);
-                    }
-
-                }
-
-                    // データを追加
+                // レコードデータを管理するMapオブジェクトを
+                // テーブルデータを管理するArrayListオブジェクトに追加
                 characterTable.add(characterData);
 
             } catch (JSONException e) {
@@ -260,4 +232,37 @@ public class ServerExchange {
 
     }
 
+
+    /* レコードのJSONをMapオブジェクトに変換するメソッド */
+    private Map<String, Object> convertJsonToMap(JSONObject recordJson, String[] keys) throws JSONException {
+
+        // 変換後のデータを入れるMapオブジェクト
+        Map<String, Object> recordData = new HashMap<String, Object>();
+
+        // キーごとに処理
+        for (String key : keys) {
+
+            // キーに対応する要素の型によって取り出し方を変える
+            if (Arrays.asList(INTEGER_DATA).contains(key)) { // INTEGER型の要素のキーのとき
+                Integer data = recordJson.getInt(key); // INTEGER型として取り出す
+                recordData.put(key, data); // Mapオブジェクトに追加
+
+            } else if (Arrays.asList(DOUBLE_DATA).contains(key)) { // DOUBLE型の要素のキーのとき
+                Double data = recordJson.getDouble(key); // DOUBLE型として取り出す
+                recordData.put(key, data); // Mapオブジェクトに追加
+
+            } else { // STRING型の要素のキーのとき
+                String data = recordJson.getString(key); // STRING型として取り出す
+                recordData.put(key, data); // Mapオブジェクトに追加
+            }
+
+        }
+
+        return recordData;
+
+    }
+
 }
+
+
+
