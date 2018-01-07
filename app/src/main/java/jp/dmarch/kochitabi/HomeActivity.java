@@ -75,27 +75,28 @@ public class HomeActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(getApplication(), SpotDetailActivity.class);
 
-                String photoFilePath = null;
+                String photoFilePath = null; // 初期値
                 // キーの値を全てMapから取り出す
-                //final String spotId = spotData.get("spot_id").toString();
-                //final String environmentId = spotData.get("environment id").toString();
+                final String spotId = spotData.get("spot_id").toString();
+                final String environmentId = spotData.get("environment id").toString();
                 final String spotName = spotData.get("spot_name").toString();
                 final String spotPhoname = spotData.get("spot_phoname").toString();
-                //final String streetAddress = spotData.get("street_address").toString();
-                //final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                //final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                //final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                final String streetAddress = spotData.get("street_address").toString();
+                final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                //  nullでなかったら値を取り出す
                 if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
 
                 // SpotDetailActivityに渡す値を付与する
-                //intent.putExtra("spot_id", spotId);
-                //intent.putExtra("environment id", environmentId);
+                intent.putExtra("spot_id", spotId);
+                intent.putExtra("environment id", environmentId);
                 intent.putExtra("spot_name", spotName);
                 intent.putExtra("spot_phoname", spotPhoname);
-                //intent.putExtra("street_address", streetAddress);
-                //intent.putExtra("postal_code", postalCode);
-                //intent.putExtra("latitude", latitude);
-                //intent.putExtra("longitude", longitude);
+                intent.putExtra("street_address", streetAddress);
+                intent.putExtra("postal_code", postalCode);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 intent.putExtra("photo_file_path", photoFilePath);
                 startActivity(intent);
             }
