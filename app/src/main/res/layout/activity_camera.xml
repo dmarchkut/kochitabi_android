@@ -7,7 +7,7 @@
         android:id="@+id/architectView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
-
+<!--
     <Button
         android:id="@+id/camera_button"
         android:layout_width="100dp"
@@ -22,6 +22,6 @@
         android:layout_height="80dp"
         android:layout_marginStart="300dp"
         android:layout_marginTop="40dp"
-        android:text="AR案内" />
+        android:text="AR案内" />-->
 
 </RelativeLayout>

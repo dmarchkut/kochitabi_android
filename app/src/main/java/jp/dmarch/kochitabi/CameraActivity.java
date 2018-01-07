@@ -22,6 +22,8 @@ package jp.dmarch.kochitabi;
         import com.wikitude.architect.ArchitectStartupConfiguration;
         import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 
+
+
 public class CameraActivity extends AppCompatActivity {
     private ArchitectView architectView;
     private Button arguideButton;
@@ -49,14 +51,14 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // カメラボタンと紐付け
-        Button cameraButton = (Button)this.findViewById(R.id.camera_button);
+        //Button cameraButton = (Button)this.findViewById(R.id.camera_button);
         // AR案内ボタンとの紐付け
-        arguideButton = (Button)this.findViewById(R.id.arguide_button);
+        //arguideButton = (Button)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
-        arguideButton.setVisibility(View.GONE);
+        //arguideButton.setVisibility(View.GONE);
 
         /* カメラボタンがクリックされた時の処理 */
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+        /*cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 「kochitabiAR」って名前のディレクトリを作成
@@ -75,8 +77,8 @@ public class CameraActivity extends AppCompatActivity {
                 intent.putExtra("fileData", screenCaptureFile);
                 startActivity(intent);
                 */
-            }
-        });
+       /*     }
+        });*/
         //bluetoothAcqisition.beginSearchDevice();
         // レシーバーの設定を行う
         //setReceiver();
