@@ -76,7 +76,8 @@ public class SpotDetailActivity extends AppCompatActivity {
                 final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
                 final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                 final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                final String photoFilePath = spotData.get("photo_file_path").toString();
+                String photoFilePath = null;
+                if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
                 final String activityName = "SpotDetailActivity"; // MapActivityでの遷移判断に使用する変数
 
                 // MapActivityに渡す値を付与する
@@ -136,12 +137,10 @@ public class SpotDetailActivity extends AppCompatActivity {
         String spotName = spotData.get("spot_name").toString(); // 観光地名
         String weather = environmentData.get("weather").toString(); // 天気
         Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
-        String photoFilePath;
-        if (spotData.get("photo_file_path") != null) {
-            photoFilePath = spotData.get("photo_file_path").toString();
-        }else {
-            photoFilePath = "noimage"; // 写真が無い場合
-        }
+
+        String photoFilePath = "noimage";
+        if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
