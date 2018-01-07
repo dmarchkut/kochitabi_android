@@ -136,8 +136,12 @@ public class SpotDetailActivity extends AppCompatActivity {
         String spotName = spotData.get("spot_name").toString(); // 観光地名
         String weather = environmentData.get("weather").toString(); // 天気
         Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
-        String photoFilePath = spotData.get("photo_file_path").toString(); // 観光地写真
-        if (photoFilePath == null) photoFilePath = "noimage";
+        String photoFilePath;
+        if (spotData.get("photo_file_path") != null) {
+            photoFilePath = spotData.get("photo_file_path").toString();
+        }else {
+            photoFilePath = "noimage"; // 写真が無い場合
+        }
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
@@ -145,7 +149,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         TextView weatherText = (TextView)findViewById(R.id.weatherTextView);  // 天気
         TextView temperatureText = (TextView)findViewById(R.id.temperatureTextView); // 気温
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
-        ImageView spotImage = findViewById(R.id.spotImageView); // 観光地写真
+        ImageView spotImage = (ImageView) findViewById(R.id.spotImageView); // 観光地写真
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
@@ -156,7 +160,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         spotDetailText.setText(spotText); //　観光地案内テキスト
 
         // 写真の表示
-        int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi"); // リソースのIDをdrawableから取得
+        int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi");
         spotImage.setImageResource(imageId); // 表示
     }
 
