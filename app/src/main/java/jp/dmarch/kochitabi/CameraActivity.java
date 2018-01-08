@@ -166,6 +166,10 @@ public class CameraActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         // AugmentedGuideActivityに移動する
                         Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
+                        intent.putExtra("access_point_id", accessPointId.toString());
+                        intent.putExtra("character_name", characterName.toString());
+                        intent.putExtra("character_file_path", characterFilePath.toString());
+                        intent.putExtra("text_data", textData.toString());
                         startActivity(intent);
                     }
                 });
