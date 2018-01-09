@@ -115,27 +115,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         }
 
-        locationAcquisition = new LocationAcquisition(this) {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
+        locationAcquisition = new LocationAcquisition(this);
         locationAcquisition.beginLocationAcquisition();
 
         this.setGoogleMap();        // マップ表示設定
