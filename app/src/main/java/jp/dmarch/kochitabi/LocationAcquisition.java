@@ -20,7 +20,7 @@ import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
 
 
-public abstract class LocationAcquisition implements LocationListener {
+public class LocationAcquisition implements LocationListener {
 
     private final double NO_DATA = NaN; // データが入っていない状態を示す
     private final int REQUEST_PERMISSION = 1000;
