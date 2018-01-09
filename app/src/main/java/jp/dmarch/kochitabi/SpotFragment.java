@@ -69,27 +69,7 @@ public class SpotFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        locationAcquisition = new LocationAcquisition(getActivity()) {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
+        locationAcquisition = new LocationAcquisition(getActivity());
         locationAcquisition.beginLocationAcquisition();
     }
 
