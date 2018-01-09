@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setTitle("こちたびAR"); // ウインドウタイトルを「こちたびAR」に変更
 
-        dataBaseHelper = new DataBaseHelper(); // DataBaseHelperのインスタンス化
+        dataBaseHelper = new DataBaseHelper(this); // DataBaseHelperのインスタンス化
 
         // 観光地一覧(SpotActivity)に飛ぶボタンの設定
         ImageButton sendSpotButton = (ImageButton) findViewById(R.id.imageSpotButton); // 観光地一覧ボタン
@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 // キーの値を全てMapから取り出す
                 final String spotId = spotData.get("spot_id").toString();
-                final String environmentId = spotData.get("environment id").toString();
+                final String environmentId = spotData.get("environment_id").toString();
                 final String spotName = spotData.get("spot_name").toString();
                 final String spotPhoname = spotData.get("spot_phoname").toString();
                 final String streetAddress = spotData.get("street_address").toString();
@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 // SpotDetailActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
-                intent.putExtra("environment id", environmentId);
+                intent.putExtra("environment_id", environmentId);
                 intent.putExtra("spot_name", spotName);
                 intent.putExtra("spot_phoname", spotPhoname);
                 intent.putExtra("street_address", streetAddress);
