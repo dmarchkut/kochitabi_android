@@ -53,7 +53,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     ListView mapSpotList;
 
-    /* サンプルデータ */
+    /* サンプルデータ
     private Double[] currentLocation = {33.567240, 133.543657};
     private String[] spot_name = {"高知工科大学", "高知城", "ひろめ市場", "室戸岬", "四万十川", "桂浜", "早明浦ダム"};
     private Double[] latitude = {33.620623, 33.560801, 33.560635, 33.2415162, 33.132971, 33.497154, 33.757142};
@@ -68,6 +68,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
     private String[] weather = {"雨", "晴", "曇", "曇", "晴", "晴", "曇", "雨"};
     private ArrayList<Double[]> accessPointLocations;
+    */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,35 +87,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             preActivity = SPOT_DETAIL_ACTIVITY;
 
             // intentから情報を取得
-            //final String spotId = intent.getStringExtra("spot_id");
-            //final String environmentId = intent.getStringExtra("environment id");
+            final String spotId = intent.getStringExtra("spot_id");
+            final String environmentId = intent.getStringExtra("environment id");
             final String spotName = intent.getStringExtra("spot_name");
-            //final String spotPhoname = intent.getStringExtra("spot_phoname");
-            //final String streetAddress = intent.getStringExtra("street_address");
-            //final Integer postalCode = intent.getIntExtra("postal_code", 0);
-            //final Double latitude = intent.getDoubleExtra("latitude", 0);
-            //final Double longitude = intent.getDoubleExtra("longitude", 0);
-            //final String photoFilePath = intent.getStringExtra("photo_file_path");
+            final String spotPhoname = intent.getStringExtra("spot_phoname");
+            final String streetAddress = intent.getStringExtra("street_address");
+            final Integer postalCode = intent.getIntExtra("postal_code", 0);
+            final Double latitude = intent.getDoubleExtra("latitude", 0);
+            final Double longitude = intent.getDoubleExtra("longitude", 0);
+            final String photoFilePath = intent.getStringExtra("photo_file_path");
 
             spotData = new HashMap<String, Object>(); // spotDataのインスタンス化
 
             // spotDataにデータを挿入
-            //spotData.put("spot_id", spotId);
-            //spotData.put("environment id", environmentId);
+            spotData.put("spot_id", spotId);
+            spotData.put("environment id", environmentId);
             spotData.put("spot_name", spotName);
-            //spotData.put("spot_phoname", spotPhoname);
-            //spotData.put("street_address", streetAddress);
-            //spotData.put("postal_code", postalCode);
-            //spotData.put("latitude", latitude);
-            //spotData.put("longitude", longitude);
-            //spotData.put("photo_file_path", photoFilePath);
+            spotData.put("spot_phoname", spotPhoname);
+            spotData.put("street_address", streetAddress);
+            spotData.put("postal_code", postalCode);
+            spotData.put("latitude", latitude);
+            spotData.put("longitude", longitude);
+            spotData.put("photo_file_path", photoFilePath);
 
             setTitle(spotName);
             setContentView(R.layout.activity_map_detail);
 
         }
 
-        /*
         locationAcquisition = new LocationAcquisition(this) {
             @Override
             public void onLocationChanged(Location location) {
@@ -137,7 +137,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         };
         locationAcquisition.beginLocationAcquisition();
-        */
 
         this.setGoogleMap();        // マップ表示設定
 
@@ -159,7 +158,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //locationAcquisition.endLocationAcquisition();
+        locationAcquisition.endLocationAcquisition();
     }
 
     /* Google Map を使用するための設定を行うメソッド */
@@ -177,12 +176,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // 呼び出し元によって処理変更
         // ホーム画面から呼ばれた際
         if (preActivity == HOME_ACTIVITY) {
-            //Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
+            Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
             this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
 
-            //spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
+            spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
 
-            /* サンプル */
+            /* サンプル
             // spotsDataデータ代入
             spotsData = new ArrayList<Map<String, Object>>();
             for (int i = 0; i < spot_name.length; i++) {
@@ -197,6 +196,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 spotsData.add(map);
 
             }
+            */
 
             // 情報を抽出し観光地マーカ設定
             for (int i = 0; i < spotsData.size(); i++) {
@@ -218,24 +218,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else {
             // 観光地座標取得
             Double[] spotLocation = new Double[2];      // 緯度、経度の2つの情報を格納するためのdouble型配列
-            //spotLocation[0] = new Double(spotData.get("latitude").toString());
-            //spotLocation[1] = new Double(spotData.get("longitude").toString());
-            /* サンプル */
+            spotLocation[0] = new Double(spotData.get("latitude").toString());
+            spotLocation[1] = new Double(spotData.get("longitude").toString());
+            /* サンプル
             spotLocation[0] = 33.620623;
             spotLocation[1] = 133.719825;
+            */
 
-            //ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
-            /* サンプル */
+            ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
+            /* サンプル
             accessPointLocations = new ArrayList<Double[]>();
             accessPointLocations.add(new Double[] {33.621136, 133.717958});
             accessPointLocations.add(new Double[] {33.620288, 133.720973});
             accessPointLocations.add(new Double[] {33.623013, 133.720061});
             Double distance = 18.6;
+            */
 
-            //Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地位置情報取得
+            Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地位置情報取得
             this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
 
-            //Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);     // 観光地距離情報取得
+            Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);     // 観光地距離情報取得
 
             this.setSpotMarker(spotLocation, spotData.get("spot_name").toString());     // 観光地マーカ設定
             // アクセスポイントマーカ設定
@@ -325,25 +327,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                                 // Mapからデータ取り出し
                                 Map<String, Object> spotData = spotListData.get(pos);
-                                //String spotId = spotData.get("spot_id").toString();
-                                //String environmentId = spotData.get("environment_id").toString();
+                                String spotId = spotData.get("spot_id").toString();
+                                String environmentId = spotData.get("environment_id").toString();
                                 String spotName = spotData.get("spot_name").toString();
-                                //String spotPhoname = spotData.get("spot_phoname").toString();
-                                //String streetAddress = spotData.get("street_address").toString();
-                                //Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                                //Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                                //Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                                String spotPhoname = spotData.get("spot_phoname").toString();
+                                String streetAddress = spotData.get("street_address").toString();
+                                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
                                 String photoFilePath = spotData.get("photo_file_path").toString();
 
                                 // 渡すデータ付与
-                                //intent.putExtra("spot_id", spotId);
-                                //intent.putExtra("environment_id", environmentId);
+                                intent.putExtra("spot_id", spotId);
+                                intent.putExtra("environment_id", environmentId);
                                 intent.putExtra("spot_name", spotName);
-                                //intent.putExtra("spot_phoname", spotPhoname);
-                                //intent.putExtra("street_address", streetAddress);
-                                //intent.putExtra("postal_code", postalCode);
-                                //intent.putExtra("latitude", latitude);
-                                //intent.putExtra("longitude", longitude);
+                                intent.putExtra("spot_phoname", spotPhoname);
+                                intent.putExtra("street_address", streetAddress);
+                                intent.putExtra("postal_code", postalCode);
+                                intent.putExtra("latitude", latitude);
+                                intent.putExtra("longitude", longitude);
                                 intent.putExtra("photo_file_path", photoFilePath);
 
                                 startActivity(intent);      // 画面遷移
