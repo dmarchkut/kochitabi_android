@@ -269,9 +269,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         // リスト表示用ArrayList作成
                         spotListData = new ArrayList<Map<String, Object>>();
                         Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("spot_id", (((HashMap<String, Object>)spotsData.get(i-1)).get("spot_id")).toString());
+                        map.put("environment_id", (((HashMap<String, Object>)spotsData.get(i-1)).get("environment_id")).toString());
                         map.put("spot_name", (((HashMap<String, Object>)spotsData.get(i-1)).get("spot_name")).toString());
-                        map.put("distance", (((HashMap<String, Object>)spotsData.get(i-1)).get("distance")).toString());
+                        map.put("spot_phoname", (((HashMap<String, Object>)spotsData.get(i-1)).get("spot_phoname")).toString());
+                        map.put("street_address", (((HashMap<String, Object>)spotsData.get(i-1)).get("street_address")).toString());
+                        map.put("postal_code", (((HashMap<String, Object>)spotsData.get(i-1)).get("postal_code")).toString());
+                        map.put("latitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("latitude")).toString());
+                        map.put("longitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("longitude")).toString());
                         map.put("weather", (((HashMap<String, Object>)spotsData.get(i-1)).get("weather")).toString());
+                        map.put("distance", (((HashMap<String, Object>)spotsData.get(i-1)).get("distance")).toString());
                         // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
                         if (((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path") != null) {
                             map.put("photo_file_path", getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
@@ -315,7 +322,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
                                 Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                                 Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                                String photoFilePath = spotData.get("photo_file_path").toString();
+                                String photoFilePath;
+                                if (spotData.get("photo_file_path") == null) {
+                                    photoFilePath = null;
+                                }
+                                else {
+                                    photoFilePath = spotData.get("photo_file_path").toString();
+                                }
 
                                 // 渡すデータ付与
                                 intent.putExtra("spot_id", spotId);
