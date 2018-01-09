@@ -12,14 +12,14 @@ class ColorFrameViewBinder implements SimpleAdapter.ViewBinder {
     public boolean setViewValue(View view, Object data, String text) {
         // spot_frameに渡した天気情報によって色を設定する
         if (view.getId() == R.id.spot_frame) {
-            if (text.equals("晴")) {
+            if (text.equals("晴れ")) {
                 view.setBackgroundResource(R.color.colorSun);
             }
-            else if (text.equals("雨")) {
-                view.setBackgroundResource(R.color.colorRain);
+            else if (text.equals("曇り")) {
+                view.setBackgroundResource(R.color.colorCroud);
             }
             else {
-                view.setBackgroundResource(R.color.colorCroud);
+                view.setBackgroundResource(R.color.colorRain);
             }
 
             return true;
