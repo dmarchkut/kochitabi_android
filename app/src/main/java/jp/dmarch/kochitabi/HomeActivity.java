@@ -71,11 +71,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // もし観光地が無かった場合遷移させない
-                if (dataFlag == false) return;
+                if (spotData.get("photo_file_path")==null || dataFlag == false) return;
 
                 Intent intent = new Intent(getApplication(), SpotDetailActivity.class);
 
-                String photoFilePath = null; // 初期値
                 // キーの値を全てMapから取り出す
                 final String spotId = spotData.get("spot_id").toString();
                 final String environmentId = spotData.get("environment id").toString();
@@ -85,8 +84,7 @@ public class HomeActivity extends AppCompatActivity {
                 final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
                 final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                 final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                //  nullでなかったら値を取り出す
-                if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+                final String photoFilePath = spotData.get("photo_file_path").toString();
 
                 // SpotDetailActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
