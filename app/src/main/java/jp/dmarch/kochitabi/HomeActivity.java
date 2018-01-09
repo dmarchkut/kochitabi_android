@@ -71,7 +71,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // もし観光地が無かった場合遷移させない
-                if (spotData.get("photo_file_path")==null || dataFlag == false) return;
+                if (spotData.get("photo_file_path") == null || dataFlag == false) return;
 
                 Intent intent = new Intent(getApplication(), SpotDetailActivity.class);
 
