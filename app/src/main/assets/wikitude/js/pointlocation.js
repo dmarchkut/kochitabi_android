@@ -11,7 +11,7 @@ var World = {
 
     createModelAtLocation: function createModelAtLocationFn() {
         //var location = new AR.RelativeLocation(null, -1, -1, 0);
-        var loc2 = new AR.GeoLocation(33.621323, 133.718946);
+        //var loc2 = new AR.GeoLocation(33.621323, 133.718946);  //krlab
         /*var altitude = loc2.altitude;
 
 
@@ -30,13 +30,13 @@ var World = {
             }
 
         });
-
+/*
         var obj = new AR.GeoObject(loc2, {
             drawables: {
                 cam: [modelMashu]
             }
         });
-/*
+*/
         this.tracker = new AR.InstantTracker({
             onChangeState: function onChangeStateFn(state) {
             }//,
@@ -57,7 +57,7 @@ var World = {
                                  //this.tracker.state = AR.InstantTrackerState.TRACKING;
         });
         //this.tracker.state = AR.InstantTrackerState.TRACKING;
-*/
+
     },
 
   /*   changeTrackerState: function changeTrackerStateFn() {
