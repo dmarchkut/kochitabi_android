@@ -181,7 +181,13 @@ public class SpotFragment extends Fragment {
                 Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
                 Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                 Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                String photoFilePath = spotData.get("photo_file_path").toString();
+                String photoFilePath;
+                if (spotData.get("photo_file_path") == null) {
+                    photoFilePath = null;
+                }
+                else {
+                    photoFilePath = spotData.get("photo_file_path").toString();
+                }
 
                 // 渡すデータ付与
                 intent.putExtra("spot_id", spotId);
