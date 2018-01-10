@@ -5,6 +5,25 @@ var World = {
     rotating: false,
 
     init: function initFn() {
+        //document.write(document.WikitudeContentsFragment.javaToJavascript());
+        //document.write("falePath");
+
+        //document.write(WikitudeContentsFragment.javaToJavascript.setFilePath());
+
+       //document.write(javaToJavascript.setFilePath());
+        /*document.write("filepath0");
+
+       javaToJavascript.setFilePath();
+
+               document.write("filepath1");
+
+        JSON.parse(javaToJavascript);
+        filepath = JSONObject.a;
+
+        document.write("filepath2");
+
+        document.write(filepath);
+*/
         this.createModelAtLocation();
     },
 
@@ -24,9 +43,9 @@ var World = {
         var modelMashu = new AR.Model("assets/cube.wt3", {
             onLoaded: this.worldLoaded,
             scale: {
-                x: 0.001,
-                y: 0.001,
-                z: 0.001
+                x: 0.002,
+                y: 0.002,
+                z: 0.002
             }
 
         });

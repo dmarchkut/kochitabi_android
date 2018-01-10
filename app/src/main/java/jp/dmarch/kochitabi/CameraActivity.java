@@ -32,11 +32,16 @@ package jp.dmarch.kochitabi;
         //import com.wikitude.architect.StartupConfiguration;
         //import com.wikitude.architect.StartupConfiguration.CameraPosition;
 
+        import android.webkit.WebView;
+
+        import org.json.JSONException;
+        import org.json.JSONObject;
+
 
 public class CameraActivity extends AppCompatActivity implements ArchitectViewHolderInterface {
     private ArchitectView architectView;
     private Button arguideButton;
-    //private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(this);
+    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(this);
 
     //protected ArchitectView					 architectView;
     protected SensorAccuracyChangeListener      sensorAccuracyListener;
@@ -44,6 +49,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
     protected ArchitectViewHolderInterface.ILocationProvider locationProvider;
     protected LocationListener 				 locationListener;
 
+    String a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,11 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
         // xmlファイルと紐付け
         setContentView(R.layout.activity_camera);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
+
+        WebView webview = new WebView(this);
+        webview.addJavascriptInterface(this,"javaToJavaScript");
+
+
 
         // ArchitectViewと紐付け
         this.architectView = (ArchitectView)this.findViewById(R.id.architectView);
@@ -101,11 +112,11 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
         this.locationProvider = getLocationProvider(this.locationListener);
 
         // カメラボタンと紐付け
-        //Button cameraButton = (Button)this.findViewById(R.id.camera_button);
+        Button cameraButton = (Button)this.findViewById(R.id.camera_button);
         // AR案内ボタンとの紐付け
-        //arguideButton = (Button)this.findViewById(R.id.arguide_button);
+        arguideButton = (Button)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
-        //arguideButton.setVisibility(View.GONE);
+        arguideButton.setVisibility(View.GONE);
 
         /* カメラボタンがクリックされた時の処理 */
         /*cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -122,16 +133,16 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                 // 画面のキャプチャを行う
                 captureScreen(screenCaptureFile);
                 // SavePhotoActivityに移動する
-                /*
+
                 Intent intent = new Intent(getApplication(), SavePhotoActivity.class);
                 intent.putExtra("fileData", screenCaptureFile);
                 startActivity(intent);
-                */
-       /*     }
+
+            }
         });*/
         //bluetoothAcqisition.beginSearchDevice();
         // レシーバーの設定を行う
-        //setReceiver();
+        setReceiver();
     }
 
     /* 画面のキャプチャを行うメソッド */
@@ -175,7 +186,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
     }
 
     /* レシーバーの設定を行う */
-    /*
+
     private void setReceiver() {
         AccessPointReceiver receiver = new AccessPointReceiver();
         IntentFilter intentFilter = new IntentFilter();
@@ -183,7 +194,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
         registerReceiver(receiver, intentFilter);
         receiver.registerHandler (updateHandler);
     }
-    */
+
     /* サービスから値を受け取ったら動かしたい内容を書く */
 
     private Handler updateHandler = new Handler() {
@@ -208,6 +219,10 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                 final Object characterFilePath = characterGuideData.get("character_file_path");
                 final Object textData = characterGuideData.get("text_data");
 
+                a = characterFilePath.toString();
+
+
+
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
                 /* AR案内ボタンがクリックされた時の処理 */
@@ -219,6 +234,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                         startActivity(intent);
                     }
                 });
+
             /* アクセスポイント外にいる時の処理 */
             } else {
                 // AR案内ボタンを非表示にする
@@ -226,6 +242,24 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
             }
         }
     };
+
+    /*
+    public JSONObject setFilePath() {
+        //public String javaToJavascript() {
+        //JSONObject toJavascript = new JSONObject();
+        try {
+            //JSONObject jsonObject = new JSONObject(json);
+            //System.out.println(jsonObject.getString("screen_name"));
+            JSONObject toJavascript = new JSONObject();
+            toJavascript.put("a", "a");
+            return toJavascript;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+    */
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
@@ -235,11 +269,56 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
             this.architectView.onPostCreate();
 
             try {
-                this.architectView.load("wikitude/index.html");
+                this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());
                 this.architectView.setCullingDistance(50 * 1000);
+
+
+                //途中で変わるか
+                for (int i=0; i<=50000; i++) {
+                }
+
+                String raspberrypiNumber = "pi0001";
+                // raspberrpiNumberに対応したAR案内情報を取得する
+                final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
+
+                // ARキャラクターの表示を行う
+                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
+
+                // Mapオブジェクトを分解する
+                final Object accessPointId = characterGuideData.get("access_point_id");
+                final Object characterName = characterGuideData.get("character_name");
+                final Object characterFilePath = characterGuideData.get("character_file_path");
+                final Object textData = characterGuideData.get("text_data");
+
+                a = characterFilePath.toString();
+
+                //AR案内ボタンを表示させる
+                arguideButton.setVisibility(View.VISIBLE);
+                /* AR案内ボタンがクリックされた時の処理 */
+                arguideButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // AugmentedGuideActivityに移動する
+                        Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
+                        startActivity(intent);
+                    }
+                });
+
+                //this.architectView.onPostCreate();
+                this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());
+
+
+
+
+
+
+
+
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
         }
     }
 
@@ -281,23 +360,23 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-        //bluetoothAcqisition.endSearchDevice();
+        bluetoothAcqisition.endSearchDevice();
     }
 
     @Override
     protected  void onStart() {
         super.onStart();
         // サービスクラスを開始する
-        //Intent intent = new Intent(getApplication(), AccessPointService.class);
-        //startService(intent);
+        Intent intent = new Intent(getApplication(), AccessPointService.class);
+        startService(intent);
     }
 
     @Override
     protected  void onStop() {
         super.onStop();
         // サービスクラスを終了する
-        //Intent intent = new Intent(getApplication(), AccessPointService.class);
-        //stopService(intent);
+        Intent intent = new Intent(getApplication(), AccessPointService.class);
+        stopService(intent);
     }
 
     public ArchitectViewHolderInterface.ILocationProvider getLocationProvider(final LocationListener locationListener) {
