@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,11 +82,19 @@ public class BluetoothAcquisition {
                     BluetoothDevice findingDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); // 見つかった端末
                     String findingDeviceName = findingDevice.getName(); // 端末名を取得
 
+                    /******** テスト用↓  ********/
+                    Log.d("deviceName", findingDeviceName);
+                    /********　テスト用↑ ********/
+
                     // 端末名が取得できれば電波強度を取得し、端末リストに追加
                     if (findingDeviceName != null) {
 
                         // 見つかった端末の電波強度を取得
                         int raspberrypiIntensity = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+
+                        /******** テスト用↓  ********/
+                        Log.d("intensity", String.valueOf(raspberrypiIntensity));
+                        /********　テスト用↑ ********/
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
@@ -101,6 +110,14 @@ public class BluetoothAcquisition {
         endSearchDevice();
 
         deviceList = new HashMap<String, Integer>(); // インスタンス化
+
+
+        /************ テスト用↓ *********************/
+        deviceList.put("pi0001", -30);
+        deviceList.put("aaa", -50);
+        deviceList.put("bbb", -30);
+        //deviceList.put("pi0002", -10);
+        /************ テスト用↑ *********************/
 
         IntentFilter filter = new IntentFilter(); // インテントフィルタを作成
         filter.addAction(BluetoothDevice.ACTION_FOUND);
