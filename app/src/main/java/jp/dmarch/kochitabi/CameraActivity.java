@@ -7,7 +7,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -25,7 +25,7 @@ import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 public class CameraActivity extends AppCompatActivity {
     private static CameraActivity instance;
     private ArchitectView architectView;
-    private Button arguideButton;
+    private ImageButton arguideButton;
 
     /* 外部からcontextを参照するときに使う */
     protected static Context getInstance() {
@@ -56,9 +56,9 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // カメラボタンと紐付け
-        Button cameraButton = (Button)this.findViewById(R.id.camera_button);
+        ImageButton cameraButton = (ImageButton)this.findViewById(R.id.snapshot_button);
         // AR案内ボタンとの紐付け
-        arguideButton = (Button)this.findViewById(R.id.arguide_button);
+        arguideButton = (ImageButton)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
         arguideButton.setVisibility(View.GONE);
 

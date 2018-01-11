@@ -3,7 +3,7 @@ package jp.dmarch.kochitabi;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -37,11 +37,11 @@ public class SavePhotoActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
 
         // キャンセルボタンと紐付け
-        Button cancelButton = (Button)this.findViewById(R.id.cancel_button);
+        ImageButton cancelButton = (ImageButton)this.findViewById(R.id.cancel_button);
         // 保存ボタンと紐付け
-        Button saveButton = (Button)this.findViewById(R.id.save_button);
+        ImageButton saveButton = (ImageButton)this.findViewById(R.id.save_button);
         // 共有ボタンと紐付け
-        Button shareButton = (Button)this.findViewById(R.id.share_button);
+        ImageButton shareButton = (ImageButton)this.findViewById(R.id.share_button);
 
         /* キャンセルボタンがクリックされた時の処理 */
         cancelButton.setOnClickListener(new View.OnClickListener() {
