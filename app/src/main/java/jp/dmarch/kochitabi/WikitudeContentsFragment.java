@@ -17,14 +17,12 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-//import JSONException;
-
 
 
 import java.util.Map;
 
 public class WikitudeContentsFragment {
-    //protected Object AcharacterFilePath;
+
     protected static String characterFilePath = null;
 
 
@@ -40,7 +38,7 @@ public class WikitudeContentsFragment {
         //jsにデータ渡す
         //final Object accessPointId = characterGuideData.get("access_point_id");
         //final Object characterName = characterGuideData.get("character_name");
-        characterFilePath = characterGuideData.get("character_file_path").toString();
+        characterFilePath = characterGuideData.get("character_file_path").toString();   // 受け取ったMapオブジェクトに格納されているファイルパスをString型で取り出す
         //final Object textData = characterGuideData.get("text_data");
 
         //webView.loadUrl("javascript:setCharacterFilePath(characterFilePath)");
@@ -142,16 +140,30 @@ public class WikitudeContentsFragment {
         return charafilepath;
     }*/
 
-    //
+    // ArchitectViewに設定するhtmlファイルを決定する
     protected static String getArchitectWorldPath() {
 
         String architectWorldPath = null;
-        //if文
+
+        // パターン１
+        if (characterFilePath == null) {
+            architectWorldPath = "wikitude/index.html";     // アクセスポイント外にいる(キャラクターファイルパスが渡されていない状態)
+        } else if (characterFilePath == "cube.wt3") {
+            architectWorldPath = "wikitude/cube.html";      // アクセスポイント内にいる(cubeを表示する観光地)
+        }
+        //      :                                           // アクセスポイント内にいる(...を表示する観光地)
+        //      :                                           // アクセスポイント内にいる(...を表示する観光地)
+        //      :                                           // アクセスポイント内にいる(...を表示する観光地)
+
+        // パターン２
+        /*
         if (characterFilePath == null) {
             architectWorldPath = "wikitude/index.html";
-        } else if (characterFilePath == "cube.wt3") {
-            architectWorldPath = "wikitude/cube.html";
+        } else {
+            architectWorldPath = characterFilePath;     //character_file_pathをモデルのファイル名ではなく、htmlファイル名にするなら
         }
+        */
+
         return architectWorldPath;
     }
 
@@ -160,8 +172,8 @@ public class WikitudeContentsFragment {
         return "PlaQ4V2incGCS59Dj6ohTzkfwQBjPeTpx6C4dVvuIse1QP1MKE9wzjqyZUjQvvOHRYOuCrXEDvIwvAFfzjqBON8A5xr5XgdP+mb4CBhMlV+Odf9R/J5P1a+XRPc3fl6vCWPSkfjVOzrSYHqyz8oq7PMH8JHyWm0t0tYFREgVUStTYWx0ZWRfXz5MYhTZHoWUlkoZn+OmpZsfQw45Cmz+ZXp1R/x/5Hm6VBTistSYFLbkWvAgCnkmlvGcFMQSKMt/SMwbdE5hBjUMoJ912hsQQjDgK8G/xTNcLW91nw1ke5/NScKq0ykILKwKUR3NDfQ0zG5RcXb94ef6LR0zU1Y8mxox9Y0Z7ozUsu17H5UkpjK8UXGAqqF7w0mALPFnHkuTiwj03Xfqh9/tAaqRSqY7sJvWp6INhS3AxGsDgwUHfnOSNVjkydO9oT738TZJWjEnry0c5iZb8KkcgZ8k7hGZfxosjr2sSEXwTk/jUhsxtNigyte7V9Eus1Io8kr+LrzlpCpiDtwdSQGK+od8syrEscUGZpKDeCkNUG6CuTT5C+WfR8psAL/yBuQy+Y/nSSI2uzlk71c0bQjUZzeXRe7aKByVUpcat9QlcwyQOpoZF78GgiRXsk5cOSlPfxcGKKC8wcpw2D8VtZKSwsd/nCZ2iB86ltPI63urSLwz9qkTqOE=";
     }
 
+    // どのカメラを使うか指定
     protected static CameraSettings.CameraPosition getCameraPosition() {
-        // 背面カメラを使う
-        return CameraSettings.CameraPosition.BACK;
+        return CameraSettings.CameraPosition.BACK;      //背面カメラ
     }
 }

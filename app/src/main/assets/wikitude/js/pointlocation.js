@@ -1,30 +1,16 @@
-document.write("js読み込まれてる");
+document.write("アクセスポイント外(test)");
+
+/*
+ *      そもそも呼び出す必要がない　＝　pointlocation.jsなんていなかったんや！
+ */
 
 var World = {
     loaded: false,
     rotating: false,
 
     init: function initFn() {
-        //document.write(document.WikitudeContentsFragment.javaToJavascript());
-        //document.write("falePath");
 
-        //document.write(WikitudeContentsFragment.javaToJavascript.setFilePath());
-
-       //document.write(javaToJavascript.setFilePath());
-        /*document.write("filepath0");
-
-       javaToJavascript.setFilePath();
-
-               document.write("filepath1");
-
-        JSON.parse(javaToJavascript);
-        filepath = JSONObject.a;
-
-        document.write("filepath2");
-
-        document.write(filepath);
-*/
-        this.createModelAtLocation();
+        //this.createModelAtLocation();
     },
 
 
@@ -34,13 +20,8 @@ var World = {
         /*var altitude = loc2.altitude;
 
 
-        var crossHairsRedImage = new AR.ImageResource("assets/crosshairs_red.png");
-        var crossHairsRedDrawable = new AR.ImageDrawable(crossHairsRedImage, 1.0);
-
-         var crossHairsBlueImage = new AR.ImageResource("assets/crosshairs_blue.png");
-         var crossHairsBlueDrawable = new AR.ImageDrawable(crossHairsBlueImage, 1.0);
 */
-        var modelMashu = new AR.Model("assets/cube.wt3", {
+        var model = new AR.Model("assets/cube.wt3", {
             onLoaded: this.worldLoaded,
             scale: {
                 x: 0.002,
@@ -52,7 +33,7 @@ var World = {
 /*
         var obj = new AR.GeoObject(loc2, {
             drawables: {
-                cam: [modelMashu]
+                cam: [model]
             }
         });
 */
@@ -64,7 +45,7 @@ var World = {
         this.tracker.state = AR.InstantTrackerState.TRACKING;
         this.instantTrackable = new AR.InstantTrackable(this.tracker, {
                     drawables: {
-                        cam: modelMashu//,
+                        cam: model//,
                         //initialization: crossHairsRedDrawable
                     },
                                  onTrackingStarted: function onTrackingStartedFn() {
@@ -79,32 +60,6 @@ var World = {
 
     },
 
-  /*   changeTrackerState: function changeTrackerStateFn() {
-
-         //if (this.tracker.state === AR.InstantTrackerState.INITIALIZING) {
-
-             //document.getElementById("tracking-start-stop-button").src = "assets/stop.png";
-             //document.getElementById("tracking-height-slider-container").style.visibility = "hidden";
-
-             this.tracker.state = AR.InstantTrackerState.TRACKING;
-         /*} else {
-
-             document.getElementById("tracking-start-stop-button").src = "assets/start.png";
-             document.getElementById("tracking-height-slider-container").style.visibility = "visible";
-
-             this.tracker.state = AR.InstantTrackerState.INITIALIZING;
-         }*/
-   /*  },
-
-     changeTrackingHeight: function changeTrackingHeightFn(height) {
-         //this.tracker.deviceHeight = parseFloat(height);
-     },
-
-     isTracking: function isTrackingFn() {
-         //return (this.tracker.state === AR.InstantTrackerState.TRACKING);
-        return true;
-     },
-*/
     worldLoaded: function worldLoadedFn() {
         World.loaded = true;
         var e = document.getElementById('loadingMessage');

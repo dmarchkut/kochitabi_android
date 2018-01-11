@@ -272,9 +272,12 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                 this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());
                 this.architectView.setCullingDistance(50 * 1000);
 
-
+/*
                 //途中で変わるか
-                for (int i=0; i<=50000; i++) {
+                for (int i=0; i<=900000000; i++) {
+                }
+
+                for (int i=0; i<=900000000; i++) {
                 }
 
                 String raspberrypiNumber = "pi0001";
@@ -295,7 +298,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
                 /* AR案内ボタンがクリックされた時の処理 */
-                arguideButton.setOnClickListener(new View.OnClickListener() {
+ /*               arguideButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // AugmentedGuideActivityに移動する
@@ -304,9 +307,9 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                     }
                 });
 
-                //this.architectView.onPostCreate();
+                this.architectView.onPostCreate();
                 this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());
-
+*/
 
 
 
