@@ -5,13 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.wikitude.architect.ArchitectStartupConfiguration;
-import com.wikitude.architect.ArchitectView;
+//import com.wikitude.architect.ArchitectStartupConfiguration;
+//import com.wikitude.architect.ArchitectView;
 
 public class AugmentedGuideActivity extends AppCompatActivity {
-    private ArchitectView architectView;
+//    private ArchitectView architectView;
 
-    @Override
+/*    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // xmlファイルと紐付け
@@ -67,5 +67,5 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-    }
+    }*/
 }

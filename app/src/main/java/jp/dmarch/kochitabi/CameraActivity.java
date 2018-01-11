@@ -17,12 +17,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
 
-import com.wikitude.architect.ArchitectView;
-import com.wikitude.architect.ArchitectStartupConfiguration;
-import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
+//import com.wikitude.architect.ArchitectView;
+//import com.wikitude.architect.ArchitectStartupConfiguration;
+//import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 
 public class CameraActivity extends AppCompatActivity {
-    private ArchitectView architectView;
+/*    private ArchitectView architectView;
     private Button arguideButton;
 
     @Override
@@ -52,9 +52,9 @@ public class CameraActivity extends AppCompatActivity {
         arguideButton = (Button)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
         arguideButton.setVisibility(View.GONE);
-
+*/
         /* カメラボタンがクリックされた時の処理 */
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+/*        cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 「kochitabiAR」って名前のディレクトリを作成
@@ -76,14 +76,14 @@ public class CameraActivity extends AppCompatActivity {
         // レシーバーの設定を行う
         setReceiver();
     }
-
+*/
     /* 画面のキャプチャを行うメソッド */
-    private void captureScreen(final File screenCaptureFile) {
+/*    private void captureScreen(final File screenCaptureFile) {
         CameraActivity.this.architectView.captureScreen(ArchitectView.CaptureScreenCallback.CAPTURE_MODE_CAM_AND_WEBVIEW, new CaptureScreenCallback() {
             @Override
             public void onScreenCaptured(final Bitmap screenCapture) {
                 /* 写真の保存処理 */
-                try {
+/*                try {
                     // 写真の保存処理を開始する
                     final FileOutputStream output = new FileOutputStream(screenCaptureFile);
                     // JPEG形式度保存する
@@ -93,7 +93,7 @@ public class CameraActivity extends AppCompatActivity {
                     output.close();
 
                 /* 全てのアクセス許可が設定されているときは実行されない部分 */
-                } catch (final Exception e) {
+/*                } catch (final Exception e) {
                     CameraActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -107,7 +107,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     /* バックボタンタップ時処理 */
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // ホーム画面に戻る
         Intent intent = new Intent(getApplication(), HomeActivity.class); // 切り替え準備
@@ -118,7 +118,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     /* レシーバーの設定を行う */
-    private void setReceiver() {
+/*    private void setReceiver() {
         AccessPointReceiver receiver = new AccessPointReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("UPDATE_ACTION");
@@ -127,7 +127,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     /* サービスから値を受け取ったら動かしたい内容を書く */
-    private Handler updateHandler = new Handler() {
+/*    private Handler updateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 
@@ -136,7 +136,7 @@ public class CameraActivity extends AppCompatActivity {
             String raspberrypiNumber = bundle.getString("raspberrypiNumber");
 
             /* アクセスポイント内にいる時の処理 */
-            if (raspberrypiNumber != null) {
+/*            if (raspberrypiNumber != null) {
                 // raspberrpiNumberに対応したAR案内情報を取得する
                 final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
 
@@ -152,7 +152,7 @@ public class CameraActivity extends AppCompatActivity {
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
                 /* AR案内ボタンがクリックされた時の処理 */
-                arguideButton.setOnClickListener(new View.OnClickListener() {
+/*                arguideButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // AugmentedGuideActivityに移動する
@@ -161,7 +161,7 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 });
             /* アクセスポイント外にいる時の処理 */
-            } else {
+/*            } else {
                 // AR案内ボタンを非表示にする
                 arguideButton.setVisibility(View.GONE);
             }
@@ -219,5 +219,5 @@ public class CameraActivity extends AppCompatActivity {
         // サービスクラスを終了する
         Intent intent = new Intent(getApplication(), AccessPointService.class);
         stopService(intent);
-    }
+    }*/
 }

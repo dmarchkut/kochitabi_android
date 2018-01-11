@@ -1,11 +1,11 @@
 package jp.dmarch.kochitabi;
 
-import com.wikitude.common.camera.CameraSettings;
+//import com.wikitude.common.camera.CameraSettings;
 
 import java.util.Map;
 
 public class WikitudeContentsFragment {
-
+/*
     protected static void setWikitudeContents(Map<String, Object> characterGuideData) {
         // ARキャラクターの表示処理やらなんやら...
     }
@@ -18,5 +18,5 @@ public class WikitudeContentsFragment {
     protected static CameraSettings.CameraPosition getCameraPosition() {
         // 背面カメラを使う
         return CameraSettings.CameraPosition.BACK;
-    }
+    }*/
 }

@@ -1,7 +1,9 @@
 package jp.dmarch.kochitabi;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +29,13 @@ public class SavePhotoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         final File screenCaptureFile = (File)bundle.get("fileData");
+
+        Log.d("test1",String.valueOf(screenCaptureFile instanceof File));
+        Log.d("test2(file_path)",screenCaptureFile.getParentFile()+"/"+screenCaptureFile.getName());
+
+        File fileName = new File(Environment.getExternalStorageDirectory(), "kochitabiAR/test.jpg");
+        Log.d("test4Before", String.valueOf(fileName.exists()));
+
         // 写真ファイルパスを取得
         final String filePath = screenCaptureFile.toString();
 
@@ -78,6 +87,10 @@ public class SavePhotoActivity extends AppCompatActivity {
 
     /* 写真共有を行うためのメソッド */
     private void sharePhoto(File screenCaptureFile) {
+
+        Log.d("test11", "start method");
+        Log.d("test12", screenCaptureFile.getParentFile()+"/"+screenCaptureFile.getName());
+
         // 共有するものを設定する
         final Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpg");
@@ -90,6 +103,10 @@ public class SavePhotoActivity extends AppCompatActivity {
 
     /* 写真をギャラリーに保存するためのメソッド */
     private void addImageToGallery(String filePath) {
+
+        Log.d("test7", "start method");
+        Log.d("test8", filePath);
+
         try {
             ContentValues values = new ContentValues();
 
