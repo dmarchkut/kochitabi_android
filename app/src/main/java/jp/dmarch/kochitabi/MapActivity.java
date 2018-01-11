@@ -53,23 +53,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     ListView mapSpotList;
 
-    /* サンプルデータ
-    private Double[] currentLocation = {33.567240, 133.543657};
-    private String[] spot_name = {"高知工科大学", "高知城", "ひろめ市場", "室戸岬", "四万十川", "桂浜", "早明浦ダム"};
-    private Double[] latitude = {33.620623, 33.560801, 33.560635, 33.2415162, 33.132971, 33.497154, 33.757142};
-    private Double[] longitude = {133.719825, 133.531500, 133.535728, 134.176223, 132.980917, 133.574927, 133.550383};
-    private String[] photo_file_path = {"kut",
-            "kochi",
-            "hirome",
-            "muroto",
-            "shimanto",
-            "katurahama",
-            null };
-    private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
-    private String[] weather = {"雨", "晴", "曇", "曇", "晴", "晴", "曇", "雨"};
-    private ArrayList<Double[]> accessPointLocations;
-    */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,23 +144,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
 
-            /* サンプル
-            // spotsDataデータ代入
-            spotsData = new ArrayList<Map<String, Object>>();
-            for (int i = 0; i < spot_name.length; i++) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("spot_name", spot_name[i]);
-                map.put("latitude", latitude[i]);
-                map.put("longitude", longitude[i]);
-                map.put("distance", distance[i]);
-                map.put("weather", weather[i]);
-                map.put("photo_file_path",photo_file_path[i]);
-
-                spotsData.add(map);
-
-            }
-            */
-
             // 情報を抽出し観光地マーカ設定
             for (int i = 0; i < spotsData.size(); i++) {
                 String spotName;        // 観光地名を格納するためのStringオブジェクト
@@ -200,19 +166,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Double[] spotLocation = new Double[2];      // 緯度、経度の2つの情報を格納するためのdouble型配列
             spotLocation[0] = new Double(spotData.get("latitude").toString());
             spotLocation[1] = new Double(spotData.get("longitude").toString());
-            /* サンプル
-            spotLocation[0] = 33.620623;
-            spotLocation[1] = 133.719825;
-            */
 
             ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
-            /* サンプル
-            accessPointLocations = new ArrayList<Double[]>();
-            accessPointLocations.add(new Double[] {33.621136, 133.717958});
-            accessPointLocations.add(new Double[] {33.620288, 133.720973});
-            accessPointLocations.add(new Double[] {33.623013, 133.720061});
-            Double distance = 18.6;
-            */
 
             Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地位置情報取得
             this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
@@ -259,9 +214,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 String id = marker.getId();     // マーカID取得
+                Log.v("size", String.valueOf(spotsData.size()));
 
                 // マーカが示す観光地をListViewによって表示
-                for (int i = 0; i < spotsData.size(); i++) {
+                for (int i = 1; i <= spotsData.size(); i++) {
                     if (id.equals("m" + String.valueOf(i))) {
                         mapSpotList = (ListView) findViewById(R.id.map_spot_list);     // ListView読み込み
                         mapSpotList.setBackgroundColor(getResources().getColor(R.color.white));
@@ -394,3 +350,4 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 }
+

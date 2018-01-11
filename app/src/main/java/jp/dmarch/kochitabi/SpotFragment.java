@@ -37,19 +37,6 @@ public class SpotFragment extends Fragment {
     private ArrayList<Map<String, Object>> spotsListData;
     private LocationAcquisition locationAcquisition;
 
-    /* サンプルデータ　*/
-    private String[] spot_name = {"高知工科大学", "高知城", "ひろめ市場", "室戸岬", "四万十川", "桂浜", "早明浦ダム"};
-    private String[] spot_phoname = {"コウチコウカダイガク", "コウチジョウ", "ヒロメイチバ", "ムロトミサキ", "シマントガワ", "カツラハマ", "サメウラダム"};
-    private String[] photo_file_path = {"kut",
-                                        "kochi",
-                                        "hirome",
-                                        "muroto",
-                                        "shimanto",
-                                        "katurahama",
-                                        null };
-    private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
-    private String[] weather = {"雨", "晴", "曇", "曇", "晴", "晴", "曇", "雨"};
-
     // コンストラクタ
     public SpotFragment() {
 
@@ -68,30 +55,8 @@ public class SpotFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        /*
-        locationAcquisition = new LocationAcquisition(getActivity()) {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
+        locationAcquisition = new LocationAcquisition(getActivity());
         locationAcquisition.beginLocationAcquisition();
-        */
     }
 
     @Override
@@ -107,26 +72,11 @@ public class SpotFragment extends Fragment {
 
         int page = getArguments().getInt(ARG_PARAM, 0);     // タブページ
 
-        /* サンプル */
-        // spotsDataデータ代入
-        spotsData = new ArrayList<Map<String, Object>>();
-        for (int i = 0; i < spot_name.length; i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("spot_name", spot_name[i]);
-            map.put("spot_phoname", spot_phoname[i]);
-            map.put("distance", distance[i]);
-            map.put("weather", weather[i]);
-            map.put("photo_file_path",photo_file_path[i]);
-
-            spotsData.add(map);
-
-        }
-
         //　現在地情報取得
-        //Double[] currentLocation = locationAcquisition.getCurrentLocation();
+        Double[] currentLocation = locationAcquisition.getCurrentLocation();
 
         // 観光地情報取得
-       // spotsData = new DataBaseHelper(getActivity()).getSpotsEnvironmentDistanceData(currentLocation);
+        spotsData = new DataBaseHelper(getActivity()).getSpotsEnvironmentDistanceData(currentLocation);
 
         if(page == 1) {
             this.sortSyllabary(spotsData);      // タブが1ページ(五十音順)ならsortSyllabary呼び出し
@@ -142,7 +92,7 @@ public class SpotFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //locationAcquisition.endLocationAcquisition();
+        locationAcquisition.endLocationAcquisition();
     }
 
     /* 観光地一覧を設定、表示するためのメソッド */
@@ -193,25 +143,31 @@ public class SpotFragment extends Fragment {
 
                 // Mapからデータ取り出し
                 Map<String, Object> spotData = spotsData.get(pos);
-                //String spotId = spotData.get("spot_id").toString();
-                //String environmentId = spotData.get("environment_id").toString();
+                String spotId = spotData.get("spot_id").toString();
+                String environmentId = spotData.get("environment_id").toString();
                 String spotName = spotData.get("spot_name").toString();
-                //String spotPhoname = spotData.get("spot_phoname").toString();
-                //String streetAddress = spotData.get("street_address").toString();
-                //Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                //Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                //Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                String photoFilePath = spotData.get("photo_file_path").toString();
+                String spotPhoname = spotData.get("spot_phoname").toString();
+                String streetAddress = spotData.get("street_address").toString();
+                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
+                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
+                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                String photoFilePath;
+                if (spotData.get("photo_file_path") == null) {
+                    photoFilePath = null;
+                }
+                else {
+                    photoFilePath = spotData.get("photo_file_path").toString();
+                }
 
                 // 渡すデータ付与
-                //intent.putExtra("spot_id", spotId);
-                //intent.putExtra("environment_id", environmentId);
+                intent.putExtra("spot_id", spotId);
+                intent.putExtra("environment_id", environmentId);
                 intent.putExtra("spot_name", spotName);
-                //intent.putExtra("spot_phoname", spotPhoname);
-                //intent.putExtra("street_address", streetAddress);
-                //intent.putExtra("postal_code", postalCode);
-                //intent.putExtra("latitude", latitude);
-                //intent.putExtra("longitude", longitude);
+                intent.putExtra("spot_phoname", spotPhoname);
+                intent.putExtra("street_address", streetAddress);
+                intent.putExtra("postal_code", postalCode);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
                 intent.putExtra("photo_file_path", photoFilePath);
 
                 startActivity(intent);      // 画面遷移
