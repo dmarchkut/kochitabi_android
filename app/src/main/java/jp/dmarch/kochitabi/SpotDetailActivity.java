@@ -3,6 +3,7 @@ package jp.dmarch.kochitabi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
@@ -25,15 +26,18 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         spotData = new HashMap<String, Object>();
 
-        //String spotId = intent.getStringExtra("spot_id");
-        //String environmentId = intent.getStringExtra("environment id");
+        String spotId = intent.getStringExtra("spot_id");
+        String environmentId = intent.getStringExtra("environment_id");
         String spotName = intent.getStringExtra("spot_name");
-        //String spotPhoname = intent.getStringExtra("spot_phoname");
-        //String streetAddress = intent.getStringExtra("street_address");
-        //String postalCode = intent.getStringExtra("postal_code");
-        //Double latitude = intent.getDoubleExtra("latitude", 0);
-        //Double longitude = intent.getDoubleExtra("longitude", 0);
+        String spotPhoname = intent.getStringExtra("spot_phoname");
+        String streetAddress = intent.getStringExtra("street_address");
+        Integer postalCode = intent.getIntExtra("postal_code", 0);
+        Double latitude = intent.getDoubleExtra("latitude", 0);
+        Double longitude = intent.getDoubleExtra("longitude", 0);
         String photoFilePath = intent.getStringExtra("photo_file_path");
+
+        Log.d("test9-17After", spotId+"\n"+environmentId+"\n"+spotName+"\n"+spotPhoname
+                +"\n"+streetAddress+"\n"+postalCode.toString()+"\n"+latitude.toString()+"\n"+longitude.toString()+"\n"+photoFilePath);
 
         //spotData.put("spot_id", spotId);
         //spotData.put("environment id", environmentId);

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,24 +38,8 @@ public class SpotFragment extends Fragment {
     private ArrayList<Map<String, Object>> spotsListData;
     private LocationAcquisition locationAcquisition;
 
-    /* サンプルデータ
-    private String[] spot_name = {"高知工科大学", "高知城", "ひろめ市場", "室戸岬", "四万十川", "桂浜", "早明浦ダム"};
-    private String[] spot_phoname = {"コウチコウカダイガク", "コウチジョウ", "ヒロメイチバ", "ムロトミサキ", "シマントガワ", "カツラハマ", "サメウラダム"};
-    private String[] photo_file_path = {"kut",
-                                        "kochi",
-                                        "hirome",
-                                        "muroto",
-                                        "shimanto",
-                                        "katurahama",
-                                        null };
-    private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
-    private String[] weather = {"雨", "晴", "曇", "曇", "晴", "晴", "曇", "雨"};
-    */
-
     // コンストラクタ
-    public SpotFragment() {
-
-    }
+    public SpotFragment() {}
 
     // フラグメント利用準備
     public static SpotFragment newInstance(int page) {
@@ -71,24 +56,16 @@ public class SpotFragment extends Fragment {
         super.onCreate(saveInstanceState);
         locationAcquisition = new LocationAcquisition(getActivity()) {
             @Override
-            public void onLocationChanged(Location location) {
-
-            }
+            public void onLocationChanged(Location location) {}
 
             @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
 
             @Override
-            public void onProviderEnabled(String s) {
-
-            }
+            public void onProviderEnabled(String s) {}
 
             @Override
-            public void onProviderDisabled(String s) {
-
-            }
+            public void onProviderDisabled(String s) {}
         };
         locationAcquisition.beginLocationAcquisition();
     }
@@ -105,22 +82,6 @@ public class SpotFragment extends Fragment {
         super.onResume();
 
         int page = getArguments().getInt(ARG_PARAM, 0);     // タブページ
-
-        /* サンプル
-        // spotsDataデータ代入
-        spotsData = new ArrayList<Map<String, Object>>();
-        for (int i = 0; i < spot_name.length; i++) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("spot_name", spot_name[i]);
-            map.put("spot_phoname", spot_phoname[i]);
-            map.put("distance", distance[i]);
-            map.put("weather", weather[i]);
-            map.put("photo_file_path",photo_file_path[i]);
-
-            spotsData.add(map);
-
-        }
-        */
 
         //　現在地情報取得
         Double[] currentLocation = locationAcquisition.getCurrentLocation();
@@ -189,6 +150,8 @@ public class SpotFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent,
                                     View view, int pos, long id) {
 
+                Log.d("test8", "push item");
+
                 Intent intent = new Intent(getActivity(), SpotDetailActivity.class);        // 遷移Activity設定
 
                 // Mapからデータ取り出し
@@ -202,6 +165,9 @@ public class SpotFragment extends Fragment {
                 Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
                 Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
                 String photoFilePath = spotData.get("photo_file_path").toString();
+
+                Log.d("test9-17Before", spotId+"\n"+environmentId+"\n"+spotName+"\n"+spotPhoname
+                        +"\n"+streetAddress+"\n"+postalCode.toString()+"\n"+latitude.toString()+"\n"+longitude.toString()+"\n"+photoFilePath);
 
                 // 渡すデータ付与
                 intent.putExtra("spot_id", spotId);
