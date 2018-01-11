@@ -19,6 +19,10 @@ import android.support.v4.content.PermissionChecker;
 import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
 
+/* 距離計算(getDistance)
+ * https://qiita.com/a_nishimura/items/6c2642343c0af832acd4
+ */
+
 
 public class LocationAcquisition implements LocationListener {
 
@@ -189,13 +193,29 @@ public class LocationAcquisition implements LocationListener {
         // 現在地が取得できていないため、NO_DATAを返す
         if ((latitudeCurrent.equals(NO_DATA)) || (longitudeCurrent.equals(NO_DATA))) return NO_DATA;
 
-        // 三角形の隣辺、対辺の長さの計算
-        double side1 = Math.abs(latitudeCurrent - latitudeSpot);
-        double side2 = Math.abs(longitudeCurrent - longitudeSpot);
+        Double theta = longitudeCurrent - longitudeSpot;
 
-        double distance = Math.sqrt(Math.pow(side1, 2) + Math.pow(side2, 2)); // 距離の計算
+        // 距離を計算
+        Double distance = Math.sin(convertDegreesToRadian(latitudeCurrent)) * Math.sin(convertDegreesToRadian(latitudeSpot))
+                + Math.cos(convertDegreesToRadian(latitudeCurrent)) * Math.cos(convertDegreesToRadian(latitudeSpot)) * Math.cos(convertDegreesToRadian(theta));
+
+        distance = Math.acos(distance);
+        distance = convertRadianToDegrees(distance);
+
+        distance = distance * 60 * 1.1515 * 1.609344; // kmに変換
+
         return distance;
 
+    }
+
+    /* DegreesをRadianに変換 */
+    private Double convertDegreesToRadian(Double degrees) {
+        return degrees * (Math.PI / 180f);
+    }
+
+    /* RadianをDegreesに変換 */
+    private Double convertRadianToDegrees(Double radian) {
+        return radian * (180f / Math.PI);
     }
 
     /* GPSの設定画面を表示 */
