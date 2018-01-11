@@ -1,9 +1,6 @@
 package jp.dmarch.kochitabi;
 
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
@@ -13,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +44,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // spotDataにデータを挿入
         spotData.put("spot_id", spotId);
-        spotData.put("environment id", environmentId);
+        spotData.put("environment_id", environmentId);
         spotData.put("spot_name", spotName);
         spotData.put("spot_phoname", spotPhoname);
         spotData.put("street_address", streetAddress);
@@ -69,7 +67,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
                 // キーの値を全てMapから取り出す
                 final String spotId = spotData.get("spot_id").toString();
-                final String environmentId = spotData.get("environment id").toString();
+                final String environmentId = spotData.get("environment_id").toString();
                 final String spotName = spotData.get("spot_name").toString();
                 final String spotPhoname = spotData.get("spot_phoname").toString();
                 final String streetAddress = spotData.get("street_address").toString();
@@ -102,7 +100,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // Mapから観光地ID・環境データを取り出す
         final String spotId = spotData.get("spot_id").toString();
-        final String environmentId = spotData.get("environment id").toString();
+        final String environmentId = spotData.get("environment_id").toString();
         final String spotName = spotData.get("spot_name").toString();
         final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
         final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
@@ -125,6 +123,9 @@ public class SpotDetailActivity extends AppCompatActivity {
         // LocationAcquisitionのgetDistanceから現在地～観光地の距離を取得する
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
         if (distance == null || distance.equals(NaN)) distance = 0.0;
+        BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
+        //小数第一位で四捨五入
+        distance = distanceBi.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
         displaySpotDetail(spotData, environmentData, spotText, distance);
@@ -137,6 +138,9 @@ public class SpotDetailActivity extends AppCompatActivity {
         String spotName = spotData.get("spot_name").toString(); // 観光地名
         String weather = environmentData.get("weather").toString(); // 天気
         Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
+
+        // 気温の表示を整数値だけにするために型を変更
+        int distanceInt = distance.intValue();
 
         String photoFilePath = "noimage";
         if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
@@ -152,7 +156,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        distanceText.setText("距離: " + String.valueOf(distance) + " km"); // 距離
+        distanceText.setText("距離: " + String.valueOf(distanceInt) + " km"); // 距離
         weatherText.setText("天気: "+ weather); // 天気
         temperatureText.setText("気温: " + String.valueOf(temperature) + " 度"); // 気温
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)

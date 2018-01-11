@@ -105,7 +105,7 @@ public class SpotFragment extends Fragment {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("spot_name", (((HashMap<String, Object>)spotsData.get(i)).get("spot_name")).toString());
             map.put("spot_phoname", (((HashMap<String, Object>)spotsData.get(i)).get("spot_phoname")).toString());
-            map.put("distance", (((HashMap<String, Object>)spotsData.get(i)).get("distance")).toString());
+            map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")));
             map.put("weather", (((HashMap<String, Object>)spotsData.get(i)).get("weather")).toString());
             // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
             if (((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path") != null) {
@@ -148,9 +148,9 @@ public class SpotFragment extends Fragment {
                 String spotName = spotData.get("spot_name").toString();
                 String spotPhoname = spotData.get("spot_phoname").toString();
                 String streetAddress = spotData.get("street_address").toString();
-                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                Integer postalCode = Integer.valueOf(spotData.get("postal_code").toString());
+                Double latitude = Double.valueOf(spotData.get("latitude").toString());
+                Double longitude = Double.valueOf(spotData.get("longitude").toString());
                 String photoFilePath;
                 if (spotData.get("photo_file_path") == null) {
                     photoFilePath = null;
@@ -202,16 +202,14 @@ public class SpotFragment extends Fragment {
             @Override
             public int compare(Map<String, Object> data1, Map<String, Object> data2) {
                 // distance取得
-                String distance1 = data1.get("distance").toString();
-                Double distance11 = new Double(distance1);      // Double型に変換
-                String distance2 = data2.get("distance").toString();
-                Double distance22 = new Double(distance2);      // Double型に変換
+                Double distance1 = Double.valueOf(data1.get("distance").toString());      // Double型に変換
+                Double distance2 = Double.valueOf(data2.get("distance").toString());      // Double型に変換
 
                 // 大小昇順比較し返り値に
-                if (distance11 > distance22) {
+                if (distance1 > distance2) {
                     return 1;
                 }
-                else if (distance11 == distance22) {
+                else if (distance1.equals(distance2)) {
                     return 0;
                 }
                 else {

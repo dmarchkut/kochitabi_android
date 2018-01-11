@@ -19,7 +19,7 @@ public class DataBaseHelper {
     private String[] photo_file_path = {"kut", "kochi", "hirome", "muroto", "shimanto", "katurahama", null};
     private String[] weather = {"雨", "晴れ", "曇り", "曇り", "晴れ", "晴れ", "霧雨"};
     private Double[] temperature = {20.0, 20.6, 19.8, 14.4, 16.0, 23.6, 17.4};
-    private Double[] distance = {0.6, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};
+    private Double[] distance = {18.53, 2.0, 1.3, 81.7, 97.5, 11.9, 36.0};
 
     private String[] spot_text = {
             "本学は「大学のあるべき姿を常に追求し、世界一流の大学をめざす」という高い志を掲げ、高知県が設置し学校法人が運営する公設民営大学として開学しました。先進的な教育システムをいち早く取り入れ、大学としての存在感を発揮し続けています。平成21年4月からは公立大学法人として新たな一歩を踏み出し、公立大学法人という強固な基盤の上に積み重ねてきた自主・自律的な運営ノウハウを生かした革新的な大学運営を進めています。",

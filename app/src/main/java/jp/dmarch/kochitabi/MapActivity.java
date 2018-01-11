@@ -150,8 +150,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 Double[] spotLocation = new Double[2];      // 緯度、経度の2つの情報を格納するためのdouble型配列
 
                 spotName =  (((HashMap<String, Object>)spotsData.get(i)).get("spot_name")).toString();
-                spotLocation[0] = new Double((((HashMap<String, Object>)spotsData.get(i)).get("latitude")).toString());
-                spotLocation[1] = new Double((((HashMap<String, Object>)spotsData.get(i)).get("longitude")).toString());
+                spotLocation[0] = Double.valueOf((((HashMap<String, Object>)spotsData.get(i)).get("latitude")).toString());
+                spotLocation[1] = Double.valueOf((((HashMap<String, Object>)spotsData.get(i)).get("longitude")).toString());
 
                 this.setSpotMarker(spotLocation, spotName);     // マーカ設定
 
@@ -164,8 +164,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         else {
             // 観光地座標取得
             Double[] spotLocation = new Double[2];      // 緯度、経度の2つの情報を格納するためのdouble型配列
-            spotLocation[0] = new Double(spotData.get("latitude").toString());
-            spotLocation[1] = new Double(spotData.get("longitude").toString());
+            spotLocation[0] = Double.valueOf(spotData.get("latitude").toString());
+            spotLocation[1] = Double.valueOf(spotData.get("longitude").toString());
 
             ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
 
@@ -204,7 +204,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // 距離設定
         TextView distanceValue = findViewById(R.id.map_distance);
-        distanceValue.setText(String.valueOf(distance));
+        distanceValue.setText(String.format("%.1f", distance));
 
     }
 
@@ -234,7 +234,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         map.put("latitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("latitude")).toString());
                         map.put("longitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("longitude")).toString());
                         map.put("weather", (((HashMap<String, Object>)spotsData.get(i-1)).get("weather")).toString());
-                        map.put("distance", (((HashMap<String, Object>)spotsData.get(i-1)).get("distance")).toString());
+                        map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i-1)).get("distance")));
                         // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
                         if (((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path") != null) {
                             map.put("photo_file_path", getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
@@ -275,9 +275,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 String spotName = spotData.get("spot_name").toString();
                                 String spotPhoname = spotData.get("spot_phoname").toString();
                                 String streetAddress = spotData.get("street_address").toString();
-                                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                                Integer postalCode = Integer.valueOf(spotData.get("postal_code").toString());
+                                Double latitude = Double.valueOf(spotData.get("latitude").toString());
+                                Double longitude = Double.valueOf(spotData.get("longitude").toString());
                                 String photoFilePath;
                                 if (spotData.get("photo_file_path") == null) {
                                     photoFilePath = null;
