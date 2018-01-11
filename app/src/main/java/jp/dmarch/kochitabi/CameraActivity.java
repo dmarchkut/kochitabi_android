@@ -270,7 +270,7 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
 
             try {
                 this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());
-                this.architectView.setCullingDistance(50 * 1000);
+                //this.architectView.setCullingDistance(50 * 1000);
 
 /*
                 //途中で変わるか
