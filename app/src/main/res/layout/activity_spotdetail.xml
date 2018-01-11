@@ -74,10 +74,10 @@
 
     <ImageView
         android:id="@+id/spotImageView"
-        android:layout_width="383dp"
-        android:layout_height="221dp"
+        android:layout_width="wrap_content"
+        android:layout_height="220dp"
         android:scaleType="fitCenter"
-        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteX="-13dp"
         tools:layout_editor_absoluteY="0dp" />
 
     <ImageButton
@@ -91,10 +91,10 @@
         android:background="#00000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.885"
+        app:layout_constraintHorizontal_bias="0.935"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.329"
+        app:layout_constraintVertical_bias="0.294"
         app:srcCompat="@drawable/map_jump_button" />
 
     <TextView
