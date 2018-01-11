@@ -75,7 +75,7 @@ public class SpotDetailActivity extends AppCompatActivity {
                 final Double latitude = (Double) spotData.get("latitude");
                 final Double longitude = (Double) spotData.get("longitude");
                 String photoFilePath = null;
-                if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+                if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
                 final String activityName = "SpotDetailActivity"; // MapActivityでの遷移判断に使用する変数
 
                 // MapActivityに渡す値を付与する
@@ -143,7 +143,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         String photoFilePath = "noimage";
-        if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+        if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
 
 
         // XMLとの対応付けを行う
