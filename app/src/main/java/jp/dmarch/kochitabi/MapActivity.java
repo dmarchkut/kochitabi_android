@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -252,7 +253,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         SimpleAdapter adapter = new SimpleAdapter (
                                 getApplicationContext(),
                                 spotListData,
-                                R.layout.spot_item,
+                                R.layout.map_item,
                                 new String[]{ "photo_file_path", "spot_name", "distance", "weather", "weather" },
                                 new int[] { R.id.spot_image, R.id.spot_name, R.id.spot_distance, R.id.spot_weather, R.id.spot_frame }
 
