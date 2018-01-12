@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,19 +53,7 @@ public class SpotFragment extends Fragment {
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        locationAcquisition = new LocationAcquisition(getActivity()) {
-            @Override
-            public void onLocationChanged(Location location) {}
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-            @Override
-            public void onProviderEnabled(String s) {}
-
-            @Override
-            public void onProviderDisabled(String s) {}
-        };
+        locationAcquisition = new LocationAcquisition(getActivity());
         locationAcquisition.beginLocationAcquisition();
     }
 
@@ -116,7 +103,7 @@ public class SpotFragment extends Fragment {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("spot_name", (((HashMap<String, Object>)spotsData.get(i)).get("spot_name")).toString());
             map.put("spot_phoname", (((HashMap<String, Object>)spotsData.get(i)).get("spot_phoname")).toString());
-            map.put("distance", (((HashMap<String, Object>)spotsData.get(i)).get("distance")).toString());
+            map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")));
             map.put("weather", (((HashMap<String, Object>)spotsData.get(i)).get("weather")).toString());
             // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
             if (((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path") != null) {
@@ -150,8 +137,6 @@ public class SpotFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent,
                                     View view, int pos, long id) {
 
-                Log.d("test8", "push item");
-
                 Intent intent = new Intent(getActivity(), SpotDetailActivity.class);        // 遷移Activity設定
 
                 // Mapからデータ取り出し
@@ -161,13 +146,16 @@ public class SpotFragment extends Fragment {
                 String spotName = spotData.get("spot_name").toString();
                 String spotPhoname = spotData.get("spot_phoname").toString();
                 String streetAddress = spotData.get("street_address").toString();
-                Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                String photoFilePath = spotData.get("photo_file_path").toString();
-
-                Log.d("test9-17Before", spotId+"\n"+environmentId+"\n"+spotName+"\n"+spotPhoname
-                        +"\n"+streetAddress+"\n"+postalCode.toString()+"\n"+latitude.toString()+"\n"+longitude.toString()+"\n"+photoFilePath);
+                Integer postalCode = Integer.valueOf(spotData.get("postal_code").toString());
+                Double latitude = Double.valueOf(spotData.get("latitude").toString());
+                Double longitude = Double.valueOf(spotData.get("longitude").toString());
+                String photoFilePath;
+                if (spotData.get("photo_file_path") == null) {
+                    photoFilePath = null;
+                }
+                else {
+                    photoFilePath = spotData.get("photo_file_path").toString();
+                }
 
                 // 渡すデータ付与
                 intent.putExtra("spot_id", spotId);
@@ -212,16 +200,14 @@ public class SpotFragment extends Fragment {
             @Override
             public int compare(Map<String, Object> data1, Map<String, Object> data2) {
                 // distance取得
-                String distance1 = data1.get("distance").toString();
-                Double distance11 = new Double(distance1);      // Double型に変換
-                String distance2 = data2.get("distance").toString();
-                Double distance22 = new Double(distance2);      // Double型に変換
+                Double distance1 = Double.valueOf(data1.get("distance").toString());      // Double型に変換
+                Double distance2 = Double.valueOf(data2.get("distance").toString());      // Double型に変換
 
                 // 大小昇順比較し返り値に
-                if (distance11 > distance22) {
+                if (distance1 > distance2) {
                     return 1;
                 }
-                else if (distance11 == distance22) {
+                else if (distance1.equals(distance2)) {
                     return 0;
                 }
                 else {
