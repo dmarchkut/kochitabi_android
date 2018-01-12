@@ -8,7 +8,7 @@
 
     <ImageButton
         android:id="@+id/imageSpotButton"
-        android:layout_width="380dp"
+        android:layout_width="fill_parent"
         android:layout_height="95dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
@@ -18,12 +18,11 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.54"
-        app:srcCompat="@drawable/home_choose_spot"
-        tools:layout_editor_absoluteX="2dp" />
+        app:srcCompat="@drawable/home_choose_spot" />
 
     <ImageButton
         android:id="@+id/imageCameraButton"
-        android:layout_width="380dp"
+        android:layout_width="fill_parent"
         android:layout_height="95dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
@@ -33,24 +32,22 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.778"
-        app:srcCompat="@drawable/home_choose_camera"
-        tools:layout_editor_absoluteX="2dp" />
+        app:srcCompat="@drawable/home_choose_camera" />
 
     <ImageButton
         android:id="@+id/imageMapButton"
-        android:layout_width="380dp"
+        android:layout_width="fill_parent"
         android:layout_height="95dp"
         android:layout_marginTop="416dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/home_choose_map"
-        tools:layout_editor_absoluteX="2dp" />
+        app:srcCompat="@drawable/home_choose_map" />
 
     <ImageView
         android:id="@+id/spotImageView"
-        android:layout_width="382dp"
+        android:layout_width="fill_parent"
         android:layout_height="220dp"
         android:scaleType="fitCenter"
         tools:layout_editor_absoluteX="0dp"
@@ -58,22 +55,22 @@
 
     <TextView
         android:id="@+id/spotNameTextView"
-        android:layout_width="326dp"
-        android:layout_height="39dp"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.344" />
+        android:background="#7fffffff"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
+        app:layout_constraintTop_toTopOf="@+id/spotDetailButton"
+        app:layout_constraintVertical_bias="0.378"
+        tools:layout_editor_absoluteX="16dp" />
 
     <Button
         android:id="@+id/spotDetailButton"
-        android:layout_width="382dp"
+        android:layout_width="fill_parent"
         android:layout_height="220dp"
         android:background="@null"
         tools:layout_editor_absoluteX="0dp"
