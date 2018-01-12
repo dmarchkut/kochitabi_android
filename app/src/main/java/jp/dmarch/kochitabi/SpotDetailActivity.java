@@ -136,16 +136,22 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // spotDataから表示を行うデータを取得する
         String spotName = (String) spotData.get("spot_name"); // 観光地名
-        final String streetAddress = (String) spotData.get("street_address"); // 住所
-        final Integer postalCode = (Integer) spotData.get("postal_code"); // 郵便番号
+        if (spotName == null) spotName = "データがありません。";
+
+        String streetAddress = (String) spotData.get("street_address"); // 住所
+        if (streetAddress == null) streetAddress = "データがありません。";
+
+        Integer postalCode = (Integer) spotData.get("postal_code"); // 郵便番号
+
         String weather = (String) environmentData.get("weather"); // 天気
+        if (weather == null) weather = "不明";
 
         Double temperature = (Double) environmentData.get("temperature"); // 気温
         BigDecimal temperatureBi = new BigDecimal(String.valueOf(temperature));
         temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();        //小数第2位で四捨五入
 
         String sep = System.getProperty("line.separator");
-        String spotIntroduce = spotText + sep + sep + postalCode + sep + streetAddress;
+        String spotIntroduce = spotText + sep + sep + "〒 " + postalCode + sep + streetAddress;
 
 
         // XMLとの対応付けを行う
@@ -169,7 +175,7 @@ public class SpotDetailActivity extends AppCompatActivity {
         if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
         int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi");
         if (imageId == 0) imageId = getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi");
-            spotImage.setImageResource(imageId); // 表示
+        spotImage.setImageResource(imageId); // 表示
     }
 
     protected void onDestroy() {
