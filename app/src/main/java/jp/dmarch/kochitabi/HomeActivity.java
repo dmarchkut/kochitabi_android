@@ -19,8 +19,6 @@ public class HomeActivity extends AppCompatActivity {
     private DataBaseHelper dataBaseHelper; // DataBaseHelperクラスのインスタンス化
 
     private Map<String, Object> spotData; // 乱数で決定した観光地データを保管するメンバ変数(仕様変更)
-    boolean dataFlag = true; // 全ての観光地のデータが取得できたかの判定
-    boolean spotFlag = false; // ランダムに観光地を決定したか判定する判定
 
 
     @Override
@@ -71,20 +69,20 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 // もし観光地が無かった場合遷移させない
-                if (spotData.get("photo_file_path") == null || dataFlag == false) return;
+                if (spotsData == null) return;
 
                 Intent intent = new Intent(getApplication(), SpotDetailActivity.class);
 
                 // キーの値を全てMapから取り出す
-                final String spotId = spotData.get("spot_id").toString();
-                final String environmentId = spotData.get("environment_id").toString();
-                final String spotName = spotData.get("spot_name").toString();
-                final String spotPhoname = spotData.get("spot_phoname").toString();
-                final String streetAddress = spotData.get("street_address").toString();
-                final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
-                final String photoFilePath = spotData.get("photo_file_path").toString();
+                final String spotId = (String) spotData.get("spot_id");
+                final String environmentId = (String) spotData.get("environment_id");
+                final String spotName = (String) spotData.get("spot_name");
+                final String spotPhoname = (String) spotData.get("spot_phoname");
+                final String streetAddress = (String) spotData.get("street_address");
+                final Integer postalCode = (Integer) spotData.get("postal_code");
+                final Double latitude = (Double) spotData.get("latitude");
+                final Double longitude = (Double) spotData.get("longitude");
+                final String photoFilePath = (String) spotData.get("photo_file_path");
 
                 // SpotDetailActivityに渡す値を付与する
                 intent.putExtra("spot_id", spotId);
@@ -106,10 +104,9 @@ public class HomeActivity extends AppCompatActivity {
 
         // DataBaseHelperのgetSpotsDataから全観光地のデータを取得
         spotsData = dataBaseHelper.getSpotsData();
-        if (spotsData == null) dataFlag = false;
 
         // スライドショーに表示される写真(観光地)を決定するメソッド
-        if (dataFlag == true && spotFlag == false) decideSlideshowPhoto(spotsData);
+        if (spotsData != null) decideSlideshowPhoto(spotsData);
         displaySlideshowPhoto(); // 写真スライドショーを表示するメソッド
     }
 
@@ -119,7 +116,6 @@ public class HomeActivity extends AppCompatActivity {
         int listSize = spotsData.size(); // ArrayListのサイズを取得
         Random random = new Random(); // Randomのインスタンス化
         int listNumber = random.nextInt(listSize); // 観光地の中から1つをランダムで選出
-        spotFlag = true; // 真偽値を更新し、タスクキルするまで観光地を選ばないようにする
         spotData = spotsData.get(listNumber); // 要素を取得
     }
 
@@ -129,7 +125,7 @@ public class HomeActivity extends AppCompatActivity {
         String spotName = "";
         String photoFilePath = "noimage";
 
-        if (dataFlag == true) {
+        if (spotsData != null) {
             spotName = spotData.get("spot_name").toString();
             if (spotData.get("photo_file_path") != null) {
                 photoFilePath = spotData.get("photo_file_path").toString();
@@ -143,6 +139,8 @@ public class HomeActivity extends AppCompatActivity {
 
         // 写真の表示
         int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi");
+        if (imageId == 0) imageId = getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi");
         spotImage.setImageResource(imageId); // 表示
     }
+
 }
