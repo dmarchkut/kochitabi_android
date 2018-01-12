@@ -5,24 +5,38 @@
 
     <com.wikitude.architect.ArchitectView
         android:id="@+id/architectView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <Button
-        android:id="@+id/camera_button"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:gravity="bottom">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/snapshot_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/snapshot_button" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="450dp"
-        android:text="撮影" />
-
-    <Button
-        android:id="@+id/arguide_button"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="40dp"
-        android:text="AR案内" />
-
+        android:gravity="right">
+        <ImageButton
+            android:id="@+id/arguide_button"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/arguide_button" />
+    </LinearLayout>
 
 </RelativeLayout>

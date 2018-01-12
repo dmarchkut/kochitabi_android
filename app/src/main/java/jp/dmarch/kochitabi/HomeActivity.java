@@ -1,10 +1,9 @@
 package jp.dmarch.kochitabi;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.content.Intent;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 
 public class HomeActivity extends AppCompatActivity {
@@ -16,18 +15,15 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        Button btn = (Button) findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        // activity_mainで用意したボタンの使用（Listenerの設定）
+        Button mapBtn = (Button) findViewById(R.id.camera_button);
+        mapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                startActivity(intent);
+            public void onClick(View v) {
+                // クリック時の処理
+                Intent intent = new Intent(getApplication(), CameraActivity.class); // 切り替え準備
+                startActivity(intent); // Activity切り替え
             }
         });
-
-
-
-
-
     }
 }

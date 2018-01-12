@@ -1,4 +1,3 @@
-
 package jp.dmarch.kochitabi;
 
 import java.util.Map;

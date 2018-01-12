@@ -8,21 +8,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.TextView;
-
-import com.wikitude.architect.ArchitectStartupConfiguration;
-import com.wikitude.architect.ArchitectView;
 
 import java.util.Map;
 import java.util.HashMap;
 
+import com.wikitude.architect.ArchitectStartupConfiguration;
+import com.wikitude.architect.ArchitectView;
+
 public class AugmentedGuideActivity extends AppCompatActivity {
+    Map<String, Object> characterGuideData;
     private ArchitectView architectView;
     private TextView name;
     private TextView message;
-    private int textNumber = 1;
+    private int textNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +38,12 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         final String characterFilePath = (String)intent.getStringExtra("character_file_path");
         final String textData = (String)intent.getStringExtra("text_data");
 
-        Map<String, Object> characterGuideData = new HashMap<String, Object>(); // インスタンス化
+        characterGuideData = new HashMap<String, Object>(); // インスタンス化
         /* characterGuideDataの復元 */
         characterGuideData.put("access_point_id", accessPointId);
         characterGuideData.put("character_name", characterName);
         characterGuideData.put("character_file_path", characterFilePath);
         characterGuideData.put("text_data", textData);
-
-        // ARキャラクターの表示を行う
-        WikitudeContentsFragment.setWikitudeContents(characterGuideData);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
 
@@ -64,7 +62,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         }
 
         // カメラボタンと紐付け
-        Button cameraButton = (Button)this.findViewById(R.id.camera_button);
+        ImageButton cameraButton = (ImageButton)this.findViewById(R.id.camera_button);
         /* カメラボタンがクリックされた時の処理 */
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +81,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         final String[] cutTextData = cutSentence(textData);
         // 最初の表示テキスト
         message.setText(cutTextData[0]);
+        // 次のテキストの番号指定
+        textNumber = 1;
         // クリックイベントを有効にする
         architectView.setClickable(true);
         architectView.setOnClickListener(new View.OnClickListener() {
@@ -151,8 +151,12 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             Bundle bundle = msg.getData();
             String raspberrypiNumber = bundle.getString("raspberrypiNumber");
 
-            /* アクセスポイント外に出た時の処理 */
-            if (raspberrypiNumber == null) {
+            /* アクセスポイント内にいる時の処理 */
+            if (raspberrypiNumber != null) {
+                // ARキャラクターの表示を行う
+                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
+            } else {
+                /* アクセスポイント外に出た時の処理 */
                 outScreen();
             }
         }
