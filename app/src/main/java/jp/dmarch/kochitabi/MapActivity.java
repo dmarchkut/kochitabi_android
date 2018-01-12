@@ -72,7 +72,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             // intentから情報を取得
             final String spotId = intent.getStringExtra("spot_id");
-            final String environmentId = intent.getStringExtra("environment id");
+            final String environmentId = intent.getStringExtra("environment_id");
             final String spotName = intent.getStringExtra("spot_name");
             final String spotPhoname = intent.getStringExtra("spot_phoname");
             final String streetAddress = intent.getStringExtra("street_address");
@@ -85,7 +85,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             // spotDataにデータを挿入
             spotData.put("spot_id", spotId);
-            spotData.put("environment id", environmentId);
+            spotData.put("environment_id", environmentId);
             spotData.put("spot_name", spotName);
             spotData.put("spot_phoname", spotPhoname);
             spotData.put("street_address", streetAddress);
@@ -176,6 +176,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);     // 観光地距離情報取得
 
             this.setSpotMarker(spotLocation, spotData.get("spot_name").toString());     // 観光地マーカ設定
+            LatLng spot = new LatLng(spotLocation[0], spotLocation[1]);        // 観光地座標設定
+            mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(spot, 12));     // 現在地カメラ設定(12倍)
             // アクセスポイントマーカ設定
             for (int i = 0; i < accessPointLocations.size(); i++) {
                 this.setAccessPointMarker(accessPointLocations.get(i));
