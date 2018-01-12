@@ -21,8 +21,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -174,7 +172,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             this.setSpotMarker(spotLocation, spotData.get("spot_name").toString());     // 観光地マーカ設定
             LatLng spot = new LatLng(spotLocation[0], spotLocation[1]);        // 観光地座標設定
-            mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(spot, 12));     // 現在地カメラ設定(12倍)
+            mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(spot, 16));     // 現在地カメラ設定(16倍)
             // アクセスポイントマーカ設定
             for (int i = 0; i < accessPointLocations.size(); i++) {
                 this.setAccessPointMarker(accessPointLocations.get(i));
