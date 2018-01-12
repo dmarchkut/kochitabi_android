@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +111,9 @@ public class SpotFragment extends Fragment {
             // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
             if (((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path") != null) {
                 map.put("photo_file_path", this.getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
+                if (map.get("photo_file_path").equals(0)) {     // drawableにリソースが存在しなかった場合
+                    map.put("photo_file_path", this.getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi"));
+                }
             }
             else {
                 map.put("photo_file_path", this.getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi"));
