@@ -136,14 +136,16 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // spotDataから表示を行うデータを取得する
         String spotName = (String) spotData.get("spot_name"); // 観光地名
+        final String streetAddress = (String) spotData.get("street_address"); // 住所
+        final Integer postalCode = (Integer) spotData.get("postal_code"); // 郵便番号
         String weather = (String) environmentData.get("weather"); // 天気
+
         Double temperature = (Double) environmentData.get("temperature"); // 気温
         BigDecimal temperatureBi = new BigDecimal(String.valueOf(temperature));
-        //小数第2位で四捨五入
-        temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+        temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();        //小数第2位で四捨五入
 
-        String photoFilePath = "noimage";
-        if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
+        String sep = System.getProperty("line.separator");
+        String spotIntroduce = spotText + sep + sep + postalCode + sep + streetAddress;
 
 
         // XMLとの対応付けを行う
@@ -160,11 +162,14 @@ public class SpotDetailActivity extends AppCompatActivity {
         weatherText.setText("天気: "+ weather); // 天気
         temperatureText.setText("気温: " + String.valueOf(temperature) + " 度"); // 気温
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
-        spotDetailText.setText(spotText); //　観光地案内テキスト
+        spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
         // 写真の表示
+        String photoFilePath = "noimage";
+        if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
         int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi");
-        spotImage.setImageResource(imageId); // 表示
+        if (imageId == 0) imageId = getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi");
+            spotImage.setImageResource(imageId); // 表示
     }
 
     protected void onDestroy() {
