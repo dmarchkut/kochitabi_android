@@ -238,6 +238,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
                         if (((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path") != null) {
                             map.put("photo_file_path", getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
+                            if (map.get("photo_file_path").equals(0)) {     // drawableにリソースが存在しなかった場合
+                                map.put("photo_file_path", getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi"));
+                            }
                         }
                         else {
                             map.put("photo_file_path", getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi"));
