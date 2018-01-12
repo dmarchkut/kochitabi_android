@@ -18,14 +18,15 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 
+//cameraActivityのcontextをあれして、CA.architectview.load();
 
 import java.util.Map;
 
 public class WikitudeContentsFragment {
 
-    protected static String characterFilePath = null;
+    private static String characterFilePath = null;
 
-    protected static final String WIKITUDESDK_LICENSEKEY = "PlaQ4V2incGCS59Dj6ohTzkfwQBjPeTpx6C4dVvuIse1QP1MKE9wzjqyZUjQvvOHRYOuCrXEDvIwvAFfzjqBON8A5xr5XgdP+mb4CBhMlV+Odf9R/J5P1a+XRPc3fl6vCWPSkfjVOzrSYHqyz8oq7PMH8JHyWm0t0tYFREgVUStTYWx0ZWRfXz5MYhTZHoWUlkoZn+OmpZsfQw45Cmz+ZXp1R/x/5Hm6VBTistSYFLbkWvAgCnkmlvGcFMQSKMt/SMwbdE5hBjUMoJ912hsQQjDgK8G/xTNcLW91nw1ke5/NScKq0ykILKwKUR3NDfQ0zG5RcXb94ef6LR0zU1Y8mxox9Y0Z7ozUsu17H5UkpjK8UXGAqqF7w0mALPFnHkuTiwj03Xfqh9/tAaqRSqY7sJvWp6INhS3AxGsDgwUHfnOSNVjkydO9oT738TZJWjEnry0c5iZb8KkcgZ8k7hGZfxosjr2sSEXwTk/jUhsxtNigyte7V9Eus1Io8kr+LrzlpCpiDtwdSQGK+od8syrEscUGZpKDeCkNUG6CuTT5C+WfR8psAL/yBuQy+Y/nSSI2uzlk71c0bQjUZzeXRe7aKByVUpcat9QlcwyQOpoZF78GgiRXsk5cOSlPfxcGKKC8wcpw2D8VtZKSwsd/nCZ2iB86ltPI63urSLwz9qkTqOE=";
+    private static final String WIKITUDE_SDK_LICENSEKEY = "PlaQ4V2incGCS59Dj6ohTzkfwQBjPeTpx6C4dVvuIse1QP1MKE9wzjqyZUjQvvOHRYOuCrXEDvIwvAFfzjqBON8A5xr5XgdP+mb4CBhMlV+Odf9R/J5P1a+XRPc3fl6vCWPSkfjVOzrSYHqyz8oq7PMH8JHyWm0t0tYFREgVUStTYWx0ZWRfXz5MYhTZHoWUlkoZn+OmpZsfQw45Cmz+ZXp1R/x/5Hm6VBTistSYFLbkWvAgCnkmlvGcFMQSKMt/SMwbdE5hBjUMoJ912hsQQjDgK8G/xTNcLW91nw1ke5/NScKq0ykILKwKUR3NDfQ0zG5RcXb94ef6LR0zU1Y8mxox9Y0Z7ozUsu17H5UkpjK8UXGAqqF7w0mALPFnHkuTiwj03Xfqh9/tAaqRSqY7sJvWp6INhS3AxGsDgwUHfnOSNVjkydO9oT738TZJWjEnry0c5iZb8KkcgZ8k7hGZfxosjr2sSEXwTk/jUhsxtNigyte7V9Eus1Io8kr+LrzlpCpiDtwdSQGK+od8syrEscUGZpKDeCkNUG6CuTT5C+WfR8psAL/yBuQy+Y/nSSI2uzlk71c0bQjUZzeXRe7aKByVUpcat9QlcwyQOpoZF78GgiRXsk5cOSlPfxcGKKC8wcpw2D8VtZKSwsd/nCZ2iB86ltPI63urSLwz9qkTqOE=";
 
 
     //protected static String architectWorldPath = null;
@@ -35,6 +36,7 @@ public class WikitudeContentsFragment {
         //this.architectView.load("wikitude/index.html");
 
         //JavaToJavascript javaToJavascript = new
+
 
 
         //jsにデータ渡す
@@ -78,69 +80,9 @@ public class WikitudeContentsFragment {
         //webview.loadUrl("file:///../../assets/index.html");
     }
 
-    //JavaScriptを有効に
-    //webview.getSettings().setJavaScriptEnabled(true);
 
-/*
-    public static void main(String[] args) throws Exception {
-        System.out.println("java.version: " + System.getProperty("java.version"));
 
-        // 対応している ScriptEngine の情報を出力
-        ScriptEngineManager manager = new ScriptEngineManager();
-        List<ScriptEngineFactory> engineFactories = manager.getEngineFactories();
-        for (ScriptEngineFactory factory : engineFactories) {
-            System.out.println("Engine: " + factory.getEngineName()
-                    + ", Version: " + factory.getEngineVersion());
-            System.out.println("Language: " + factory.getLanguageName()
-                    + ", Version: " + factory.getLanguageVersion());
-            System.out.println("Extensions: " + factory.getExtensions());
-            System.out.println("MimeTypes: " + factory.getMimeTypes());
-            System.out.println("Names: " + factory.getNames());
-            System.out.println();
-        }
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
 
-        // JavaScript の実行
-        engine.eval("var message = 'Hello, I am JavaScript.'");
-        engine.eval("print('#1: ' + message)");
-
-        // Java のオブジェクトを JavaScript に渡してみる
-        engine.put("message2", "Hello, I am Java8.");
-        engine.put("today", new Date());
-        engine.eval("print('#2: ' + message2 + ' now : ' + today.toString())");
-
-        // JavaScript から Java のメソッドを使用
-        engine.eval("var obj = Java.type('test.javascript.JavaScriptTest');"
-                + "print('#3: ' + obj.getMessage());");
-        engine.eval("obj.printMessage('Good afternoon.');");
-
-        // Java から JavaScript の値を取得
-        engine.eval("var message3 = 'Good evening.';");
-        Object message3 = engine.get("message3");
-        System.out.println("#5: " + message3);
-
-        // Java から JavaScript の関数を呼び出し
-        if (engine instanceof Invocable) {
-            Invocable invocable = (Invocable) engine;
-            engine.eval("var func = function(arg) { print('#6: ' + arg);}");
-            invocable.invokeFunction("func", "Good night.");
-        }
-    }
-*/
-    /** メッセージを返す */
-    /*public static String getMessage() {
-        return "Good morning.";
-    }*/
-
-    /** メッセージを出力 */
-    /*public static void printMessage(String message) {
-        System.out.println("#4: " + message);
-    }*/
-
-    /*public String javaToJavasrcipt() {
-        String charafilepath = a.toString();
-        return charafilepath;
-    }*/
 
     // ArchitectViewに設定するhtmlファイルを決定する
     protected static String getArchitectWorldPath() {
@@ -171,7 +113,7 @@ public class WikitudeContentsFragment {
 
     // ライセンス返す
     protected static String getWikitudeSDKLicenseKey() {
-        return WIKITUDESDK_LICENSEKEY;
+        return WIKITUDE_SDK_LICENSEKEY;
     }
 
     // どのカメラを使うか指定

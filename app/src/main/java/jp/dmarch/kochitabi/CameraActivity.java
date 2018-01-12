@@ -235,6 +235,8 @@ public class CameraActivity extends AppCompatActivity implements ArchitectViewHo
                     }
                 });
 
+
+
             /* アクセスポイント外にいる時の処理 */
             } else {
                 // AR案内ボタンを非表示にする
