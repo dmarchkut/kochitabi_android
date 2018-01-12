@@ -3,7 +3,6 @@ package jp.dmarch.kochitabi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -214,7 +213,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 String id = marker.getId();     // マーカID取得
-                Log.v("size", String.valueOf(spotsData.size()));
 
                 // マーカが示す観光地をListViewによって表示
                 for (int i = 1; i <= spotsData.size(); i++) {
