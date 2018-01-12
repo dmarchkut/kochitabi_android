@@ -136,7 +136,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // ホーム画面から呼ばれた際
         if (preActivity == HOME_ACTIVITY) {
             Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
+            LatLng current = new LatLng(currentLocation[0], currentLocation[1]);        // 観光地座標設定
             this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
+            mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));     // 現在地カメラ設定(12倍)
 
             spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
 
@@ -328,7 +330,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         markerOptions = new MarkerOptions();        // マーカオブジェクトインスタンス
         LatLng current = new LatLng(currentLocation[0], currentLocation[1]);        // 現在地座標設定
         mapData.addMarker(markerOptions.position(current).title("現在地"));       // 現在地マーカ設定
-        mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));     // 現在地カメラ設定(12倍)
 
     }
 
