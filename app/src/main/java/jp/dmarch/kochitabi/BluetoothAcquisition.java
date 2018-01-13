@@ -9,11 +9,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
+import static android.bluetooth.BluetoothDevice.ACTION_FOUND;
 import static android.util.Half.NaN;
 
 /*
@@ -27,6 +30,7 @@ public class BluetoothAcquisition {
     private BluetoothAdapter bluetoothAdapter; // アダプタ
     private BroadcastReceiver broadcastReceiver; // レシーバ
     private HashMap<String, Integer> deviceList; //  Bluetooth接続可能な端末のリスト
+    IntentFilter filter; // 検索に用いるフィルタ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
 
@@ -36,6 +40,8 @@ public class BluetoothAcquisition {
 
     /* Bluetooth接続可能な端末の検索開始 */
     public void beginSearchDevice() {
+
+        Log.d("begin", "start method");
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
@@ -77,7 +83,7 @@ public class BluetoothAcquisition {
                 String action = intent.getAction();
 
                 // 端末を発見したとき、デバイスリストに追加
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                if (ACTION_FOUND.equals(action)) {
 
                     BluetoothDevice findingDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); // 見つかった端末
                     String findingDeviceName = findingDevice.getName(); // 端末名を取得
@@ -94,12 +100,20 @@ public class BluetoothAcquisition {
 
                         /******** テスト用↓  ********/
                         Log.d("intensity", String.valueOf(raspberrypiIntensity));
+                        Toast.makeText(context, "Name: "+findingDeviceName + "\nIntensity: "+raspberrypiIntensity, Toast.LENGTH_LONG).show();
                         /********　テスト用↑ ********/
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
 
                     }
+
+                    // デバイス検索終了時
+                } else if (ACTION_DISCOVERY_FINISHED.equals(action)) {
+
+                    // もう一度開始
+                    context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
+                    bluetoothAdapter.startDiscovery(); // 端末の検索開始
 
                 }
 
@@ -119,8 +133,9 @@ public class BluetoothAcquisition {
         //deviceList.put("pi0002", -10);
         /************ テスト用↑ *********************/
 
-        IntentFilter filter = new IntentFilter(); // インテントフィルタを作成
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter = new IntentFilter(); // インテントフィルタを作成
+        filter.addAction(ACTION_FOUND);
+        filter.addAction(ACTION_DISCOVERY_FINISHED);
 
         context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
 
@@ -135,9 +150,6 @@ public class BluetoothAcquisition {
         if (!(bluetoothAdapter.isDiscovering())) return;
 
         bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
-        context.unregisterReceiver(broadcastReceiver); // レシーバの解除
-
-
 
     }
 
@@ -152,10 +164,11 @@ public class BluetoothAcquisition {
     /* Bluetooth接続可能なRaspberryPi端末のリストを取得 */
     public ArrayList<String> getDeviceList() {
 
-        // もし検索中なければ何もせずに終わる
-        if (!(bluetoothAdapter.isDiscovering())) return null;
-
         ArrayList<String> raspberrypiNumberList = new ArrayList<String>(); // RaspberryPi識別番号のリスト
+
+        // もし検索中なければ何もせずに終わる
+        if (!(bluetoothAdapter.isDiscovering())) return raspberrypiNumberList;
+
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
 
         // こちたびARで用いるRaspberryPi端末の端末名を取得
@@ -177,7 +190,7 @@ public class BluetoothAcquisition {
 
         // 電波強度を取得する端末がRaspberryPi端末でなければNaNを返す
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
-        if (pattern.matcher(raspberrypiNumber).find()) return NaN;
+        if (!pattern.matcher(raspberrypiNumber).find()) return NaN;
 
         // 取得済みの端末リストを検索
         for (String deviceName : deviceList.keySet()) {

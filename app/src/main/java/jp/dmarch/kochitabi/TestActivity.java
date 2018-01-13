@@ -69,7 +69,7 @@ public class TestActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索開始
+        bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索終了
     }
 
 }
