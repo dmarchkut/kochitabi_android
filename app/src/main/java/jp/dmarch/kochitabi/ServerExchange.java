@@ -2,6 +2,7 @@ package jp.dmarch.kochitabi;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,9 +16,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /*
@@ -32,12 +37,17 @@ import java.util.Map;
 
 public class ServerExchange {
 
-    // ローカルDBのデータすべてを取得するためのAPIのURL
-    private final static String GET_LOCAL_DATABASE_TABLES_URL = "http://dmarch.jp/get_local_database_tables.py";
-    // ローカル環境テーブルのデータを取得するためのAPIのURL
-    private final static String GET_ENVIRONMENT_TABLE_URL = "http://dmarch.jp/get_local_environment_table.py";
-    // ローカルキャラクターテーブルのデータを取得するためのAPIのURL
-    private final static String GET_CHARACTER_TABLE_URL = "http://dmarch.jp/get_local_character_table.py";
+    // ローカルDBのデータを取得するためのAPIに共通するURL部分
+    private final static String API_URL = "https://lit-springs-17205.herokuapp.com/api/";
+
+    // ローカル環境テーブルの名前
+    private final static String SPOT_TABLE_NAME = "local_spot";
+    // ローカル環境テーブルの名前
+    private final static String ENVIRONMENT_TABLE_NAME = "local_environment";
+    // ローカル環境テーブルの名前
+    private final static String ACCESS_POINT_TABLE_NAME = "local_access_point";
+    // ローカルキャラクターテーブルの名前
+    private final static String CHARACTER_TABLE_NAME = "local_character";
 
     // テーブルのキー(観光地、環境、アクセスポイント、キャラクター)
     private final static String[][] TABLE_KEYS = {
@@ -49,9 +59,18 @@ public class ServerExchange {
             new String[] {  "access_point_id", "character_name", "character_file_path", "text_data", "created_at", "updated_at"}
     };
 
+    // ローカルデータベースのテーブル
+    private final static String[] LOCAL_DATABASE_TABLES = {
+            /*SPOT_TABLE_NAME, */ACCESS_POINT_TABLE_NAME, ENVIRONMENT_TABLE_NAME, CHARACTER_TABLE_NAME
+    };
+
     // キーに対応するデータの種類
     private final static String[] DOUBLE_DATA = {"latitude", "longitude", "temperature"};
-    private final static String[] INTEGER_DATA = {"created_at", "updated_at", "postal_code"};
+    private final static String[] INTEGER_DATA = {"postal_code"};
+    private final static String[] DATE_DATA = {"created_at", "updated_at"};
+
+    // 日時データのフォーマット
+    private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     // 各テーブルの添え字
     private final static int SPOT_TABLE = 0;
@@ -59,8 +78,127 @@ public class ServerExchange {
     private final static int ACCESS_POINT_TABLE = 2;
     private final static int CHARACTER_TABLE = 3;
 
-    /* JSONを取得 */
-    private String readInputStream(InputStream in) throws IOException, UnsupportedEncodingException {
+    /* サーバからすべてのテーブルデータを取得 */
+    public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
+
+        // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
+        ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
+
+        // テーブルごとにデータを取得
+        for (String tableName: LOCAL_DATABASE_TABLES) {
+
+            ArrayList<Map<String, Object>> tableData = getTableData(tableName);
+            localDataBaseTables.add(tableData);
+
+        }
+
+        return localDataBaseTables;
+
+    }
+
+    /* サーバからローカル環境テーブルデータを取得 */
+    public static ArrayList<Map<String, Object>> getEnvironmentTable() {
+
+        // ローカル環境テーブルを管理するためのArrayListオブジェクト
+        ArrayList<Map<String, Object>> environmentTable = getTableData(ENVIRONMENT_TABLE_NAME);
+        return environmentTable;
+
+    }
+
+    /* サーバからローカルキャラクターテーブルデータを取得 */
+    public static ArrayList<Map<String, Object>> getCharacterTable() {
+
+        // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
+        ArrayList<Map<String, Object>> characterTable = getTableData(CHARACTER_TABLE_NAME);
+        return characterTable;
+
+    }
+
+    /* 特定のテーブルデータを取得 */
+    private static ArrayList<Map<String, Object>> getTableData(String tableName) {
+        // テーブルのJSON
+        JSONArray jsonData = getJSON(tableName);
+
+        // テーブルデータを管理するためのArrayListオブジェクト
+        ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
+
+        // すべてのレコードに対してJSONからMapオブジェクトへの変換
+        // レコードごとに処理
+        for (int i = 0; i < jsonData.length(); i++) {
+
+            try {
+                JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
+                // 1レコードのデータを管理するためのMapオブジェクト
+                Map<String, Object> recordData = convertJsonToMap(jsonObject);
+
+                // レコードデータを管理するMapオブジェクトを
+                // テーブルデータを管理するArrayListオブジェクトに追加
+                tableData.add(recordData);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return tableData;
+    }
+
+    /* 特定のテーブルのJSONデータをサーバから取得 */
+    private static JSONArray getJSON(final String tableName) {
+
+        final JSONArray[] jsonData = new JSONArray[1];
+
+        // HTTP通信を実行
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    URL url = new URL(API_URL + tableName); // URLの作成
+                    // 接続用HttpURLConnectionオブジェクト作成
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    // 本文の取得(setDoInput(true)にする必要あり)
+                    InputStream in = connection.getInputStream();
+                    String readString = readInputStream(in);
+                    Log.d("data", readString);
+
+                    /* サーバ側のバグ対処用コード↓ */
+                    if (tableName.equals(ENVIRONMENT_TABLE_NAME)) {
+                        jsonData[0] = new JSONObject(readString).getJSONArray(SPOT_TABLE_NAME);
+                    }
+                    /* サーバ側のバグ対処用コード↑ */
+                    else {
+                        jsonData[0] = new JSONObject(readString).getJSONArray(tableName);
+                    }
+                    in.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("error", "error");
+                }
+            }
+        });
+
+        // 通信開始
+        Log.d("thread", "通信開始");
+        thread.start();
+
+        // 通信が終わるまで待つ
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("thread", "通信終了");
+
+        return jsonData[0];
+    }
+
+    /* サーバから受け取ったデータを解析 */
+    private static String readInputStream(InputStream in) throws IOException {
         StringBuffer stringBuffer = new StringBuffer();
         String string = "";
 
@@ -77,175 +215,40 @@ public class ServerExchange {
         return stringBuffer.toString();
     }
 
-    /* JSONをサーバから取得するメソッド */
-    @SuppressLint("StaticFieldLeak")
-    private JSONArray getJSON(final String urlString) {
-
-        final JSONArray[] json = new JSONArray[0];
-
-        // HTTP通信を非同期処理で実行
-        new AsyncTask<Void, Void, JSONArray>() {
-            @Override
-            protected JSONArray doInBackground(Void... params) {
-
-                try {
-                    URL url = new URL(urlString); // URLの作成
-                    // 接続用HttpURLConnectionオブジェクト作成
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    // リクエストメソッドの設定
-                    connection.setRequestMethod("POST");
-                    // リダイレクトを自動で許可しない設定
-                    connection.setInstanceFollowRedirects(false);
-                    // URL接続からデータを読み取る場合はtrue
-                    connection.setDoInput(true);
-                    // URL接続にデータを書き込む場合はtrue
-                    connection.setDoOutput(true);
-
-                    connection.connect(); // 通信開始
-
-                    // 本文の取得(setDoInput(true)にする必要あり)
-                    InputStream in = connection.getInputStream();
-                    String readString = readInputStream(in);
-                    JSONArray jsonData = new JSONObject(readString).getJSONArray("オブジェクト名");
-                    in.close();
-
-                    json[0] = jsonData;
-
-                } catch (IOException | JSONException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonData) {
-                json[0] = jsonData;
-            }
-        }.execute(); // 別スレッドで実行
-
-        return json[0];
-
-    }
-
-    /* サーバからすべてのテーブルデータを取得 */
-    public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
-
-        // すべてのローカルデータベーステーブルのJSON
-        JSONArray jsonData = getJSON(GET_LOCAL_DATABASE_TABLES_URL);
-        // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
-        ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
-
-        // すべてのレコードに対してJSONからMapオブジェクトへの変換
-        // テーブルごとに処置
-        for (int i = 0; i < jsonData.length(); i++) {
-            try {
-                // 1つのテーブルのみを取り出し
-                JSONArray jsonTableData = jsonData.getJSONArray(i);
-                // テーブルデータ管理のArrayListオブジェクト
-                ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
-
-                // レコードごとに処理
-                for (int j = 0; j < jsonTableData.length(); j++) {
-
-                    JSONObject jsonObject = jsonTableData.getJSONObject(j); // 1レコードのみ取り出し
-                    // 1レコードのデータを管理するためのMapオブジェクト
-                    Map<String, Object> tableRecord = convertJsonToMap(jsonObject, TABLE_KEYS[i]);
-
-                    // レコードデータ管理のMapオブジェクトを
-                    // テーブルデータ管理のArrayListオブジェクトに追加
-                    tableData.add(tableRecord);
-
-                }
-
-                // テーブルデータを管理するArrayListオブジェクトを
-                // すべての観光地データを管理するArrayListオブジェクトに追加
-                localDataBaseTables.add(tableData);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return localDataBaseTables;
-
-    }
-
-    /* サーバからローカル環境テーブルデータを取得 */
-    public ArrayList<Map<String, Object>> getEnvironmentTable() {
-
-        // ローカル環境テーブルのJSON
-        JSONArray jsonData = getJSON(GET_ENVIRONMENT_TABLE_URL);
-        // ローカル環境テーブルを管理するためのArrayListオブジェクト
-        ArrayList<Map<String, Object>> environmentTable = new ArrayList<Map<String, Object>>();
-
-        // すべてのレコードに対してJSONからMapオブジェクトへの変換
-        // レコードごとに処理
-        for (int i = 0; i < jsonData.length(); i++) {
-
-            try {
-                JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
-                // 1レコードのデータを管理するためのMapオブジェクト
-                Map<String, Object> environmentData = convertJsonToMap(jsonObject, TABLE_KEYS[ENVIRONMENT_TABLE]);
-
-                // レコードデータを管理するMapオブジェクトを
-                // テーブルデータを管理するArrayListオブジェクトに追加
-                environmentTable.add(environmentData);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        return environmentTable;
-
-    }
-
-    /* サーバからローカルキャラクターテーブルデータを取得 */
-    public ArrayList<Map<String, Object>> getCharacterTable() {
-
-        // ローカルキャラクターテーブルのJSON
-        JSONArray jsonData = getJSON(GET_CHARACTER_TABLE_URL);
-        // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
-        ArrayList<Map<String, Object>> characterTable = new ArrayList<Map<String, Object>>();
-
-        // すべてのレコードに対してJSONからMapオブジェクトへの変換
-        // レコードごとに処理
-        for (int i = 0; i < jsonData.length(); i++) {
-
-            try {
-                JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
-                // 1レコードのデータを管理するためのMapオブジェクト
-                Map<String, Object> characterData = convertJsonToMap(jsonObject, TABLE_KEYS[CHARACTER_TABLE]);
-
-                // レコードデータを管理するMapオブジェクトを
-                // テーブルデータを管理するArrayListオブジェクトに追加
-                characterTable.add(characterData);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return characterTable;
-
-    }
-
-
     /* レコードのJSONをMapオブジェクトに変換するメソッド */
-    private Map<String, Object> convertJsonToMap(JSONObject recordJson, String[] keys) throws JSONException {
+    private static Map<String, Object> convertJsonToMap(JSONObject recordJson/*, String[] keys*/) throws JSONException {
 
         // 変換後のデータを入れるMapオブジェクト
         Map<String, Object> recordData = new HashMap<String, Object>();
 
+        /*Iterator<String> keyItr = recordJson.keys();
+        while(keyItr.hasNext()) {
+            String key = keyItr.next();
+            Object value = recordJson.get(key);
+
+            recordData.put(key, value);
+        }*/
+
         // キーごとに処理
-        for (String key : keys) {
+        Iterator<String> keyItr = recordJson.keys();
+        while(keyItr.hasNext()) {
+            String key = keyItr.next();
 
             // キーに対応する要素の型によって取り出し方を変える
             if (Arrays.asList(INTEGER_DATA).contains(key)) { // INTEGER型の要素のキーのとき
                 Integer data = recordJson.getInt(key); // INTEGER型として取り出す
                 recordData.put(key, data); // Mapオブジェクトに追加
+
+            } else if (Arrays.asList(DATE_DATA).contains(key)) { // 日付の要素のキーのとき
+                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+                String dataString = recordJson.getString(key);
+                Integer data = null;
+                try {
+                    Date date = dateFormat.parse(dataString);
+                    data =
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
             } else if (Arrays.asList(DOUBLE_DATA).contains(key)) { // DOUBLE型の要素のキーのとき
                 Double data = recordJson.getDouble(key); // DOUBLE型として取り出す
