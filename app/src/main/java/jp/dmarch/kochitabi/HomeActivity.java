@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -20,6 +18,7 @@ public class HomeActivity extends AppCompatActivity {
     private DataBaseHelper dataBaseHelper; // DataBaseHelperクラスのインスタンス化
 
     private Map<String, Object> spotData; // 乱数で決定した観光地データを保管するメンバ変数(仕様変更)
+    private ImageView spotImage;
 
 
     @Override
@@ -64,8 +63,8 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // 画面上部の観光地の写真をタップした際に観光地詳細(SpotDetailActivity)に飛ぶボタン
-        ImageView sendDetailButton = (ImageView) findViewById(R.id.spotImageView); // 観光地詳細ボタン
-        sendDetailButton.setOnClickListener(new View.OnClickListener() {
+        spotImage = (ImageView)findViewById(R.id.spotImageView);
+        spotImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -146,7 +145,6 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-        ImageView spotImage = (ImageView)findViewById(R.id.spotImageView); // 観光地写真
 
         spotNameText.setText(spotName); // 観光地名の表示
 
