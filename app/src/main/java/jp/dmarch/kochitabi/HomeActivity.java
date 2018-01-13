@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -63,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // 画面上部の観光地の写真をタップした際に観光地詳細(SpotDetailActivity)に飛ぶボタン
-        Button sendDetailButton = (Button) findViewById(R.id.spotDetailButton); // 観光地詳細ボタン
+        ImageView sendDetailButton = (ImageView) findViewById(R.id.spotImageView); // 観光地詳細ボタン
         sendDetailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,10 +114,22 @@ public class HomeActivity extends AppCompatActivity {
     // 画面上部に表示する観光地を決定するメソッド
     private void decideSlideshowPhoto(ArrayList<Map<String, Object>> spotsData) {
 
-        int listSize = spotsData.size(); // ArrayListのサイズを取得
-        Random random = new Random(); // Randomのインスタンス化
+        // ArrayListの整形
+        ArrayList<Map<String, Object>> reSpotsData = new ArrayList<Map<String, Object>>();
+
+        // 観光地の名前が入っていなかった場合の処理
+        int insert = 0;
+        for (int size = 0; size < spotsData.size(); size++) {
+            if ((spotsData.get(size)).get("spot_name") != null) {
+                reSpotsData.add(spotsData.get(size));
+                insert++;
+            }
+        }
+
+        int listSize = reSpotsData.size(); // ArrayListのサイズを取得
+        Random random = new Random(); // Randomのインスタンス
         int listNumber = random.nextInt(listSize); // 観光地の中から1つをランダムで選出
-        spotData = spotsData.get(listNumber); // 要素を取得
+        spotData = reSpotsData.get(listNumber); // 要素を取得
     }
 
     // 画面上部に決定された観光地の情報を表示するメソッド
@@ -126,9 +139,9 @@ public class HomeActivity extends AppCompatActivity {
         String photoFilePath = "noimage";
 
         if (spotsData != null) {
-            spotName = spotData.get("spot_name").toString();
+                spotName = (String) spotData.get("spot_name");
             if (spotData.get("photo_file_path") != null) {
-                photoFilePath = spotData.get("photo_file_path").toString();
+                photoFilePath = (String) spotData.get("photo_file_path");
             }
         }
 
