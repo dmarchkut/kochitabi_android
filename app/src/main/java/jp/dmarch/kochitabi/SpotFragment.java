@@ -38,7 +38,9 @@ public class SpotFragment extends Fragment {
     private LocationAcquisition locationAcquisition;
 
     // コンストラクタ
-    public SpotFragment() {}
+    public SpotFragment() {
+
+    }
 
     // フラグメント利用準備
     public static SpotFragment newInstance(int page) {
