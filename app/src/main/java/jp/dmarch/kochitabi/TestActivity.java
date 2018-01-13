@@ -38,7 +38,7 @@ public class TestActivity extends AppCompatActivity {
 
         // 距離を表示
         TextView textView_distance = findViewById(R.id.textView_distance);
-        textView_distance.setText("距離："+ String.format("%1$.0f",distance));
+        textView_distance.setText("距離："+ String.format("%1$.1f",distance));
     }
 
     @Override

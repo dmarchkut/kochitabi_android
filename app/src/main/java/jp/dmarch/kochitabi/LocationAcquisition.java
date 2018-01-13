@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
+import android.util.Log;
 
 import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
@@ -93,8 +94,10 @@ public class LocationAcquisition implements LocationListener {
 
                 // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
                 if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
                     // GPSの使用許可を要求
                     ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+
                 } else {
                     return; // 一度拒否されているため処理を行わない
                 }
@@ -120,7 +123,6 @@ public class LocationAcquisition implements LocationListener {
                     this // リスナー
             );
         }
-
 
     }
 
@@ -153,16 +155,31 @@ public class LocationAcquisition implements LocationListener {
 
                 // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
                 if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
                     // GPSの使用許可を要求
-                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                   ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
                 }
 
             } else { //許可されているなら
 
-                // Wifiで過去に取得した最新の現在地を取得
-                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                currentLocation[0] = location.getLatitude(); // 緯度を取得
-                currentLocation[1] = location.getLongitude(); // 経度を取得
+                // GPSが有効なら
+                if (isLocationAcquisition()) {
+
+                    try {
+
+                        // GPSを有効するまでの時間稼ぎ
+                        Thread.sleep(1500);
+
+                        // Wifiで過去に取得した最新の現在地を取得
+                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        currentLocation[0] = location.getLatitude(); // 緯度を取得
+                        currentLocation[1] = location.getLongitude(); // 経度を取得
+
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+
+                }
 
             }
         }
