@@ -7,9 +7,9 @@ public class DataBaseHelper {
     protected Map<String, Object> getCharacterGuide(String raspberrypiNumber) {
         Map<String, Object> characterGuideData = new HashMap<String, Object>();
 
-        String accessPointId = "ac0001";
-        String characterName = "ユニティちゃん";
-        String characterFilePath = "cube.wt3";
+        String accessPointId = "ap0001";
+        String characterName = "ユニティちゃんんん";
+        String characterFilePath = "wikitude/cube.html";
         String textData = "高知工科大学です。情報学群です。よろしくお願いします。";
 
         characterGuideData.put("access_point_id", accessPointId);
