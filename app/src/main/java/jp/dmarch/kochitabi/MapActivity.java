@@ -218,7 +218,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 for (int i = 1; i <= spotsData.size(); i++) {
                     if (id.equals("m" + String.valueOf(i))) {
                         mapSpotList = (ListView) findViewById(R.id.map_spot_list);     // ListView読み込み
-                        mapSpotList.setBackgroundColor(getResources().getColor(R.color.white));
+                        mapSpotList.setBackgroundResource(R.drawable.bg_border_around);
 
                         // リスト表示用ArrayList作成
                         spotListData = new ArrayList<Map<String, Object>>();
