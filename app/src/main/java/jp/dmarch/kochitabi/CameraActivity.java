@@ -27,7 +27,6 @@ public class CameraActivity extends AppCompatActivity {
     private static CameraActivity instance;
     private ArchitectView architectView;
     private ImageButton arguideButton;
-    private int flag = 0;       //アクセスポイントから
 
     /* 外部からcontextを参照するときに使う */
     protected static Context getInstance() {
@@ -163,14 +162,10 @@ public class CameraActivity extends AppCompatActivity {
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
 
-                //状態が変わったときだけ実行
-                if (flag == 1) {
-                    try {
-                        flag = 2;
-                        instance.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());  //AR表示
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    instance.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());  //AR表示
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
 
                 /* AR案内ボタンがクリックされた時の処理 */
@@ -191,14 +186,10 @@ public class CameraActivity extends AppCompatActivity {
                 // AR案内ボタンを非表示にする
                 arguideButton.setVisibility(View.GONE);
 
-                //状態が変わった瞬間だけ実行
-                if (flag == 2) {
-                    try {
-                        flag = 1;
-                        instance.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                try {
+                    instance.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
             }
         }
@@ -212,9 +203,7 @@ public class CameraActivity extends AppCompatActivity {
             this.architectView.onPostCreate();
 
             try {
-                flag = 1;
                 this.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());
-
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
