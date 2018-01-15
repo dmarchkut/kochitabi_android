@@ -13,11 +13,11 @@ public class AccessPointService extends Service {
     private Handler handler = new Handler();
     private String lastRaspberrypiNumber;
     private String nowRaspberrypiNumber;
-    private BluetoothAcqisition bluetoothAcqisition = new BluetoothAcqisition(CameraActivity.getInstance());
+    private BluetoothAcquisition bluetoothAcquisition = new BluetoothAcquisition(CameraActivity.getInstance());
 
     @Override
     public void onCreate() {
-        bluetoothAcqisition.beginSearchDevice();
+        bluetoothAcquisition.beginSearchDevice();
         lastRaspberrypiNumber = null;
     }
 
@@ -32,7 +32,7 @@ public class AccessPointService extends Service {
                 handler.post(new Runnable() {
                     public void run(){
                         // アクセスポイント内：raspberrypiNumber、外：nullを受け取る
-                        nowRaspberrypiNumber = bluetoothAcqisition.checkAccessPoint();
+                        nowRaspberrypiNumber = bluetoothAcquisition.checkAccessPoint();
                         // アクセスポイントに入ってとき、出たときの処理
                         if (lastRaspberrypiNumber != nowRaspberrypiNumber) {
                             lastRaspberrypiNumber = nowRaspberrypiNumber;
@@ -61,7 +61,7 @@ public class AccessPointService extends Service {
             timer.cancel();
             timer = null;
         }
-        bluetoothAcqisition.endSearchDevice();
+        bluetoothAcquisition.endSearchDevice();
     }
 
     @Override
