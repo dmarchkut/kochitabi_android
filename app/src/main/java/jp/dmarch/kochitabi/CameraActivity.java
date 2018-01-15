@@ -137,48 +137,48 @@ public class CameraActivity extends AppCompatActivity {
 
     /* サービスから値を受け取ったら動かしたい内容を書く */
     private Handler updateHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
+            @Override
+            public void handleMessage(Message msg) {
 
-            // データを受け取る
-            Bundle bundle = msg.getData();
-            String raspberrypiNumber = bundle.getString("raspberrypiNumber");
+                // データを受け取る
+                Bundle bundle = msg.getData();
+                String raspberrypiNumber = bundle.getString("raspberrypiNumber");
 
             /* アクセスポイント内にいる時の処理 */
-            if (raspberrypiNumber != null) {
-                // raspberrpiNumberに対応したAR案内情報を取得する
-                final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
+                if (raspberrypiNumber != null) {
+                    // raspberrpiNumberに対応したAR案内情報を取得する
+                    final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
 
-                // ARキャラクターの表示を行う
-                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
+                    // ARキャラクターの表示を行う
+                    WikitudeContentsFragment.setWikitudeContents(characterGuideData);
 
-                // Mapオブジェクトを分解する
-                final Object accessPointId = characterGuideData.get("access_point_id");
-                final Object characterName = characterGuideData.get("character_name");
-                final Object characterFilePath = characterGuideData.get("character_file_path");
-                final Object textData = characterGuideData.get("text_data");
+                    // Mapオブジェクトを分解する
+                    final Object accessPointId = characterGuideData.get("access_point_id");
+                    final Object characterName = characterGuideData.get("character_name");
+                    final Object characterFilePath = characterGuideData.get("character_file_path");
+                    final Object textData = characterGuideData.get("text_data");
 
-                //AR案内ボタンを表示させる
-                arguideButton.setVisibility(View.VISIBLE);
+                    //AR案内ボタンを表示させる
+                    arguideButton.setVisibility(View.VISIBLE);
                 /* AR案内ボタンがクリックされた時の処理 */
-                arguideButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // AugmentedGuideActivityに移動する
-                        Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
-                        intent.putExtra("access_point_id", accessPointId.toString());
-                        intent.putExtra("character_name", characterName.toString());
-                        intent.putExtra("character_file_path", characterFilePath.toString());
-                        intent.putExtra("text_data", textData.toString());
-                        startActivity(intent);
-                    }
-                });
+                    arguideButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // AugmentedGuideActivityに移動する
+                            Intent intent = new Intent(getApplication(), AugmentedGuideActivity.class);
+                            intent.putExtra("access_point_id", accessPointId.toString());
+                            intent.putExtra("character_name", characterName.toString());
+                            intent.putExtra("character_file_path", characterFilePath.toString());
+                            intent.putExtra("text_data", textData.toString());
+                            startActivity(intent);
+                        }
+                    });
             /* アクセスポイント外にいる時の処理 */
-            } else {
-                // AR案内ボタンを非表示にする
-                arguideButton.setVisibility(View.GONE);
+                } else {
+                    // AR案内ボタンを非表示にする
+                    arguideButton.setVisibility(View.GONE);
+                }
             }
-        }
     };
 
     @Override

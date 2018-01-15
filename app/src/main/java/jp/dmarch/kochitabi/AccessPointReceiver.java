@@ -6,6 +6,7 @@ import android.os.Message;
 import android.content.Context;
 import android.content.Intent;
 import android.content.BroadcastReceiver;
+import android.util.Log;
 
 public class AccessPointReceiver extends BroadcastReceiver {
     private Handler handler;
@@ -16,13 +17,12 @@ public class AccessPointReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         String raspberrypiNumber = bundle.getString("raspberrypiNumber");
 
-        // Activityに値を返す
-        if(handler != null){
-            Message msg = new Message();
-            Bundle data = new Bundle();
-            data.putString("raspberrypiNumber", raspberrypiNumber);
-            msg.setData(data);
-            handler.sendMessage(msg);
+        Log.d("Receiver", "start");
+
+        if (raspberrypiNumber != null) {
+            Log.d("Receiver", raspberrypiNumber);
+        } else {
+            Log.d("Reciver", "null");
         }
     }
 

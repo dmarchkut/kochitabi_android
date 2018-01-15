@@ -2,19 +2,16 @@ package jp.dmarch.kochitabi;
 
 import java.util.Calendar;
 import android.content.Context;
+import android.util.Log;
 
 public class BluetoothAcqisition {
     private Context context;
 
-    protected String checkAccessPoint() {
-        Calendar now = Calendar.getInstance(); //インスタンス化
-        int minute = now.get(now.MINUTE);     //分を取得
-        minute = minute % 2;
+    private Boolean isAccessPoint = false; // アクセスポイント内か
 
-        if (minute == 1) {
-            return "pi0001";
-        }
-        return null;
+    protected String checkAccessPoint() {
+        if (isAccessPoint) return "pi0001";
+        else return null;
     }
 
     public BluetoothAcqisition(Context context) {
@@ -22,7 +19,14 @@ public class BluetoothAcqisition {
     }
 
     public void beginSearchDevice() {
+        Log.d("Bluetooth", "beginSearchDevice");
     }
     public void endSearchDevice() {
+        Log.d("Bluetooth", "endSearchDevice");
+    }
+
+    // アクセスポイントの中に入ったり出たりする
+    public void changeAccessPoint() {
+        this.isAccessPoint = !(this.isAccessPoint);
     }
 }
