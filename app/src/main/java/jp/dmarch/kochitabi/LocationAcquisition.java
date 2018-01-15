@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -17,11 +18,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 
+import static android.content.Context.WIFI_SERVICE;
 import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
 
 /* 距離計算(getDistance)
  * https://qiita.com/a_nishimura/items/6c2642343c0af832acd4
+ * http://seesaawiki.jp/w/moonlight_aska/d/WiFi%A4%F2ON/OFF%A4%B9%A4%EB
  */
 
 
@@ -61,7 +64,6 @@ public class LocationAcquisition implements LocationListener {
 
         // Managerの設定
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
 
         // GPSが無効であればGPSエラーダイアログを表示
         if(!isLocationAcquisition()) {
@@ -168,7 +170,7 @@ public class LocationAcquisition implements LocationListener {
                     try {
 
                         // GPSを有効するまでの時間稼ぎ
-                        Thread.sleep(1500);
+                        Thread.sleep(2000);
 
                         // Wifiで過去に取得した最新の現在地を取得
                         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
