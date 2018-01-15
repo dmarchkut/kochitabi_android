@@ -1,7 +1,9 @@
 package jp.dmarch.kochitabi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +24,7 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
         bluetoothAcquisition = new BluetoothAcquisition(this);
-        //bluetoothAcquisition.beginSearchDevice(); // Bluetooth対応端末検索開始
+        bluetoothAcquisition.beginSearchDevice(); // Bluetooth対応端末検索開始
     }
 
     @Override
@@ -38,7 +40,7 @@ public class TestActivity extends AppCompatActivity {
         button_begin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bluetoothAcquisition.beginSearchDevice();
+                //bluetoothAcquisition.beginSearchDevice();
             }
         });
 
@@ -47,7 +49,8 @@ public class TestActivity extends AppCompatActivity {
         button_end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bluetoothAcquisition.endSearchDevice();
+                //bluetoothAcquisition.endSearchDevice();
+                finish();
             }
         });
 
@@ -79,17 +82,13 @@ public class TestActivity extends AppCompatActivity {
 
         });
 
-
-
-
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        //bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索終了
+        bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索終了
     }
 
 }

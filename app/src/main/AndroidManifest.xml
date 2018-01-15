@@ -30,22 +30,17 @@
 
         <!-- テスト用↓ -->
         <activity android:name=".TestActivity">
+        </activity>
+        <!-- テスト用↑ -->
+
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- テスト用↑ -->
-
-        <!-- <activity android:name=".HomeActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
-        <activity android:name=".SpotActivity"
+        <!--<activity android:name=".SpotActivity"
             android:label="@string/app_name" />
         <activity android:name=".SpotDetailActivity"
             android:label="@string/app_name" />

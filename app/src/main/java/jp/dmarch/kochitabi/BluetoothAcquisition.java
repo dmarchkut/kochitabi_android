@@ -82,9 +82,6 @@ public class BluetoothAcquisition {
 
                 String action = intent.getAction();
 
-                deviceList.put("pi"+ (new Random().nextInt(9) + 1), new Random().nextInt(30) + 1);
-                Log.d("deviceList", deviceList.toString());
-
                 // 端末を発見したとき、デバイスリストに追加
                 if (ACTION_FOUND.equals(action)) {
 
@@ -97,11 +94,6 @@ public class BluetoothAcquisition {
                         // 見つかった端末の電波強度を取得
                         int raspberrypiIntensity = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 
-
-                        /* デバッグ用↓ */
-                        Toast.makeText(context, "name: "+findingDeviceName + "\nintensity: "+raspberrypiIntensity, Toast.LENGTH_LONG).show();
-                        /* デバッグ用↑ */
-
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
 
@@ -110,16 +102,21 @@ public class BluetoothAcquisition {
                     // デバイス検索終了時
                 } else if (ACTION_DISCOVERY_FINISHED.equals(action)) {
 
-                    // レシーバの解除
-                    context.unregisterReceiver(broadcastReceiver);
+                    try {
 
-                    // endSearchDeviceから呼び出されてなければ
-                    if (restartFlag) {
+                        // レシーバの解除
+                        context.unregisterReceiver(broadcastReceiver);
 
-                        // もう一度開始
-                        context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
-                        bluetoothAdapter.startDiscovery(); // 端末の検索開始
+                        // endSearchDeviceから呼び出されてなければ
+                        if (restartFlag) {
 
+                            // もう一度開始
+                            context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
+                            bluetoothAdapter.startDiscovery(); // 端末の検索開始
+
+                        }
+                    } catch (Exception error) {
+                        error.printStackTrace();
                     }
 
                 }
