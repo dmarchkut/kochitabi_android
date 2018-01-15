@@ -51,7 +51,7 @@ import static android.util.Half.NaN;
  * http://db-event.jpn.org/deim2011/proceedings/pdf/b9-4.pdf
  */
 
-public class BluetoothAcqisition {
+public class BluetoothAcquisition {
 
     private Context context;
     private BluetoothAdapter bluetoothAdapter; // アダプタ
@@ -60,7 +60,7 @@ public class BluetoothAcqisition {
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
 
-    public BluetoothAcqisition(Context context) {
+    public BluetoothAcquisition(Context context) {
         this.context = context;
     }
 
