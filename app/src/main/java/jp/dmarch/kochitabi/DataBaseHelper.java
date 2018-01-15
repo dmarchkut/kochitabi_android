@@ -14,6 +14,7 @@ import java.util.Map;
 public class DataBaseHelper extends SQLiteOpenHelper {
     private Context context;
     private ServerExchange serverExchange;
+    private LocationAcquisition locationAcquisition;
 
     private final static String DB_NAME = "kochitabi_db";   // データベース名
     private final static int DB_VERSION = 1;    // データベースのバージョン
@@ -34,10 +35,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             = new String[] {"access_point_id", "character_name", "character_file_path",
                             "create_at", "update_at"};
 
+    // コンストラクタ
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
         serverExchange = new ServerExchange();
+        locationAcquisition = new LocationAcquisition(context);
     }
 
     // データベースがなかったときに場合に実行される
@@ -56,10 +59,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         setLocalDataBaseOption(db); // ４つのテーブル作成
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
-        setSpotTable(localDataBaseTables[0]); // ローカル観光地テーブルにデータを登録
-        setAccessPointTable(localDataBaseTables[1]); // ローカルアクセスポイントテーブルにデータを登録
-        setEnvironmentTable(localDataBaseTables[2]); // ローカル環境テーブルにデータを登録
-        setCharacterTable(localDataBaseTables[3]); // ローカルキャラクターテーブルにデータを登録
+        setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
+        setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
+        setEnvironmentTable(localDataBaseTables.get(2)); // ローカル環境テーブルにデータを登録
+        setCharacterTable(localDataBaseTables.get(3)); // ローカルキャラクターテーブルにデータを登録
     }
 
     /* ローカルDBの設定を行う */
@@ -368,6 +371,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     /* ローカル環境テーブルの特定の環境データを取得 */
     public Map<String, Object> getEnvironmentData(String environmentId) {
 
+        // 現在のローカル環境テーブルのデータが10秒以上たっていれば
+        // サーバからデータを取得する
+        if (isEnvironmentTableTime()) {
+            ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
+            setCharacterTable(environmentTableData);
+        }
+
         Map<String, Object> environmentData = new HashMap<String, Object>();
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
@@ -469,6 +479,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     /* ローカルキャラクターテーブルから特定のキャラクターデータを取得 */
     public Map<String, Object> getCharacterData(String accessPointId) {
 
+        // 現在のローカルキャラクターテーブルのデータが10秒以上たっていれば
+        // サーバからデータを取得する
+        if (isCharacterTableTime()) {
+            ArrayList<Map<String, Object>> characterTableData = serverExchange.getCharacterTable();
+            setCharacterTable(characterTableData);
+        }
+
         Map<String, Object> characterData = new HashMap<String, Object>();
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
@@ -521,7 +538,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             if ((currentLocation.length != 2) || (currentLocation[0] == null) || (currentLocation[1] == null)) return null;
 
             // 現在地と観光地の距離を計算
-            Double distance = LocationAcqisition.getDistance(currentLocation, spotLocation);
+            Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
 
             // 距離が計算できていなければnullを返す
             if (distance == null) return null;
@@ -537,7 +554,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     /* 案内テキストデータを付加したキャラクターデータを取得 */
-    public Map<String, Object> getCharacterGuide(String raspberrypiNumber) {
+    public Map<String, Object> getCharacterGuideData(String raspberrypiNumber) {
 
         Map<String, Object> characterGuideData;
 
