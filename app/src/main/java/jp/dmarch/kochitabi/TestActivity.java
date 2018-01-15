@@ -22,7 +22,7 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
         bluetoothAcquisition = new BluetoothAcquisition(this);
-        bluetoothAcquisition.beginSearchDevice(); // Bluetooth対応端末検索開始
+        //bluetoothAcquisition.beginSearchDevice(); // Bluetooth対応端末検索開始
     }
 
     @Override
@@ -32,6 +32,24 @@ public class TestActivity extends AppCompatActivity {
         final TextView textView_deviceList = findViewById(R.id.textView_deviceList);
         final TextView textView_intensity = findViewById(R.id.textView_intensity);
         final TextView textView_accessPointDevice = findViewById(R.id.textView_accessPointDevice);
+
+        // beginボタンを設定
+        Button button_begin = findViewById(R.id.button_begin);
+        button_begin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bluetoothAcquisition.beginSearchDevice();
+            }
+        });
+
+        // endボタンを設定
+        Button button_end = findViewById(R.id.button_end);
+        button_end.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bluetoothAcquisition.endSearchDevice();
+            }
+        });
 
         // アップデートボタンを設定
         Button button_update = findViewById(R.id.button_update);
@@ -63,13 +81,15 @@ public class TestActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索終了
+        //bluetoothAcquisition.endSearchDevice(); // Bluetooth対応端末検索終了
     }
 
 }

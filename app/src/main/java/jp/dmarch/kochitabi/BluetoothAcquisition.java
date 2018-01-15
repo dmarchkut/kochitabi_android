@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
@@ -31,6 +32,7 @@ public class BluetoothAcquisition {
     private BroadcastReceiver broadcastReceiver; // レシーバ
     private HashMap<String, Integer> deviceList; //  Bluetooth接続可能な端末のリスト
     IntentFilter filter; // 検索に用いるフィルタ
+    Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
 
@@ -40,8 +42,6 @@ public class BluetoothAcquisition {
 
     /* Bluetooth接続可能な端末の検索開始 */
     public void beginSearchDevice() {
-
-        Log.d("begin", "start method");
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
@@ -82,15 +82,14 @@ public class BluetoothAcquisition {
 
                 String action = intent.getAction();
 
+                deviceList.put("pi"+ (new Random().nextInt(9) + 1), new Random().nextInt(30) + 1);
+                Log.d("deviceList", deviceList.toString());
+
                 // 端末を発見したとき、デバイスリストに追加
                 if (ACTION_FOUND.equals(action)) {
 
                     BluetoothDevice findingDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); // 見つかった端末
                     String findingDeviceName = findingDevice.getName(); // 端末名を取得
-
-                    /******** テスト用↓  ********/
-                    Log.d("deviceName", findingDeviceName);
-                    /********　テスト用↑ ********/
 
                     // 端末名が取得できれば電波強度を取得し、端末リストに追加
                     if (findingDeviceName != null) {
@@ -98,10 +97,10 @@ public class BluetoothAcquisition {
                         // 見つかった端末の電波強度を取得
                         int raspberrypiIntensity = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
 
-                        /******** テスト用↓  ********/
-                        Log.d("intensity", String.valueOf(raspberrypiIntensity));
-                        Toast.makeText(context, "Name: "+findingDeviceName + "\nIntensity: "+raspberrypiIntensity, Toast.LENGTH_LONG).show();
-                        /********　テスト用↑ ********/
+
+                        /* デバッグ用↓ */
+                        Toast.makeText(context, "name: "+findingDeviceName + "\nintensity: "+raspberrypiIntensity, Toast.LENGTH_LONG).show();
+                        /* デバッグ用↑ */
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
@@ -111,9 +110,17 @@ public class BluetoothAcquisition {
                     // デバイス検索終了時
                 } else if (ACTION_DISCOVERY_FINISHED.equals(action)) {
 
-                    // もう一度開始
-                    context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
-                    bluetoothAdapter.startDiscovery(); // 端末の検索開始
+                    // レシーバの解除
+                    context.unregisterReceiver(broadcastReceiver);
+
+                    // endSearchDeviceから呼び出されてなければ
+                    if (restartFlag) {
+
+                        // もう一度開始
+                        context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
+                        bluetoothAdapter.startDiscovery(); // 端末の検索開始
+
+                    }
 
                 }
 
@@ -121,17 +128,16 @@ public class BluetoothAcquisition {
         };
 
         // 検索中であれば一度止める
-        endSearchDevice();
+        if (bluetoothAdapter.isDiscovering()) {
+            // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+            restartFlag = false;
+            bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
+        }
+
+        // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+        restartFlag = true;
 
         deviceList = new HashMap<String, Integer>(); // インスタンス化
-
-
-        /************ テスト用↓ *********************/
-        deviceList.put("pi0001", -30);
-        deviceList.put("aaa", -50);
-        deviceList.put("bbb", -30);
-        //deviceList.put("pi0002", -10);
-        /************ テスト用↑ *********************/
 
         filter = new IntentFilter(); // インテントフィルタを作成
         filter.addAction(ACTION_FOUND);
@@ -149,11 +155,14 @@ public class BluetoothAcquisition {
         // もし検索中なければ何もせずに終わる
         if (!(bluetoothAdapter.isDiscovering())) return;
 
+        // endSearchDeviceから呼び出されたことを示すフラグをtrueに
+        restartFlag = false;
+
         bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
 
     }
 
-    /* Bluetooh機能が有効であるかを判断 */
+    /* Bluetooth機能が有効であるかを判断 */
     private Boolean isBluetoothAcquisition() {
 
         // Bluetooth機能が有効ならtrue、無効ならfalse
