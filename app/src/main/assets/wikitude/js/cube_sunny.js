@@ -9,13 +9,13 @@ var World = {
     //AR描画
     createModelAtLocation: function createModelAtLocationFn() {
         //モデルの定義
-        var model = new AR.Model("assets/cube.wt3", {
+        var model = new AR.Model("assets/cube_sunny.wt3", {
             onLoaded: this.worldLoaded,
             //ARキャラの大きさ
             scale: {
-                x: 0.002,
-                y: 0.002,
-                z: 0.002
+                x: 0.001,
+                y: 0.001,
+                z: 0.001
             }
         });
 
