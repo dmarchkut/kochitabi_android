@@ -1,39 +1,50 @@
 package jp.dmarch.kochitabi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServerExchange {
 
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
-            = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address",
-            "latitude", "longitude", "photo_file_path", "text_data", "create_at", "update_at"};
+            = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address","postal_code",
+            "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"};
     private final static String environmentKeys[] // ローカル環境テーブルのレコードのキー
-            = new String[] {"environment_id", "weather", "temperature", "create_at", "update_at"};
+            = new String[] {"environment_id", "weather", "temperature", "created_at", "updated_at"};
     private final static String accessPointKeys[] // ローカルアクセスポイントテーブルのレコードのキー
             = new String[] {"access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
-            "raspberry_pi_number", "text_data", "create_at", "update_at"};
+            "raspberry_pi_number", "text_data", "created_at", "updated_at"};
     private final static String characterKeys[] // ローカルキャラクターテーブルのレコードのキー
             = new String[] {"access_point_id", "character_name", "character_file_path",
-            "create_at", "update_at"};
+            "created_at", "updated_at"};
 
     private final String[][] DBKeys = {spotKeys, environmentKeys, accessPointKeys, characterKeys};
 
+    Integer date = 100;
+    long time = sdf.parse("2018-01-16 02:17:00.624643").getTime();
+
 
     private Object spotDatas[]
-            = {"sp0001", "en0001", "高知工科大学", "高知県〇〇市", 1002345,
-                54.0, 325.0, "kut", "ここは高知工科大学です。", "2018-01-16 02:17:00.624643", "2018-01-16 02:17:30.35342"};
+            = {"sp0001", "en0001", "高知工科大学","コウチコウカダイガク", "高知県〇〇市", new Integer(1002345),
+                new Double(54.0), new Double(325.0), "kut", "ここは高知工科大学です。",date , date};
     private Object environmentDatas[]
-            = {"en0001", "晴", 10.5, "2018-01-10 02:17:00.624643", "2018-01-10 02:17:30.35342"};
+            = {"en0001", "晴", new Double(10.5), date, date};
     private Object accessPointDatas[]
-            = {"ac0001", "sp0001", "本館", 54.5, 326.2,
-               "pi0001", "どうもよろしくなのじゃ", "2018-02-16 02:17:00.624643", "2018-02-16 02:17:30.35342"};
+            = {"ac0001", "sp0001", "本館", new Double(54.5), new Double(326.2),
+               "pi0001", "どうもよろしくなのじゃ", date, date};
     private Object characterDatas[]
             = {"ac0001", "のじゃのじゃ", "noja",
-               "2018-01-20 02:17:00.624643", "2018-01-20 02:17:30.35342"};
+            date, date};
 
     private Object[][] datas = {spotDatas, environmentDatas, accessPointDatas, characterDatas};
+
+    public ServerExchange() throws ParseException {
+    }
 
     public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;
