@@ -36,11 +36,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
             = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code",
                             "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"};
-    private final static String environmentKeys[] // ローカル環境テーブルのレコードのキー
-            = new String[] {"environment_id", "weather", "temperature", "created_at", "updated_at"};
     private final static String accessPointKeys[] // ローカルアクセスポイントテーブルのレコードのキー
             = new String[] {"access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
-                            "raspberry_pi_number", "text_data", "created_at", "updated_at"};
+            "raspberry_pi_number", "text_data", "created_at", "updated_at"};
+    private final static String environmentKeys[] // ローカル環境テーブルのレコードのキー
+            = new String[] {"environment_id", "weather", "temperature", "created_at", "updated_at"};
     private final static String characterKeys[] // ローカルキャラクターテーブルのレコードのキー
             = new String[] {"access_point_id", "character_name", "character_file_path",
                             "created_at", "updated_at"};
@@ -71,8 +71,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
 
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
-        setEnvironmentTable(localDataBaseTables.get(1)); // ローカル環境テーブルにデータを登録
-        setAccessPointTable(localDataBaseTables.get(2)); // ローカルアクセスポイントテーブルにデータを登録
+        setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
+        setEnvironmentTable(localDataBaseTables.get(2)); // ローカル環境テーブルにデータを登録
         setCharacterTable(localDataBaseTables.get(3)); // ローカルキャラクターテーブルにデータを登録
     }
 
@@ -95,16 +95,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +");"
         );
 
-        // ローカル環境テーブルを作成
-        db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
-                +environmentKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
-                +environmentKeys[1]+" TEXT ,"
-                +environmentKeys[2]+" REAL ,"
-                +environmentKeys[3]+" TEXT NOT NULL ,"
-                +environmentKeys[4]+" TEXT NOT NULL"
-                +");"
-        );
-
         // ローカルアクセスポイントテーブルを作成
         db.execSQL("CREATE TABLE "+ACCESS_POINT_TABLE_NAME+" ("
                 +accessPointKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
@@ -116,6 +106,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +accessPointKeys[6]+" TEXT NOT NULL ,"
                 +accessPointKeys[7]+" TEXT NOT NULL ,"
                 +accessPointKeys[8]+" TEXT NOT NULL"
+                +");"
+        );
+
+        // ローカル環境テーブルを作成
+        db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
+                +environmentKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
+                +environmentKeys[1]+" TEXT ,"
+                +environmentKeys[2]+" REAL ,"
+                +environmentKeys[3]+" TEXT NOT NULL ,"
+                +environmentKeys[4]+" TEXT NOT NULL"
                 +");"
         );
 
@@ -180,51 +180,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.close(); // データベースと接続
     }
 
-    /* ローカルDBのローカル環境テーブルを登録 */
-    private void setEnvironmentTable(ArrayList<Map<String, Object>> environmentTable) {
-
-        SQLiteDatabase db = this.getWritableDatabase(); // データベースと接続
-
-        ContentValues insertValues; // 追加するデータ
-        Boolean insertFlag; // 追加しても良いレコードか否か
-
-        for (Map<String, Object> environmentData: environmentTable) {
-
-            // 1つのレコードの追加準備
-            insertValues = new ContentValues();
-            insertFlag = true;
-
-            for (String key: environmentData.keySet()) {
-                Object obj = environmentData.get(key);
-                // Object型からそれぞれの型に変換し、追加データとして設定
-                if (obj instanceof String) insertValues.put(key, (String)obj);
-                else if (obj instanceof Double) insertValues.put(key, (Double)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
-                else {
-                    insertFlag = false; // 追加してはいけないデータとして設定
-                    break;
-                }
-            }
-
-            // すべてのキーの要素を設定できたか確認
-            for (String key: environmentKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
-            }
-
-            // キーの要素数が適切か確認
-            if (insertValues.size() != environmentKeys.length) insertFlag = false;
-
-            // レコードの追加
-            if (insertFlag) {
-                try {
-                    db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
-                }
-                catch (Error error) {}
-            }
-        }
-        db.close(); // データベースと接続
-    }
-
     /* ローカルDBのローカルアクセスポイントテーブルを登録 */
     private void setAccessPointTable(ArrayList<Map<String, Object>> accessPointTable) {
 
@@ -263,6 +218,51 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             if (insertFlag) {
                 try {
                     db.insert(ACCESS_POINT_TABLE_NAME, null, insertValues);
+                }
+                catch (Error error) {}
+            }
+        }
+        db.close(); // データベースと接続
+    }
+
+    /* ローカルDBのローカル環境テーブルを登録 */
+    private void setEnvironmentTable(ArrayList<Map<String, Object>> environmentTable) {
+
+        SQLiteDatabase db = this.getWritableDatabase(); // データベースと接続
+
+        ContentValues insertValues; // 追加するデータ
+        Boolean insertFlag; // 追加しても良いレコードか否か
+
+        for (Map<String, Object> environmentData: environmentTable) {
+
+            // 1つのレコードの追加準備
+            insertValues = new ContentValues();
+            insertFlag = true;
+
+            for (String key: environmentData.keySet()) {
+                Object obj = environmentData.get(key);
+                // Object型からそれぞれの型に変換し、追加データとして設定
+                if (obj instanceof String) insertValues.put(key, (String)obj);
+                else if (obj instanceof Double) insertValues.put(key, (Double)obj);
+                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
+                else {
+                    insertFlag = false; // 追加してはいけないデータとして設定
+                    break;
+                }
+            }
+
+            // すべてのキーの要素を設定できたか確認
+            for (String key: environmentKeys) {
+                if (!(insertValues.containsKey(key))) insertFlag = false;
+            }
+
+            // キーの要素数が適切か確認
+            if (insertValues.size() != environmentKeys.length) insertFlag = false;
+
+            // レコードの追加
+            if (insertFlag) {
+                try {
+                    db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -493,49 +493,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return spotText;
     }
 
-    /* ローカル環境テーブルの特定の環境データを取得 */
-    public Map<String, Object> getEnvironmentData(String environmentId) {
-
-        // 現在のローカル環境テーブルのデータが10秒以上たっていれば
-        // サーバからデータを取得する
-        if (isEnvironmentTableTime()) {
-            ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
-            updateCharacterTable(environmentTableData);
-        }
-
-        Map<String, Object> environmentData = new HashMap<String, Object>();
-        SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
-
-        try {
-            // ローカル環境テーブルの特定の環境データを取得
-            Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
-                                        new String[] {"environment_id", "weather", "temperature"},
-                                        "environment_id == ?",
-                                        new String[] {environmentId},
-                                        null, null, null
-            );
-
-            // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
-                cursor.close();
-                return null;
-            }
-
-            cursor.moveToFirst(); // カーソルを一番最初に持ってくる
-
-            environmentData.put("environment_id", cursor.getString(cursor.getColumnIndex("environment_id")));
-            environmentData.put("weather", cursor.getString(cursor.getColumnIndex("weather")));
-            environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
-
-            cursor.close();
-        }
-        finally {
-            db.close(); // DBを切断
-        }
-
-        return environmentData;
-    }
-
     /* ローカルアクセスポイントテーブルから特定の観光地内のAPの座標を取得 */
     public ArrayList<Double[]> getAccessPointLocations(String spotId) {
 
@@ -610,6 +567,49 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
 
         return accessPointGuide;
+    }
+
+    /* ローカル環境テーブルの特定の環境データを取得 */
+    public Map<String, Object> getEnvironmentData(String environmentId) {
+
+        // 現在のローカル環境テーブルのデータが10秒以上たっていれば
+        // サーバからデータを取得する
+        if (isEnvironmentTableTime()) {
+            ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
+            updateCharacterTable(environmentTableData);
+        }
+
+        Map<String, Object> environmentData = new HashMap<String, Object>();
+        SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
+
+        try {
+            // ローカル環境テーブルの特定の環境データを取得
+            Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
+                    new String[] {"environment_id", "weather", "temperature"},
+                    "environment_id == ?",
+                    new String[] {environmentId},
+                    null, null, null
+            );
+
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
+            cursor.moveToFirst(); // カーソルを一番最初に持ってくる
+
+            environmentData.put("environment_id", cursor.getString(cursor.getColumnIndex("environment_id")));
+            environmentData.put("weather", cursor.getString(cursor.getColumnIndex("weather")));
+            environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
+
+            cursor.close();
+        }
+        finally {
+            db.close(); // DBを切断
+        }
+
+        return environmentData;
     }
 
     /* ローカルキャラクターテーブルから特定のキャラクターデータを取得 */
