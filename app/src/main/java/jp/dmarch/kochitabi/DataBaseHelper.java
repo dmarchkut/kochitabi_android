@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,8 +17,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private ServerExchange serverExchange;
     private LocationAcquisition locationAcquisition;
 
-    private final static String DB_NAME = "kochitabi_db";   // データベース名
-    private final static int DB_VERSION = 1;    // データベースのバージョン
+    private final static String DB_NAME = "kochitabi";   // データベース名
+    private final static int DB_VERSION = 2;    // データベースのバージョン
     private final static String SPOT_TABLE_NAME = "local_spots"; // ローカル観光地テーブルの名前
     private final static String ACCESS_POINT_TABLE_NAME = "local_access_points"; // ローカルアクセスポイントテーブルの名前
     private final static String ENVIRONMENT_TABLE_NAME = "local_environments"; // ローカル環境テーブルの名前
@@ -38,15 +39,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     // コンストラクタ
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        Log.d("DB", "start constracter");
         this.context = context;
-        serverExchange = new ServerExchange();
-        locationAcquisition = new LocationAcquisition(context);
+        //serverExchange = new ServerExchange();
+        //locationAcquisition = new LocationAcquisition(context);
     }
 
     // データベースがなかったときに場合に実行される
     @Override
     public void onCreate(SQLiteDatabase db) {
-        setRegisterData(db);
+        Log.d("DB", "start onCreate");
+
+        db.execSQL("create table person(" + " name text not null," + "age text"+ ");");
+        //setRegisterData(db);
     }
 
     // データベースをアップグレードする場合に実行される
@@ -56,19 +61,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /* 4つのデータテーブルを取得し、ローカルDBに登録 */
     public void setRegisterData(SQLiteDatabase db) {
-        setLocalDataBaseOption(db); // ４つのテーブル作成
+        Log.d("setRegisterData", "start method");
+        //setLocalDataBaseOption(db); // ４つのテーブル作成
         // サーバから4つのテーブルデータを取得
-        ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
+        /*ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
         setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
         setEnvironmentTable(localDataBaseTables.get(2)); // ローカル環境テーブルにデータを登録
-        setCharacterTable(localDataBaseTables.get(3)); // ローカルキャラクターテーブルにデータを登録
+        setCharacterTable(localDataBaseTables.get(3)); // ローカルキャラクターテーブルにデータを登録*/
     }
 
     /* ローカルDBの設定を行う */
     private void setLocalDataBaseOption(SQLiteDatabase db){
         // ローカル観光地テーブルを作成
-        db.execSQL("CREATE TABLE "+SPOT_TABLE_NAME+" ("
+        /*db.execSQL("CREATE TABLE "+SPOT_TABLE_NAME+" ("
                 +spotKeys[0]+" TEXT PRIMARY KEY NOT NULL,"
                 +spotKeys[1]+" TEXT NOT NULL ,"
                 +spotKeys[2]+" TEXT NOT NULL ,"
@@ -81,20 +87,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +spotKeys[9]+" INTEGER NOT NULL ,"
                 +spotKeys[10]+" INTEGER NOT NULL"
                 +");"
-        );
+        );*/
 
         // ローカル環境テーブルを作成
-        db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
+        /*db.execSQL("CREATE TABLE "+ENVIRONMENT_TABLE_NAME+" ("
                 +environmentKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
                 +environmentKeys[1]+" TEXT ,"
                 +environmentKeys[2]+" REAL ,"
                 +environmentKeys[3]+" INTEGER NOT NULL ,"
                 +environmentKeys[4]+" INTEGER NOT NULL"
                 +");"
-        );
+        );*/
 
         // ローカルアクセスポイントテーブルを作成
-        db.execSQL("CREATE TABLE "+ACCESS_POINT_TABLE_NAME+" ("
+        /*db.execSQL("CREATE TABLE "+ACCESS_POINT_TABLE_NAME+" ("
                 +accessPointKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
                 +accessPointKeys[1]+" TEXT NOT NULL ,"
                 +accessPointKeys[2]+" TEXT NOT NULL ,"
@@ -105,17 +111,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +accessPointKeys[7]+" INTEGER NOT NULL ,"
                 +accessPointKeys[8]+" INTEGER NOT NULL"
                 +");"
-        );
+        );*/
 
         // ローカルキャラクターテーブルを作成
-        db.execSQL("CREATE TABLE "+CHARACTER_TABLE_NAME+" ("
+        /*db.execSQL("CREATE TABLE "+CHARACTER_TABLE_NAME+" ("
                 +characterKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
                 +characterKeys[1]+" TEXT NOT NULL ,"
                 +characterKeys[2]+" TEXT NOT NULL ,"
                 +characterKeys[3]+" INTEGER NOT NULL ,"
                 +characterKeys[4]+" INTEGER NOT NULL"
                 +");"
-        );
+        );*/
 
     }
 
