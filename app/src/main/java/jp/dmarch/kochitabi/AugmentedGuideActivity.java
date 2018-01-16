@@ -12,14 +12,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.TextView;
 
-import java.util.Map;
-import java.util.HashMap;
-
 import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.architect.ArchitectView;
 
 public class AugmentedGuideActivity extends AppCompatActivity {
-    Map<String, Object> characterGuideData;
     private ArchitectView architectView;
     private TextView name;
     private TextView message;
@@ -37,13 +33,6 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         final String characterName = (String)intent.getStringExtra("character_name");
         final String characterFilePath = (String)intent.getStringExtra("character_file_path");
         final String textData = (String)intent.getStringExtra("text_data");
-
-        characterGuideData = new HashMap<String, Object>(); // インスタンス化
-        /* characterGuideDataの復元 */
-        characterGuideData.put("access_point_id", accessPointId);
-        characterGuideData.put("character_name", characterName);
-        characterGuideData.put("character_file_path", characterFilePath);
-        characterGuideData.put("text_data", textData);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
 
@@ -151,12 +140,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             Bundle bundle = msg.getData();
             String raspberrypiNumber = bundle.getString("raspberrypiNumber");
 
-            /* アクセスポイント内にいる時の処理 */
-            if (raspberrypiNumber != null) {
-                // ARキャラクターの表示を行う
-                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
-            } else {
-                /* アクセスポイント外に出た時の処理 */
+            /* アクセスポイント外に出た時の処理 */
+            if (raspberrypiNumber == null) {
                 outScreen();
             }
         }
@@ -197,21 +182,5 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-    }
-
-    @Override
-    protected  void onStart() {
-        super.onStart();
-        // サービスクラスを開始する
-        Intent intent = new Intent(getApplication(), AccessPointService.class);
-        startService(intent);
-    }
-
-    @Override
-    protected  void onStop() {
-        super.onStop();
-        // サービスクラスを終了する
-        Intent intent = new Intent(getApplication(), AccessPointService.class);
-        stopService(intent);
     }
 }

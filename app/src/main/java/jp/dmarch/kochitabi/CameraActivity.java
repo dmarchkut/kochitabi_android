@@ -203,9 +203,6 @@ public class CameraActivity extends AppCompatActivity {
                 // raspberrpiNumberに対応したAR案内情報を取得する
                 final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
 
-                // ARキャラクターの表示を行う
-                WikitudeContentsFragment.setWikitudeContents(characterGuideData);
-
                 // Mapオブジェクトを分解する
                 final Object accessPointId = characterGuideData.get("access_point_id");
                 final Object characterName = characterGuideData.get("character_name");
@@ -213,11 +210,7 @@ public class CameraActivity extends AppCompatActivity {
                 final Object textData = characterGuideData.get("text_data");
 
                 // ARキャラクターの描画処理
-                try {
-                    instance.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());  //AR表示
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                addCharacter(characterFilePath.toString());
 
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
@@ -240,14 +233,30 @@ public class CameraActivity extends AppCompatActivity {
                 arguideButton.setVisibility(View.GONE);
 
                 // ARキャラクターの削除処理
-                try {
-                    instance.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                deleteCharacter();
             }
         }
     };
+
+    /* ARキャラクターの追加を行う */
+    private void addCharacter(String characterFilePath) {
+        // ARキャラクターの描画処理
+        try {
+            architectView.load(WikitudeContentsFragment.getArchitectWorldPath(characterFilePath));  //AR表示
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /* ARキャラクターの削除を行う */
+    private void deleteCharacter() {
+        // ARキャラクターの削除処理
+        try {
+            architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     @Override
     protected void onPostCreate(final Bundle savedInstanceState) {
@@ -255,11 +264,8 @@ public class CameraActivity extends AppCompatActivity {
         if ( this.architectView != null ) {
             // call mandatory live-cycle method of architectView
             this.architectView.onPostCreate();
-            try {
-                this.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            // AR表示のためにHTMLファイルを指定
+            deleteCharacter();
         }
     }
 
