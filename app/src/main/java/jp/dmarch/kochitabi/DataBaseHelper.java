@@ -426,6 +426,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         null, null, null
                                     );
 
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
             boolean isEof = cursor.moveToFirst(); // カーソルを一番最初に持ってくる
 
             // 観光地データを追加
@@ -451,19 +457,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             db.close(); // DBを切断
         }
 
-        // データが一つもなければnullを返す
-        if (spotsData.size() == 0) {
-            Log.d("getSpot", "no data");
-            return null;
-        }
-
         return  spotsData;
     }
 
     /* ローカル観光地テーブルからローカルテキストデータ取得 */
     public String getSpotText(String spotId) {
 
-        String spotText = null;
+        String spotText;
 
         SQLiteDatabase db = this.getWritableDatabase(); // DBへ接続
 
@@ -475,6 +475,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         new String[] {spotId},
                                         null, null, null
             );
+
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
             // 観光地テキストデータを取得
@@ -510,6 +516,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         null, null, null
             );
 
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
 
             environmentData.put("environment_id", cursor.getString(cursor.getColumnIndex("environment_id")));
@@ -521,9 +533,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         finally {
             db.close(); // DBを切断
         }
-
-        // データが一つもなければnullを返す
-        if (environmentData.size() == 0) return null;
 
         return environmentData;
     }
@@ -544,6 +553,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         null, null, null
             );
 
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
             Boolean isEof = cursor.moveToFirst(); // カーソルを一番最初に持ってくる
             // 観光地データを追加
             while(isEof) {
@@ -559,9 +574,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         finally {
             db.close(); // DBを切断
         }
-
-        // データが一つもなければnullを返す
-        if (accessPointLocations.size() == 0) return null;
 
         return accessPointLocations;
     }
@@ -581,6 +593,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         null, null, null
             );
 
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
 
             accessPointGuide.put("access_point_id", cursor.getString(cursor.getColumnIndex("access_point_id")));
@@ -591,9 +609,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         finally {
             db.close(); // DBを切断
         }
-
-        // データが一つもなければnullを返す
-        if (accessPointGuide.size() == 0) return null;
 
         return accessPointGuide;
     }
@@ -620,6 +635,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         null, null, null
             );
 
+            // 取得した数が0個であれば終了
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
+
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
 
             characterData.put("access_point_id", cursor.getString(cursor.getColumnIndex("access_point_id")));
@@ -631,9 +652,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         finally {
             db.close(); // DBを切断
         }
-
-        // データが一つもなければnullを返す
-        if (characterData.size() == 0) return null;
 
         return characterData;
     }
@@ -710,6 +728,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                         "1"
             );
 
+            // 取得した数が0個であれば取得
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return true;
+            }
+
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
             // ローカル環境テーブルのレコードの更新時間を取得
             Calendar updateTime = Calendar.getInstance();
@@ -748,6 +772,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     null, null, "access_point_id DESC",
                     "1"
             );
+
+            // 取得した数が0個であれば取得
+            if (cursor.getColumnCount() == 0) {
+                cursor.close();
+                return null;
+            }
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
             // ローカルキャラクターテーブルのレコードの更新時間を取得
