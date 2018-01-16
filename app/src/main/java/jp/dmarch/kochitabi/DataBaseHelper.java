@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,8 +90,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +spotKeys[7]+" REAL NOT NULL ,"
                 +spotKeys[8]+" TEXT NOT NULL ,"
                 +spotKeys[9]+" TEXT NOT NULL ,"
-                +spotKeys[10]+" INTEGER NOT NULL ,"
-                +spotKeys[11]+" INTEGER NOT NULL"
+                +spotKeys[10]+" TEXT NOT NULL ,"
+                +spotKeys[11]+" TEXT NOT NULL"
                 +");"
         );
 
@@ -97,8 +100,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +environmentKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
                 +environmentKeys[1]+" TEXT ,"
                 +environmentKeys[2]+" REAL ,"
-                +environmentKeys[3]+" INTEGER NOT NULL ,"
-                +environmentKeys[4]+" INTEGER NOT NULL"
+                +environmentKeys[3]+" TEXT NOT NULL ,"
+                +environmentKeys[4]+" TEXT NOT NULL"
                 +");"
         );
 
@@ -111,8 +114,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +accessPointKeys[4]+" REAL NOT NULL ,"
                 +accessPointKeys[5]+" TEXT NOT NULL ,"
                 +accessPointKeys[6]+" TEXT NOT NULL ,"
-                +accessPointKeys[7]+" INTEGER NOT NULL ,"
-                +accessPointKeys[8]+" INTEGER NOT NULL"
+                +accessPointKeys[7]+" TEXT NOT NULL ,"
+                +accessPointKeys[8]+" TEXT NOT NULL"
                 +");"
         );
 
@@ -121,8 +124,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 +characterKeys[0]+" TEXT PRIMARY KEY NOT NULL ,"
                 +characterKeys[1]+" TEXT NOT NULL ,"
                 +characterKeys[2]+" TEXT NOT NULL ,"
-                +characterKeys[3]+" INTEGER NOT NULL ,"
-                +characterKeys[4]+" INTEGER NOT NULL"
+                +characterKeys[3]+" TEXT NOT NULL ,"
+                +characterKeys[4]+" TEXT NOT NULL"
                 +");"
         );
 
@@ -732,8 +735,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
             // ローカル環境テーブルのレコードの更新時間を取得
+            SimpleDateFormat format = new SimpleDateFormat(ServerExchange.DATE_FORMAT);
             Calendar updateTime = Calendar.getInstance();
-            updateTime.setTimeInMillis(cursor.getInt(cursor.getColumnIndex("updated_at")));
+            Date date = format.parse(cursor.getString(cursor.getColumnIndex("updated_at")));
+            updateTime.setTimeInMillis(date.getTime());
             cursor.close();
 
             // 現在時間を取得
@@ -744,8 +749,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // (now >= update+10分なら更新)
             if (nowTime.compareTo(updateTime) >= 0) timeCourse = true;
 
-        }
-        finally {
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
             db.close(); // DBを切断
         }
 
@@ -776,9 +782,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
+
             // ローカルキャラクターテーブルのレコードの更新時間を取得
+            SimpleDateFormat format = new SimpleDateFormat(ServerExchange.DATE_FORMAT);
             Calendar updateTime = Calendar.getInstance();
-            updateTime.setTimeInMillis(cursor.getInt(cursor.getColumnIndex("updated_at")));
+            Date date = format.parse(cursor.getString(cursor.getColumnIndex("updated_at")));
+            updateTime.setTimeInMillis(date.getTime());
             cursor.close();
 
             // 現在時間を取得
@@ -789,8 +798,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // (now >= update+10分なら更新)
             if (nowTime.compareTo(updateTime) >= 0) timeCourse = true;
 
-        }
-        finally {
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
             db.close(); // DBを切断
         }
 

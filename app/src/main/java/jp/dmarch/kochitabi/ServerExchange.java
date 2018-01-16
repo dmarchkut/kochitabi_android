@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ServerExchange {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
             = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address","postal_code",
@@ -25,9 +25,7 @@ public class ServerExchange {
 
     private final String[][] DBKeys = {spotKeys, environmentKeys, accessPointKeys, characterKeys};
 
-    Integer date = 100;
-    //long time = sdf.parse("2018-01-16 02:17:00.624643").getTime();
-
+    String date = "2018-01-16 02:17:00.624643";
 
     private Object spotDatas[]
             = {"sp0001", "en0001", "高知工科大学","コウチコウカダイガク", "高知県〇〇市", new Integer(1002345),
