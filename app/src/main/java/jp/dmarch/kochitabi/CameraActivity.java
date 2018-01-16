@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Map;
 
 import com.wikitude.architect.ArchitectView;
@@ -211,6 +212,13 @@ public class CameraActivity extends AppCompatActivity {
                 final Object characterFilePath = characterGuideData.get("character_file_path");
                 final Object textData = characterGuideData.get("text_data");
 
+                // ARキャラクターの描画処理
+                try {
+                    instance.architectView.load(WikitudeContentsFragment.getArchitectWorldPath());  //AR表示
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
                 /* AR案内ボタンがクリックされた時の処理 */
@@ -230,6 +238,13 @@ public class CameraActivity extends AppCompatActivity {
             } else {
                 // AR案内ボタンを非表示にする
                 arguideButton.setVisibility(View.GONE);
+
+                // ARキャラクターの削除処理
+                try {
+                    instance.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     };
@@ -240,6 +255,11 @@ public class CameraActivity extends AppCompatActivity {
         if ( this.architectView != null ) {
             // call mandatory live-cycle method of architectView
             this.architectView.onPostCreate();
+            try {
+                this.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
