@@ -32,18 +32,18 @@ public class ServerExchange {
     // ローカルDBのデータを取得するためのAPIに共通するURL部分
     private final static String API_URL = "https://lit-springs-17205.herokuapp.com/api/";
 
-    // ローカル環境テーブルの名前
+    // ローカル観光地テーブルの名前
     private final static String SPOT_TABLE_NAME = "local_spot";
+    // ローカルアクセスポイントテーブルの名前
+    private final static String ACCESS_POINT_TABLE_NAME = "local_access_point";
     // ローカル環境テーブルの名前
     private final static String ENVIRONMENT_TABLE_NAME = "local_environment";
-    // ローカル環境テーブルの名前
-    private final static String ACCESS_POINT_TABLE_NAME = "local_access_point";
     // ローカルキャラクターテーブルの名前
     private final static String CHARACTER_TABLE_NAME = "local_character";
 
     // ローカルデータベースのテーブル
     private final static String[] LOCAL_DATABASE_TABLES = {
-            /*SPOT_TABLE_NAME, */ENVIRONMENT_TABLE_NAME, ACCESS_POINT_TABLE_NAME, CHARACTER_TABLE_NAME
+            /*SPOT_TABLE_NAME, */ACCESS_POINT_TABLE_NAME, ENVIRONMENT_TABLE_NAME, CHARACTER_TABLE_NAME
     };
 
     // キーに対応するデータの種類
