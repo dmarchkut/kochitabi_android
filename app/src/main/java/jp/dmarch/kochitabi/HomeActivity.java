@@ -29,6 +29,7 @@ public class HomeActivity extends AppCompatActivity {
         setTitle("こちたびAR"); // ウインドウタイトルを「こちたびAR」に変更
 
         dataBaseHelper = new DataBaseHelper(this); // DataBaseHelperのインスタンス化
+        dataBaseHelper.setRegisterData();
 
         // 観光地一覧(SpotActivity)に飛ぶボタンの設定
         ImageButton sendSpotButton = (ImageButton) findViewById(R.id.imageSpotButton); // 観光地一覧ボタン
@@ -145,7 +146,6 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-
         spotNameText.setText(spotName); // 観光地名の表示
 
         // 写真の表示
