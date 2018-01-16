@@ -1,69 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="jp.dmarch.kochitabi.HomeActivity">
 
-    <ImageButton
-        android:id="@+id/imageSpotButton"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="95dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54"
-        app:srcCompat="@drawable/home_choose_spot" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/imageCameraButton"
-        android:layout_width="fill_parent"
-        android:layout_height="95dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.778"
-        app:srcCompat="@drawable/home_choose_camera" />
 
-    <ImageButton
-        android:id="@+id/imageMapButton"
-        android:layout_width="fill_parent"
-        android:layout_height="95dp"
-        android:layout_marginTop="416dp"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:scaleType="fitXY"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/home_choose_map" />
+        <ImageView
+            android:id="@+id/spotImageView"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5"
+            android:adjustViewBounds="true"/>
 
-    <ImageView
-        android:id="@+id/spotImageView"
-        android:layout_width="fill_parent"
-        android:layout_height="220dp"
-        android:scaleType="fitCenter" />
+        <TextView
+            android:id="@+id/spotNameTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:background="#7fffffff"
+            android:textAlignment="center"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:layout_marginTop="-40dp"/>
 
-    <TextView
-        android:id="@+id/spotNameTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="168dp"
-        android:background="#7fffffff"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageMapButton"
-        app:layout_constraintTop_toTopOf="@+id/spotImageView"
-        app:layout_constraintVertical_bias="0.016" />
+
+        <ImageButton
+            android:id="@+id/imageSpotButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1.3"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/home_choose_spot" />
+
+        <ImageButton
+            android:id="@+id/imageCameraButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1.3"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/home_choose_camera" />
+
+        <ImageButton
+            android:id="@+id/imageMapButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1.3"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/home_choose_map" />
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
 
