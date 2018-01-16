@@ -26,7 +26,7 @@ public class ServerExchange {
     private final String[][] DBKeys = {spotKeys, environmentKeys, accessPointKeys, characterKeys};
 
     Integer date = 100;
-    long time = sdf.parse("2018-01-16 02:17:00.624643").getTime();
+    //long time = sdf.parse("2018-01-16 02:17:00.624643").getTime();
 
 
     private Object spotDatas[]
@@ -43,8 +43,7 @@ public class ServerExchange {
 
     private Object[][] datas = {spotDatas, environmentDatas, accessPointDatas, characterDatas};
 
-    public ServerExchange() throws ParseException {
-    }
+    public ServerExchange() {}
 
     public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;

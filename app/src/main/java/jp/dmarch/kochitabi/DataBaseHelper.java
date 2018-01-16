@@ -46,11 +46,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
-        try {
-            serverExchange = new ServerExchange();
-        } catch (Exception error) {
-            error.printStackTrace();
-        }
+        serverExchange = new ServerExchange();
         locationAcquisition = new LocationAcquisition(context);
     }
 
