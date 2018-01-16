@@ -711,7 +711,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     /* ローカル環境テーブルの更新の可否を判定 */
-    public Boolean isEnvironmentTableTime() {
+    private Boolean isEnvironmentTableTime() {
 
         Boolean timeCourse = false;
 
@@ -759,7 +759,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     /* ローカルキャラクターテーブルの更新の可否を判定 */
-    public Boolean isCharacterTableTime() {
+    private Boolean isCharacterTableTime() {
 
         Boolean timeCourse = false;
 
