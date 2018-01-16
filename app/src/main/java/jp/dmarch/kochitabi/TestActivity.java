@@ -9,9 +9,6 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * Created by monki on 2018/01/12.
- */
 
 public class TestActivity extends AppCompatActivity {
 
@@ -22,15 +19,18 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-         serverExchange = new ServerExchange();
+         serverExchange = new ServerExchange(); // インスタンス化
 
+        // 取得したデータを表示するEditText
         final EditText editText = findViewById(R.id.editText);
 
+        // すべてのデータを取得するボタン
         Button spotButton = findViewById(R.id.local_db_button);
         spotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                // すべてのデータを取得
                 ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;
                 localDataBaseTables = serverExchange.getLocalDataBaseOption();
 
@@ -44,6 +44,7 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
+        // 環境テーブルデータを取得するボタン
         final Button environmentButton = findViewById(R.id.environment_button);
         environmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +63,7 @@ public class TestActivity extends AppCompatActivity {
             }
         });
 
+        // キャラクターテーブルデータを取得するボタン
         Button characterButton = findViewById(R.id.character_button);
         characterButton.setOnClickListener(new View.OnClickListener() {
             @Override

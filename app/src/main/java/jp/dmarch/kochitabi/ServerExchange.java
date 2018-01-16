@@ -1,9 +1,5 @@
 package jp.dmarch.kochitabi;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,15 +8,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,34 +41,17 @@ public class ServerExchange {
     // ローカルキャラクターテーブルの名前
     private final static String CHARACTER_TABLE_NAME = "local_character";
 
-    // テーブルのキー(観光地、環境、アクセスポイント、キャラクター)
-    private final static String[][] TABLE_KEYS = {
-            new String[] {  "spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code",
-                            "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"},
-            new String[] {  "environment_id", "weather", "temperature", "created_at", "updated_at"},
-            new String[] {  "access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
-                            "raspberry_pi_number", "text_data", "created_at", "updated_at"},
-            new String[] {  "access_point_id", "character_name", "character_file_path", "text_data", "created_at", "updated_at"}
-    };
-
     // ローカルデータベースのテーブル
     private final static String[] LOCAL_DATABASE_TABLES = {
-            /*SPOT_TABLE_NAME, */ACCESS_POINT_TABLE_NAME, ENVIRONMENT_TABLE_NAME, CHARACTER_TABLE_NAME
+            /*SPOT_TABLE_NAME, */ENVIRONMENT_TABLE_NAME, ACCESS_POINT_TABLE_NAME, CHARACTER_TABLE_NAME
     };
 
     // キーに対応するデータの種類
     private final static String[] DOUBLE_DATA = {"latitude", "longitude", "temperature"};
     private final static String[] INTEGER_DATA = {"postal_code"};
-    private final static String[] DATE_DATA = {"created_at", "updated_at"};
 
     // 日時データのフォーマット
     private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    // 各テーブルの添え字
-    private final static int SPOT_TABLE = 0;
-    private final static int ENVIRONMENT_TABLE = 1;
-    private final static int ACCESS_POINT_TABLE = 2;
-    private final static int CHARACTER_TABLE = 3;
 
     /* サーバからすべてのテーブルデータを取得 */
     public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
@@ -129,7 +104,12 @@ public class ServerExchange {
             try {
                 JSONObject jsonObject = jsonData.getJSONObject(i); // 1レコードを取り出す
                 // 1レコードのデータを管理するためのMapオブジェクト
-                Map<String, Object> recordData = convertJsonToMap(jsonObject);
+                Map<String, Object> recordData = new HashMap<>();
+                try {
+                    recordData = convertJsonToMap(jsonObject);
+                } catch (Exception error) {
+                    error.printStackTrace();
+                }
 
                 // レコードデータを管理するMapオブジェクトを
                 // テーブルデータを管理するArrayListオブジェクトに追加
@@ -159,10 +139,9 @@ public class ServerExchange {
                     // 接続用HttpURLConnectionオブジェクト作成
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-                    // 本文の取得(setDoInput(true)にする必要あり)
+                    // 本文の取得
                     InputStream in = connection.getInputStream();
                     String readString = readInputStream(in);
-                    Log.d("data", readString);
 
                     /* サーバ側のバグ対処用コード↓ */
                     if (tableName.equals(ENVIRONMENT_TABLE_NAME)) {
@@ -176,13 +155,11 @@ public class ServerExchange {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("error", "error");
                 }
             }
         });
 
         // 通信開始
-        Log.d("thread", "通信開始");
         thread.start();
 
         // 通信が終わるまで待つ
@@ -191,8 +168,6 @@ public class ServerExchange {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        Log.d("thread", "通信終了");
 
         return jsonData[0];
     }
@@ -204,7 +179,7 @@ public class ServerExchange {
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         while ((string = bufferedReader.readLine()) != null) {
-            stringBuffer.append(string);
+            stringBuffer.append(string); // 取得した文字をバッファに追加
         }
         try {
             in.close();
@@ -216,18 +191,10 @@ public class ServerExchange {
     }
 
     /* レコードのJSONをMapオブジェクトに変換するメソッド */
-    private static Map<String, Object> convertJsonToMap(JSONObject recordJson/*, String[] keys*/) throws JSONException {
+    private static Map<String, Object> convertJsonToMap(JSONObject recordJson) throws JSONException, ParseException {
 
         // 変換後のデータを入れるMapオブジェクト
         Map<String, Object> recordData = new HashMap<String, Object>();
-
-        /*Iterator<String> keyItr = recordJson.keys();
-        while(keyItr.hasNext()) {
-            String key = keyItr.next();
-            Object value = recordJson.get(key);
-
-            recordData.put(key, value);
-        }*/
 
         // キーごとに処理
         Iterator<String> keyItr = recordJson.keys();
@@ -238,17 +205,6 @@ public class ServerExchange {
             if (Arrays.asList(INTEGER_DATA).contains(key)) { // INTEGER型の要素のキーのとき
                 Integer data = recordJson.getInt(key); // INTEGER型として取り出す
                 recordData.put(key, data); // Mapオブジェクトに追加
-
-            } else if (Arrays.asList(DATE_DATA).contains(key)) { // 日付の要素のキーのとき
-                SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-                String dataString = recordJson.getString(key);
-                Integer data = null;
-                try {
-                    Date date = dateFormat.parse(dataString);
-                    data =
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
             } else if (Arrays.asList(DOUBLE_DATA).contains(key)) { // DOUBLE型の要素のキーのとき
                 Double data = recordJson.getDouble(key); // DOUBLE型として取り出す
