@@ -46,7 +46,7 @@
             android:id="@+id/imageCameraButton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="2dp"
             android:layout_weight="1.3"
             android:adjustViewBounds="true"
             android:background="@null"
