@@ -51,7 +51,7 @@ public class ServerExchange {
     private final static String[] INTEGER_DATA = {"postal_code"};
 
     // 日時データのフォーマット
-    private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /* サーバからすべてのテーブルデータを取得 */
     public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
