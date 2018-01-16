@@ -1,10 +1,14 @@
 package jp.dmarch.kochitabi;
 
+import android.Manifest;
+import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.view.MenuItem;
 import android.widget.ImageButton;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
 import java.io.File;
@@ -25,7 +30,10 @@ import com.wikitude.architect.ArchitectView.CaptureScreenCallback;
 public class CameraActivity extends AppCompatActivity {
     private static CameraActivity instance;
     private ArchitectView architectView;
+    private ImageButton cameraButton;
     private ImageButton arguideButton;
+    private static final int PERMISSION_CAMERA = 1;
+    private static final int PERMISSION_STORAGE = 2;
 
     /* 外部からcontextを参照するときに使う */
     protected static Context getInstance() {
@@ -56,11 +64,28 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // カメラボタンと紐付け
-        ImageButton cameraButton = (ImageButton)this.findViewById(R.id.snapshot_button);
+        cameraButton = (ImageButton)this.findViewById(R.id.snapshot_button);
+        // カメラボタンを非表示にする
+        cameraButton.setVisibility(View.GONE);
         // AR案内ボタンとの紐付け
         arguideButton = (ImageButton)this.findViewById(R.id.arguide_button);
         // AR案内ボタンを非表示にする
         arguideButton.setVisibility(View.GONE);
+
+        // Android 6, API 23以上でパーミッシンの確認
+        if(Build.VERSION.SDK_INT >= 23){
+            // カメラが許可されていない
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                // カメラの使用許可を要求
+                ActivityCompat.requestPermissions((Activity) this, new String[] {Manifest.permission.CAMERA,}, PERMISSION_CAMERA);
+            } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                // ストレージの使用許可を要求
+                ActivityCompat.requestPermissions((Activity) this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,}, PERMISSION_STORAGE);
+            } else {
+                //撮影ボタンを表示させる
+                cameraButton.setVisibility(View.VISIBLE);
+            }
+        }
 
         /* カメラボタンがクリックされた時の処理 */
         cameraButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +138,34 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /* パーミッションの処理 */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            // 先ほどの独自定義したrequestCodeの結果確認
+            case PERMISSION_CAMERA: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // ユーザーがカメラの使用を許可したとき
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        // ストレージの使用許可を要求
+                        ActivityCompat.requestPermissions((Activity) this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE,}, PERMISSION_STORAGE);
+                    }
+                } else {
+                    // ユーザーがカメラの使用を許可しなかったとき
+                    finish();
+                }
+                return;
+            } case PERMISSION_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // ユーザーがSTORAGEの使用を許可したとき
+                    //撮影ボタンを表示させる
+                    cameraButton.setVisibility(View.VISIBLE);
+                }
+                return;
+            }
+        }
     }
 
     /* バックボタンタップ時処理 */
