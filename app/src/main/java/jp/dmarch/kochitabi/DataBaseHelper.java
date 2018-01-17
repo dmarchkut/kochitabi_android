@@ -321,12 +321,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         ContentValues insertValues; // 更新するデータ
         Boolean insertFlag; // 更新しても良いレコードか否か
+        long updatedFlag; // 更新に成功したか（失敗:-1）
 
         for (Map<String, Object> environmentData: environmentTable) {
 
             // 1つのレコードの更新準備
             insertValues = new ContentValues();
             insertFlag = true;
+            updatedFlag = 0;
 
             for (String key: environmentData.keySet()) {
                 Object obj = environmentData.get(key);
@@ -351,15 +353,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.update(ENVIRONMENT_TABLE_NAME,
-                            insertValues,
-                            "environment_id == ?",
-                            new String[]{insertValues.getAsString("environment_id")});
+                    updatedFlag = db.update(ENVIRONMENT_TABLE_NAME,
+                                            insertValues,
+                                            "environment_id == ?",
+                                            new String[]{insertValues.getAsString("environment_id")});
                 }
                 catch (Error error) {}
+
+                // 更新に失敗した場合、追加を行う
+                if (updatedFlag == -1) {
+                    try {
+                        db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
+                    }
+                    catch (Error error) {}
+                }
             }
         }
         db.close(); // データベースと接続
+
     }
 
     /* ローカルDBのローカルキャラクターテーブルを更新 */
@@ -369,12 +380,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         ContentValues insertValues; // 更新するデータ
         Boolean insertFlag; // 更新しても良いレコードか否か
+        long updatedFlag; // 更新に成功したか（失敗:-1）
 
         for (Map<String, Object> characterData: characterTable) {
 
             // 1つのレコードの更新準備
             insertValues = new ContentValues();
             insertFlag = true;
+            updatedFlag = 0;
 
             for (String key: characterData.keySet()) {
                 Object obj = characterData.get(key);
@@ -399,12 +412,20 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.update(CHARACTER_TABLE_NAME,
-                            insertValues,
-                            "access_point_id == ?",
-                            new String[]{insertValues.getAsString("access_point_id")});
+                    updatedFlag = db.update(CHARACTER_TABLE_NAME,
+                                            insertValues,
+                                            "access_point_id == ?",
+                                            new String[]{insertValues.getAsString("access_point_id")});
                 }
                 catch (Error error) {}
+
+                // 更新に失敗した場合、追加を行う
+                if (updatedFlag == -1) {
+                    try {
+                        db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
+                    }
+                    catch (Error error) {}
+                }
             }
         }
         db.close(); // データベースと接続
@@ -576,7 +597,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバからデータを取得する
         if (isEnvironmentTableTime()) {
             ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
-            updateCharacterTable(environmentTableData);
+            updateEnvironmentTable(environmentTableData);
         }
 
         Map<String, Object> environmentData = new HashMap<String, Object>();

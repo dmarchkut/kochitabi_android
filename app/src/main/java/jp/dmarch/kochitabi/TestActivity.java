@@ -22,10 +22,10 @@ public class TestActivity extends AppCompatActivity {
 
         //String text = dataBaseHelper.getSpotText("sp0001");
         //String text = dataBaseHelper.getCharacterData("ac0001").toString();
-        /*Map<String, Object>*/String text = dataBaseHelper.getSpotText("sp0003");
-        //String text;
-        //if (data != null) text = data.toString();
-        if (text == null) text = "null";
+        Map<String, Object> data = dataBaseHelper.getCharacterData("ac0001");
+        String text;
+        if (data != null) text = data.toString();
+        else text = "null";
         text = text.replace("{", "{\n");
         text = text.replace(",", ",\n");
         text = text.replace("}","}\n");
