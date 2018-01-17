@@ -140,8 +140,8 @@ public class ServerExchange {
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                     // 本文の取得
-                    InputStream in = connection.getInputStream();
-                    String readString = readInputStream(in);
+                    InputStream inputStream = connection.getInputStream();
+                    String readString = readInputStream(inputStream);
 
                     /* サーバ側のバグ対処用コード↓ */
                     if (tableName.equals(ENVIRONMENT_TABLE_NAME)) {
@@ -151,7 +151,7 @@ public class ServerExchange {
                     else {
                         jsonData[0] = new JSONObject(readString).getJSONArray(tableName);
                     }
-                    in.close();
+                    inputStream.close();
 
                 } catch (Exception e) {
                     e.printStackTrace();
