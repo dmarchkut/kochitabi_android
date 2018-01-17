@@ -426,7 +426,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                                     );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -476,7 +476,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -510,7 +510,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -550,7 +550,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -592,7 +592,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -635,7 +635,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば終了
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }
@@ -728,7 +728,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば取得
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return true;
             }
@@ -776,7 +776,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             );
 
             // 取得した数が0個であれば取得
-            if (cursor.getColumnCount() == 0) {
+            if (cursor.getCount() == 0) {
                 cursor.close();
                 return null;
             }

@@ -22,13 +22,22 @@ public class TestActivity extends AppCompatActivity {
 
         //String text = dataBaseHelper.getSpotText("sp0001");
         //String text = dataBaseHelper.getCharacterData("ac0001").toString();
-        String text = dataBaseHelper.getCharacterGuideData("pi0001").toString();
+        /*Map<String, Object>*/String text = dataBaseHelper.getSpotText("sp0003");
+        //String text;
+        //if (data != null) text = data.toString();
+        if (text == null) text = "null";
         text = text.replace("{", "{\n");
         text = text.replace(",", ",\n");
         text = text.replace("}","}\n");
         //String text = String.valueOf(dataBaseHelper.isEnvironmentTableTime());
         Log.d("Test", text);
 
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         dataBaseHelper.deleteRegisterData();
     }
 }
