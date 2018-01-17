@@ -18,6 +18,7 @@ import android.content.IntentFilter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,6 +47,7 @@ public class CameraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         instance = this;
 
+        setTitle("カメラ");
         // xmlファイルと紐付け
         setContentView(R.layout.activity_camera);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
@@ -267,6 +269,10 @@ public class CameraActivity extends AppCompatActivity {
             // AR表示のためにHTMLファイルを指定
             deleteCharacter();
         }
+        Log.i("testestest", "onPostCreate");
+        // サービスクラスを開始する
+        Intent intent = new Intent(getApplication(), AccessPointService.class);
+        startService(intent);
     }
 
     @Override
@@ -295,19 +301,7 @@ public class CameraActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-    }
-
-    @Override
-    protected  void onStart() {
-        super.onStart();
-        // サービスクラスを開始する
-        Intent intent = new Intent(getApplication(), AccessPointService.class);
-        startService(intent);
-    }
-
-    @Override
-    protected  void onStop() {
-        super.onStop();
+        Log.i("testestest", "onDestroy");
         // サービスクラスを終了する
         Intent intent = new Intent(getApplication(), AccessPointService.class);
         stopService(intent);

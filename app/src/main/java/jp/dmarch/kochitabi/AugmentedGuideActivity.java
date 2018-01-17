@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.TextView;
+import android.util.Log;
 
 import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.architect.ArchitectView;
@@ -24,6 +25,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("AR案内");
         // xmlファイルと紐付け
         setContentView(R.layout.activity_augmentedguide);
 
@@ -143,6 +145,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             /* アクセスポイント外に出た時の処理 */
             if (raspberrypiNumber == null) {
                 outScreen();
+            } else {
+                Log.i("testestest", "アクセスポイント");
             }
         }
     };

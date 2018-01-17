@@ -20,6 +20,7 @@ public class SavePhotoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("写真保存");
         // xmlファイルと紐付け
         setContentView(R.layout.activity_savephoto);
 
