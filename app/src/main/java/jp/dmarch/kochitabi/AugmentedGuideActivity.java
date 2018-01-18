@@ -73,6 +73,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         final String[] cutTextData = cutSentence(textData);
         // 次のテキストの番号指定
         textNumber = 0;
+        // 表示可能テキストの探索
         while(textNumber < cutTextData.length) {
             if (cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
                 break;
@@ -80,7 +81,13 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             textNumber++;
         }
         // 最初の表示テキスト
-        message.setText(cutTextData[textNumber] + "。");
+        if(textNumber < cutTextData.length) {
+            message.setText(cutTextData[textNumber] + "。");
+            textNumber++;
+        } else {
+            Toast.makeText(getApplicationContext(), "データが登録されていません。他のアクセスポイントをご利用ください", Toast.LENGTH_LONG).show();
+            finish();
+        }
         // クリックイベントを有効にする
         architectView.setClickable(true);
         architectView.setOnClickListener(new View.OnClickListener() {
@@ -110,19 +117,31 @@ public class AugmentedGuideActivity extends AppCompatActivity {
     }
 
     private void updateSentence(String[] cutTextData) {
-        if(textNumber == 0) {
-            name.setVisibility(View.VISIBLE);
-            message.setVisibility(View.VISIBLE);
-            if(cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
-                message.setText(cutTextData[textNumber]+"。");
+        if(textNumber < cutTextData.length) {
+            // 最初に戻った時の処理(テキストの表示を行う)
+            if(textNumber == 0) {
+                name.setVisibility(View.VISIBLE);
+                message.setVisibility(View.VISIBLE);
             }
-            textNumber++;
-        } else if(textNumber < cutTextData.length) {
-            if(cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
-                message.setText(cutTextData[textNumber]+"。");
+            // 表示可能テキストの探索
+            while(textNumber < cutTextData.length) {
+                if (cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
+                    break;
+                }
+                textNumber++;
             }
-            textNumber++;
-        } else if(textNumber == cutTextData.length) {
+            // テキストの表示を行う
+            if (textNumber < cutTextData.length) {
+                message.setText(cutTextData[textNumber] + "。");
+                textNumber++;
+            // テキストが終了したので最初に戻る
+            } else {
+                name.setVisibility(View.GONE);
+                message.setVisibility(View.GONE);
+                textNumber = 0;
+            }
+        // テキストが終了したので最初に戻る
+        } else {
             name.setVisibility(View.GONE);
             message.setVisibility(View.GONE);
             textNumber = 0;
