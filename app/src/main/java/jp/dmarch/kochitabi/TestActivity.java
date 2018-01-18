@@ -32,6 +32,18 @@ public class TestActivity extends AppCompatActivity {
         //String text = String.valueOf(dataBaseHelper.isEnvironmentTableTime());
         Log.d("Test", text);
 
+        //dataBaseHelper.updateCharacterTable(new ServerExchange().getCharacterTable2());
+
+        Map<String, Object> data2 = dataBaseHelper.getCharacterData("ac0001");
+        String text2;
+        if (data2 != null) text2 = data2.toString();
+        else text2 = "null";
+        text2 = text2.replace("{", "{\n");
+        text2 = text2.replace(",", ",\n");
+        text2 = text2.replace("}","}\n");
+        //String text = String.valueOf(dataBaseHelper.isEnvironmentTableTime());
+        Log.d("Test", text2);
+
     }
 
 

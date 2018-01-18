@@ -39,6 +39,11 @@ public class ServerExchange {
             = {"ac0001", "のじゃのじゃ", "noja",
             date, date};
 
+
+    private Object characterDatas2[]
+            = {"ac0001", "がとさん", "noja",
+            date, date};
+
     private Object[][] datas = {spotDatas, environmentDatas, accessPointDatas, characterDatas};
 
     public ServerExchange() {}
@@ -99,6 +104,22 @@ public class ServerExchange {
                 j++;
             }
             tableData.add(recordData);
+
+        return tableData;
+    }
+
+    public ArrayList<Map<String, Object>> getCharacterTable2() {
+
+        ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
+        Map<String, Object> recordData = new HashMap<String, Object>();
+        int j = 0;
+
+        // / レコード単位で実行
+        for (String recordKey: characterKeys) {
+            recordData.put(recordKey, characterDatas2[j]);
+            j++;
+        }
+        tableData.add(recordData);
 
         return tableData;
     }
