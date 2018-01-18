@@ -71,10 +71,16 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         message = (TextView)this.findViewById(R.id.message);
         // テキストを表示単位に分割
         final String[] cutTextData = cutSentence(textData);
-        // 最初の表示テキスト
-        message.setText(cutTextData[0]+"。");
         // 次のテキストの番号指定
-        textNumber = 1;
+        textNumber = 0;
+        while(textNumber < cutTextData.length) {
+            if (cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
+                break;
+            }
+            textNumber++;
+        }
+        // 最初の表示テキスト
+        message.setText(cutTextData[textNumber] + "。");
         // クリックイベントを有効にする
         architectView.setClickable(true);
         architectView.setOnClickListener(new View.OnClickListener() {
@@ -107,12 +113,12 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         if(textNumber == 0) {
             name.setVisibility(View.VISIBLE);
             message.setVisibility(View.VISIBLE);
-            if(cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
+            if(cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
                 message.setText(cutTextData[textNumber]+"。");
             }
             textNumber++;
         } else if(textNumber < cutTextData.length) {
-            if(cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
+            if(cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
                 message.setText(cutTextData[textNumber]+"。");
             }
             textNumber++;
