@@ -85,8 +85,9 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             message.setText(cutTextData[textNumber] + "。");
             textNumber++;
         } else {
-            Toast.makeText(getApplicationContext(), "データが登録されていません。他のアクセスポイントをご利用ください", Toast.LENGTH_LONG).show();
-            finish();
+            name.setVisibility(View.GONE);
+            message.setVisibility(View.GONE);
+            Toast.makeText(getApplicationContext(), "データが登録されていません。他のアクセスポイントをご利用ください。", Toast.LENGTH_LONG).show();
         }
         // クリックイベントを有効にする
         architectView.setClickable(true);
