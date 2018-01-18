@@ -8,9 +8,9 @@ public class DataBaseHelper {
         Map<String, Object> characterGuideData = new HashMap<String, Object>();
 
         String accessPointId = "ac0001";
-        String characterName = "ユニティちゃん";
+        String characterName = "レレジイ";
         String characterFilePath = "wikitude/cube_sunny.html";
-        String textData = "高知工科大学です。情報学群です。よろしくお願いします。";
+        String textData = "高知工科大学、情報学群、クリピー、レレジイだよ。情報学群です。よろしくお願いします。";
 
         characterGuideData.put("access_point_id", accessPointId);
         characterGuideData.put("character_name", characterName);

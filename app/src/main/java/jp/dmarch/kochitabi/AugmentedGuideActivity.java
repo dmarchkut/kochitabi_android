@@ -21,6 +21,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
     private TextView name;
     private TextView message;
     private int textNumber;
+    private final int MAX_TEXT_SIZE = 120;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         // テキストを表示単位に分割
         final String[] cutTextData = cutSentence(textData);
         // 最初の表示テキスト
-        message.setText(cutTextData[0]);
+        message.setText(cutTextData[0]+"。");
         // 次のテキストの番号指定
         textNumber = 1;
         // クリックイベントを有効にする
@@ -106,10 +107,14 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         if(textNumber == 0) {
             name.setVisibility(View.VISIBLE);
             message.setVisibility(View.VISIBLE);
-            message.setText(cutTextData[textNumber]);
+            if(cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
+                message.setText(cutTextData[textNumber]+"。");
+            }
             textNumber++;
         } else if(textNumber < cutTextData.length) {
-            message.setText(cutTextData[textNumber]);
+            if(cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
+                message.setText(cutTextData[textNumber]+"。");
+            }
             textNumber++;
         } else if(textNumber == cutTextData.length) {
             name.setVisibility(View.GONE);
