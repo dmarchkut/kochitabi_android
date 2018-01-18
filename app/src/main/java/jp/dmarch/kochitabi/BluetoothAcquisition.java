@@ -1,34 +1,3 @@
-/*
-package jp.dmarch.kochitabi;
-
-import java.util.Calendar;
-import android.content.Context;
-
-public class BluetoothAcqisition {
-    private Context context;
-
-    protected String checkAccessPoint() {
-        Calendar now = Calendar.getInstance(); //インスタンス化
-        int minute = now.get(now.MINUTE);     //分を取得
-        minute = minute % 2;
-
-        if (minute == 1) {
-            return "pi0001";
-        }
-        return null;
-    }
-
-    public BluetoothAcqisition(Context context) {
-        this.context = context;
-    }
-
-    public void beginSearchDevice() {
-    }
-    public void endSearchDevice() {
-    }
-}
-*/
-
 package jp.dmarch.kochitabi;
 
 import android.app.AlertDialog;
@@ -39,11 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
-import android.util.Log;
+
+import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
+import static android.bluetooth.BluetoothDevice.ACTION_FOUND;
 import static android.util.Half.NaN;
 
 /*
@@ -51,36 +23,43 @@ import static android.util.Half.NaN;
  * http://db-event.jpn.org/deim2011/proceedings/pdf/b9-4.pdf
  */
 
-public class BluetoothAcqisition {
+public class BluetoothAcquisition {
 
     private Context context;
     private BluetoothAdapter bluetoothAdapter; // アダプタ
     private BroadcastReceiver broadcastReceiver; // レシーバ
     private HashMap<String, Integer> deviceList; //  Bluetooth接続可能な端末のリスト
+    IntentFilter filter; // 検索に用いるフィルタ
+    Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
 
-    public BluetoothAcqisition(Context context) {
+    public BluetoothAcquisition(Context context) {
         this.context = context;
     }
 
     /* Bluetooth接続可能な端末の検索開始 */
     public void beginSearchDevice() {
+
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
         // 端末がBluetoothに対応していなければ何もせずに終わる
         if (bluetoothAdapter == null) return;
+
         // Bluetooth機能が無効の時、有効化を促すダイアログを表示
         if (!isBluetoothAcquisition()) {
+
             // 有効化を促すダイアログを表示
             new AlertDialog.Builder(context)
                     .setMessage("Bluetoothを有効にします")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+
                             // Bluetooth機能の有効化
                             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                             context.startActivity(intent);
+
                         }
                     })
                     .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
@@ -92,13 +71,18 @@ public class BluetoothAcqisition {
                     .show();
 
         }
+
         //  端末の検索設定
         broadcastReceiver = new BroadcastReceiver() {
+
             @Override
             public void onReceive(Context context, Intent intent) {
+
                 String action = intent.getAction();
+
                 // 端末を発見したとき、デバイスリストに追加
-                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                if (ACTION_FOUND.equals(action)) {
+
                     BluetoothDevice findingDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); // 見つかった端末
                     String findingDeviceName = findingDevice.getName(); // 端末名を取得
 
@@ -110,39 +94,70 @@ public class BluetoothAcqisition {
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
-                        Log.i("testestest:deviceList", deviceList.toString());
+
                     }
+Log.i("testestest", deviceList.toString());
+                    // デバイス検索終了時
+                } else if (ACTION_DISCOVERY_FINISHED.equals(action)) {
+Log.i("testestest", "再検索");
+                    try {
+
+                        // レシーバの解除
+                        context.unregisterReceiver(broadcastReceiver);
+
+                        // endSearchDeviceから呼び出されてなければ
+                        if (restartFlag) {
+
+                            // もう一度開始
+                            context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
+                            bluetoothAdapter.startDiscovery(); // 端末の検索開始
+
+                        }
+                    } catch (Exception error) {
+                        error.printStackTrace();
+                    }
+
                 }
 
             }
         };
+
         // 検索中であれば一度止める
-        endSearchDevice();
+        if (bluetoothAdapter.isDiscovering()) {
+            // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+            restartFlag = false;
+            bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
+        }
+
+        // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+        restartFlag = true;
+
         deviceList = new HashMap<String, Integer>(); // インスタンス化
 
-        IntentFilter filter = new IntentFilter(); // インテントフィルタを作成
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter = new IntentFilter(); // インテントフィルタを作成
+        filter.addAction(ACTION_FOUND);
+        filter.addAction(ACTION_DISCOVERY_FINISHED);
 
         context.registerReceiver(broadcastReceiver, filter); // レシーバの登録
 
         bluetoothAdapter.startDiscovery(); // 端末の検索開始
+
     }
 
     /* Bluetooth接続可能な端末の検索終了 */
     public void endSearchDevice() {
-        // もし検索中でなければ何もせずに終わる
+
+        // もし検索中なければ何もせずに終わる
         if (!(bluetoothAdapter.isDiscovering())) return;
-        Log.i("testestest", "終了処理");
+
+        // endSearchDeviceから呼び出されたことを示すフラグをtrueに
+        restartFlag = false;
+Log.i("testestest", "終了処理");
         bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
-        Log.i("testestest:エラー", "pat1");
-        context.unregisterReceiver(broadcastReceiver); // レシーバの解除
-        Log.i("testestest:エラー", "pat2");
-
-
 
     }
 
-    /* Bluetooh機能が有効であるかを判断 */
+    /* Bluetooth機能が有効であるかを判断 */
     private Boolean isBluetoothAcquisition() {
 
         // Bluetooth機能が有効ならtrue、無効ならfalse
@@ -152,9 +167,12 @@ public class BluetoothAcqisition {
 
     /* Bluetooth接続可能なRaspberryPi端末のリストを取得 */
     public ArrayList<String> getDeviceList() {
+
         ArrayList<String> raspberrypiNumberList = new ArrayList<String>(); // RaspberryPi識別番号のリスト
-        // もし検索中でなければ何もせずに終わる
+
+        // もし検索中なければ何もせずに終わる
         if (!(bluetoothAdapter.isDiscovering())) return raspberrypiNumberList;
+
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
 
         // こちたびARで用いるRaspberryPi端末の端末名を取得
@@ -166,56 +184,56 @@ public class BluetoothAcqisition {
             }
 
         }
-        //Log.i("testestest：raspberrypiNumberList", raspberrypiNumberList.toString());
+
         return raspberrypiNumberList;
 
     }
 
     /* 特定のBluetooth接続可能な端末の電波強度を取得 */
     public int getIntensity(String raspberrypiNumber) {
+
         // 電波強度を取得する端末がRaspberryPi端末でなければNaNを返す
         Pattern pattern = Pattern.compile("^pi[0-9]+"); // piから始まる文字列のパターンを作成
-        if (pattern.matcher(raspberrypiNumber).find()) {
-            // 取得済みの端末リストを検索
-            for (String deviceName : deviceList.keySet()) {
+        if (!pattern.matcher(raspberrypiNumber).find()) return NaN;
 
-                // リストから見つかれば電波強度を返す
-                if (raspberrypiNumber.equals(deviceName)) {
-                    int deviceIntensity = deviceList.get(deviceName);
-                    return deviceIntensity;
-                }
+        // 取得済みの端末リストを検索
+        for (String deviceName : deviceList.keySet()) {
 
+            // リストから見つかれば電波強度を返す
+            if (raspberrypiNumber.equals(deviceName)) {
+                int deviceIntensity = deviceList.get(deviceName);
+                return deviceIntensity;
             }
 
-            // 見つからなかったため、NaNを返す
-            return NaN;
-        } else {
-            return NaN;
         }
+
+        // 見つからなかったため、NaNを返す
+        return NaN;
 
     }
 
     /* アクセスポイント内にいるかを判断 */
     public String checkAccessPoint() {
+
         ArrayList<String> raspberrypiNumberList =  getDeviceList(); // RaspberryPi端末リスト
-        Log.i("testestest", "aaaaaaaaaaaaaaaa");
+Log.i("testestest", raspberrypiNumberList.toString());
         // RaspberryPi端末をまだ発見していなければnullを返す
         if (raspberrypiNumberList.size() == 0) return null;
-        Log.i("testestest", "bbbbbbbbbbbbbbbb");
 
         // アクセスポイント内にいるか判断する
         for (String raspberrypiNumber : raspberrypiNumberList) {
-            //Log.i("testestest", raspberrypiNumber);
+
             int raspberrypiIntensity = getIntensity(raspberrypiNumber); // 電波強度
-            //Log.i("testestest", String.valueOf(raspberrypiIntensity));
+Log.i("testestest", String.valueOf(raspberrypiIntensity));
             // 電波強度が取得できていなければ次のアクセスポイントの判定へ
             if (raspberrypiIntensity == NaN) continue;
-            Log.i("testestest", "ccccccccccccccccc");
+
             // アクセスポイント内にいるとき、端末名を返す
             if (raspberrypiIntensity >= INNER_INTENSITY_OF_ACCESSPOINT) {
+Log.i("testestest", "アクセスポイント");
                 return raspberrypiNumber;
             }
-            Log.i("testestest", "ddddddddddddddddddd");
+
         }
 
         return null;
