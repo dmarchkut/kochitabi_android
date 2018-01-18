@@ -1,7 +1,10 @@
 package jp.dmarch.kochitabi;
 
-import java.util.Map;
+import android.content.Context;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DataBaseHelper {
     protected Map<String, Object> getCharacterGuide(String raspberrypiNumber) {
@@ -19,4 +22,18 @@ public class DataBaseHelper {
 
         return characterGuideData;
     }
+
+    public DataBaseHelper(Context context) {
+
+    }
+
+    public String getSpotText(String spotId) {
+        return null;
+    }
+
+    public ArrayList<Map<String, Object>> getSpotsData() {
+        return null;
+    }
+
+    public void setRegisterData(){}
 }

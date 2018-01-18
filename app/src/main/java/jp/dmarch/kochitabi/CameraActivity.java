@@ -34,6 +34,7 @@ public class CameraActivity extends AppCompatActivity {
     private ArchitectView architectView;
     private ImageButton cameraButton;
     private ImageButton arguideButton;
+    private DataBaseHelper dataBaseHelper;
     private static final int PERMISSION_CAMERA = 1;
     private static final int PERMISSION_STORAGE = 2;
 
@@ -112,6 +113,8 @@ public class CameraActivity extends AppCompatActivity {
         });
         // レシーバーの設定を行う
         setReceiver();
+
+        dataBaseHelper = new DataBaseHelper(this); // DataBaseHelperのインスタンス化
     }
 
     /* 画面のキャプチャを行うメソッド */
@@ -203,7 +206,7 @@ public class CameraActivity extends AppCompatActivity {
             /* アクセスポイント内にいる時の処理 */
             if (raspberrypiNumber != null) {
                 // raspberrpiNumberに対応したAR案内情報を取得する
-                final Map<String, Object> characterGuideData = new DataBaseHelper().getCharacterGuide(raspberrypiNumber);
+                final Map<String, Object> characterGuideData = dataBaseHelper.getCharacterGuide(raspberrypiNumber);
 
                 // Mapオブジェクトを分解する
                 final Object accessPointId = characterGuideData.get("access_point_id");
