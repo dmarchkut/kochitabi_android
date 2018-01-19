@@ -36,6 +36,7 @@ public class LocationAcquisition implements LocationListener {
     private Context context;
     private Double[] currentLocation = {NO_DATA, NO_DATA}; // 現在地
     private LocationManager locationManager;
+    private Boolean hasGottenFlag; // GPSで現在地を取得したことがあるか(true:ある, false:なし)
 
     // コンストラクタ
     public LocationAcquisition(Context context) {
@@ -61,6 +62,8 @@ public class LocationAcquisition implements LocationListener {
 
     /* 現在地の計測を行うための設定及び、その後の計測を開始 */
     public void beginLocationAcquisition() {
+
+        hasGottenFlag = false; // GPSで取得したことがないと設定
 
         // Managerの設定
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -149,7 +152,7 @@ public class LocationAcquisition implements LocationListener {
     public Double[] getCurrentLocation() {
 
         // 現在地の測定がまだ行われていないならば
-        if (currentLocation[0].equals(NO_DATA) || currentLocation[1].equals(NO_DATA)) {
+        if (currentLocation[0].equals(NO_DATA) || currentLocation[1].equals(NO_DATA) || !hasGottenFlag) {
 
             // アプリでGPSの使用が許可されていないなら
             if (PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -167,10 +170,12 @@ public class LocationAcquisition implements LocationListener {
                 // GPSが有効なら
                 if (isLocationAcquisition()) {
 
+                    Log.d("Location", "get current location by wi-fi");
+
                     try {
 
                         // GPSを有効するまでの時間稼ぎ
-                        Thread.sleep(2000);
+                        if (isLocationAcquisition()) Thread.sleep(2000);
 
                         // Wifiで過去に取得した最新の現在地を取得
                         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -193,9 +198,16 @@ public class LocationAcquisition implements LocationListener {
     /* 現在地の位置情報を更新 */
     private void updateCurrentLocation(Location currentLocation) {
 
+        Log.d("update", "start method");
+
         this.currentLocation[0] = currentLocation.getLatitude(); // 緯度を取得
         this.currentLocation[1] = currentLocation.getLongitude(); // 経度を取得
 
+        hasGottenFlag = true; // GPSで現在地を取得したことがあると設定
+
+        Log.d("update", "緯度: "+this.currentLocation[0]+"\n経度: "+this.currentLocation[1]);
+
+        Log.d("update", "end method");
     }
 
     /* 現在地と観光地との距離を計算 */
