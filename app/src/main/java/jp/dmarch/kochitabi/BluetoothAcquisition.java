@@ -38,6 +38,8 @@ public class BluetoothAcquisition {
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
+
+
     }
 
     /* Bluetooth接続可能な端末の検索開始 */
@@ -93,6 +95,9 @@ public class BluetoothAcquisition {
 
                         // 見つかった端末の電波強度を取得
                         int raspberrypiIntensity = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
+
+                        Log.d("Find Device", "端末名:"+findingDeviceName+"\n電波:"+String.valueOf(raspberrypiIntensity));
+                        Toast.makeText(context, "端末名:"+findingDeviceName+"\n電波:"+String.valueOf(raspberrypiIntensity), Toast.LENGTH_LONG).show();
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
