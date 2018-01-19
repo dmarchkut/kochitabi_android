@@ -398,8 +398,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             // すべてのキーの要素を設定できたか確認
             for (String key: characterKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
-                break;
+                if (!(insertValues.containsKey(key))) {
+                    insertFlag = false;
+                    break;
+                }
             }
 
             // キーの要素数が適切か確認
