@@ -1,5 +1,7 @@
 package jp.dmarch.kochitabi;
 
+import android.util.Log;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +95,7 @@ public class ServerExchange {
 
 
     public ArrayList<Map<String, Object>> getCharacterTable() {
+            Log.d("ServerExchange", "start getCharacterTable method:");
 
             ArrayList<Map<String, Object>> tableData = new ArrayList<Map<String, Object>>();
             Map<String, Object> recordData = new HashMap<String, Object>();
@@ -100,10 +103,13 @@ public class ServerExchange {
 
             // / レコード単位で実行
             for (String recordKey: characterKeys) {
-                recordData.put(recordKey, characterDatas[j]);
+                //if (flag) recordData.put(recordKey, characterDatas[j]);
+                recordData.put(recordKey, characterDatas2[j]);
                 j++;
             }
             tableData.add(recordData);
+
+        Log.d("ServerExchange", "end getCharacterTable method:");
 
         return tableData;
     }

@@ -24,7 +24,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private Context context;
     private ServerExchange serverExchange;
     private LocationAcquisition locationAcquisition;
-    private ArrayList<ArrayList<Map<String, Object>>> localDataBaseDatas;
 
     private final static String DB_NAME = "kochitabi_db";   // データベース名
     private final static int DB_VERSION = 1;    // データベースのバージョン

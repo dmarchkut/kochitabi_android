@@ -20,8 +20,7 @@ public class TestActivity extends AppCompatActivity {
         dataBaseHelper = new DataBaseHelper(this);
         dataBaseHelper.setRegisterData();
 
-        //String text = dataBaseHelper.getSpotText("sp0001");
-        //String text = dataBaseHelper.getCharacterData("ac0001").toString();
+        // この呼び出しの際にはgetCharacterData内のif (isCharacterTableTime) はfalseになるようにします
         Map<String, Object> data = dataBaseHelper.getCharacterData("ac0001");
         String text;
         if (data != null) text = data.toString();
@@ -29,10 +28,7 @@ public class TestActivity extends AppCompatActivity {
         text = text.replace("{", "{\n");
         text = text.replace(",", ",\n");
         text = text.replace("}","}\n");
-        //String text = String.valueOf(dataBaseHelper.isEnvironmentTableTime());
         Log.d("Test", text);
-
-        //dataBaseHelper.updateCharacterTable(new ServerExchange().getCharacterTable2());
 
         Map<String, Object> data2 = dataBaseHelper.getCharacterData("ac0001");
         String text2;
@@ -41,11 +37,10 @@ public class TestActivity extends AppCompatActivity {
         text2 = text2.replace("{", "{\n");
         text2 = text2.replace(",", ",\n");
         text2 = text2.replace("}","}\n");
-        //String text = String.valueOf(dataBaseHelper.isEnvironmentTableTime());
+
         Log.d("Test", text2);
 
     }
-
 
     @Override
     protected void onDestroy() {
