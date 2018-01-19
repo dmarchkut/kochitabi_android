@@ -30,7 +30,7 @@ import java.util.Map;
 public class ServerExchange {
 
     // ローカルDBのデータを取得するためのAPIに共通するURL部分
-    private final static String API_URL = "https://lit-springs-17205.herokuapp.com/api/";
+    private final static String API_URL = "https://ancient-island-44932.herokuapp.com/api/";
 
     // ローカル観光地テーブルの名前
     private final static String SPOT_TABLE_NAME = "local_spot";
@@ -43,7 +43,7 @@ public class ServerExchange {
 
     // ローカルデータベースのテーブル
     private final static String[] LOCAL_DATABASE_TABLES = {
-            /*SPOT_TABLE_NAME, */ACCESS_POINT_TABLE_NAME, ENVIRONMENT_TABLE_NAME, CHARACTER_TABLE_NAME
+            SPOT_TABLE_NAME, ACCESS_POINT_TABLE_NAME, ENVIRONMENT_TABLE_NAME, CHARACTER_TABLE_NAME
     };
 
     // キーに対応するデータの種類
@@ -139,18 +139,15 @@ public class ServerExchange {
                     // 接続用HttpURLConnectionオブジェクト作成
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+                    // POST要求として設定
+                    connection.setRequestMethod("POST");
+
                     // 本文の取得
                     InputStream inputStream = connection.getInputStream();
                     String readString = readInputStream(inputStream);
 
-                    /* サーバ側のバグ対処用コード↓ */
-                    if (tableName.equals(ENVIRONMENT_TABLE_NAME)) {
-                        jsonData[0] = new JSONObject(readString).getJSONArray(SPOT_TABLE_NAME);
-                    }
-                    /* サーバ側のバグ対処用コード↑ */
-                    else {
-                        jsonData[0] = new JSONObject(readString).getJSONArray(tableName);
-                    }
+                    jsonData[0] = new JSONObject(readString).getJSONArray(tableName);
+
                     inputStream.close();
 
                 } catch (Exception e) {
