@@ -711,6 +711,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // RaspberryPi識別番号に対応したアクセスポイント案内データを取得
         Map<String, Object> accessPointGuideData = getAccessPointGuide(raspberrypiNumber);
 
+        // 引数に与えられた識別番号に対応したアクセスポイント案内データがなければnullを返す
+        if (accessPointGuideData == null) return null;
+
         // アクセスポイントIDに対応したキャラクターデータを取得
         Map<String, Object> characterData = getCharacterData((String)accessPointGuideData.get("access_point_id"));
 
