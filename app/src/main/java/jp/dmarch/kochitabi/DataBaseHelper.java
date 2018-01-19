@@ -13,7 +13,7 @@ public class DataBaseHelper {
         String accessPointId = "ac0001";
         String characterName = "レレジイ";
         String characterFilePath = "wikitude/cube_sunny.html";
-        String textData = "高知工科大学、情報学群、クリピー、レレジイだよ。情報学群です。よろしくお願いします。";
+        String textData = "アイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケコアイウエオカキクケ！";
 
         characterGuideData.put("access_point_id", accessPointId);
         characterGuideData.put("character_name", characterName);

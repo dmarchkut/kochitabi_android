@@ -21,7 +21,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
     private TextView name;
     private TextView message;
     private int textNumber;
-    private final int MAX_TEXT_SIZE = 120;
+    private final int MAX_TEXT_SIZE = 121;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +75,14 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         textNumber = 0;
         // 表示可能テキストの探索
         while(textNumber < cutTextData.length) {
-            if (cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
+            if (cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
                 break;
             }
             textNumber++;
         }
         // 最初の表示テキスト
         if(textNumber < cutTextData.length) {
-            message.setText(cutTextData[textNumber] + "。");
+            message.setText("　"+cutTextData[textNumber] + "。");
             textNumber++;
         } else {
             name.setVisibility(View.GONE);
@@ -126,14 +126,14 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             }
             // 表示可能テキストの探索
             while(textNumber < cutTextData.length) {
-                if (cutTextData[textNumber].length() <= MAX_TEXT_SIZE) {
+                if (cutTextData[textNumber].length() < MAX_TEXT_SIZE) {
                     break;
                 }
                 textNumber++;
             }
             // テキストの表示を行う
             if (textNumber < cutTextData.length) {
-                message.setText(cutTextData[textNumber] + "。");
+                message.setText("　"+cutTextData[textNumber] + "。");
                 textNumber++;
             // テキストが終了したので最初に戻る
             } else {
