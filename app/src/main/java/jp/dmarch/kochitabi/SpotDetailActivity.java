@@ -156,17 +156,13 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-        TextView distanceText = (TextView)findViewById(R.id.distanceTextView); // 距離
-        TextView weatherText = (TextView)findViewById(R.id.weatherTextView);  // 天気
-        TextView temperatureText = (TextView)findViewById(R.id.temperatureTextView); // 気温
+        TextView spotInfoText = (TextView)findViewById(R.id.spotInfoTextView); // 距離
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
         ImageView spotImage = (ImageView) findViewById(R.id.spotImageView); // 観光地写真
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        distanceText.setText("距離: " + String.valueOf(distance) + " km"); // 距離
-        weatherText.setText("天気: "+ weather); // 天気
-        temperatureText.setText("気温: " + String.valueOf(temperature) + " 度"); // 気温
+        spotInfoText.setText("距離: " + String.valueOf(distance) + " km　|　天気: "+ weather + "　|　気温: " + String.valueOf(temperature) + " 度"); // 距離
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
         spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
