@@ -198,7 +198,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 // Object型からそれぞれの型に変換し、追加データとして設定
                 if (obj instanceof String) insertValues.put(key, (String)obj);
                 else if (obj instanceof Double) insertValues.put(key, (Double)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
                 else {
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
@@ -207,7 +206,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             // すべてのキーの要素を設定できたか確認
             for (String key: accessPointKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
+                if (!(insertValues.containsKey(key))) {
+                    insertFlag = false;
+                    break;
+                }
             }
 
             // キーの要素数が適切か確認
@@ -243,7 +245,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 // Object型からそれぞれの型に変換し、追加データとして設定
                 if (obj instanceof String) insertValues.put(key, (String)obj);
                 else if (obj instanceof Double) insertValues.put(key, (Double)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
                 else {
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
@@ -252,7 +253,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             // すべてのキーの要素を設定できたか確認
             for (String key: environmentKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
+                if (!(insertValues.containsKey(key))){
+                    insertFlag = false;
+                    break;
+                }
             }
 
             // キーの要素数が適切か確認
@@ -287,7 +291,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Object obj = characterData.get(key);
                 // Object型からそれぞれの型に変換し、追加データとして設定
                 if (obj instanceof String) insertValues.put(key, (String)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
                 else {
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
@@ -296,7 +299,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             // すべてのキーの要素を設定できたか確認
             for (String key: characterKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
+                if (!(insertValues.containsKey(key))){
+                    insertFlag = false;
+                    break;
+                }
             }
 
             // キーの要素数が適切か確認
@@ -331,7 +337,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Object obj = environmentData.get(key);
                 // Object型からそれぞれの型に変換し、追加データとして設定
                 if (obj instanceof String) insertValues.put(key, (String)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
+                else if (obj instanceof Double) insertValues.put(key, (Double)obj);
                 else {
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
@@ -340,8 +346,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
             // すべてのキーの要素を設定できたか確認
             for (String key: environmentKeys) {
-                if (!(insertValues.containsKey(key))) insertFlag = false;
-                break;
+                if (!(insertValues.containsKey(key))) {
+                    insertFlag = false;
+                    break;
+                }
             }
 
             // キーの要素数が適切か確認
@@ -382,7 +390,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Object obj = characterData.get(key);
                 // Object型からそれぞれの型に変換し、追加データとして設定
                 if (obj instanceof String) insertValues.put(key, (String)obj);
-                else if (obj instanceof Integer) insertValues.put(key, (Integer)obj);
                 else {
                     insertFlag = false; // 追加してはいけないデータとして設定
                     break;
