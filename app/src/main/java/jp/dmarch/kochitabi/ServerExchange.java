@@ -30,7 +30,7 @@ import java.util.Map;
 public class ServerExchange {
 
     // ローカルDBのデータを取得するためのAPIに共通するURL部分
-    private final static String API_URL = "https://ancient-island-44932.herokuapp.com/api/";
+    private final static String API_URL = "https://pure-tundra-22058.herokuapp.com/api/";
 
     // ローカル観光地テーブルの名前
     private final static String SPOT_TABLE_NAME = "local_spot";
