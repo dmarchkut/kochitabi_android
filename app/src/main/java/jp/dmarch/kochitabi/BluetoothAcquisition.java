@@ -1,5 +1,7 @@
 package jp.dmarch.kochitabi;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,6 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,11 +41,28 @@ public class BluetoothAcquisition {
     Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
+    private final static int REQUEST_PERMISSION = 1000;
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
 
+        // なぜかbluetoothの計測にGPSの使用許可が必要であるためおこなう
+        // Android 6.0以上の端末ならパーミッションチェックを行う
+        if (Build.VERSION.SDK_INT >= 23) {
 
+            // アプリでGPSの使用が許可されていないなら
+            if (PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
+                if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // GPSの使用許可を要求
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                }
+
+            }
+
+        }
     }
 
     /* Bluetooth接続可能な端末の検索開始 */
