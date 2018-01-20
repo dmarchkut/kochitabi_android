@@ -1,7 +1,6 @@
 package jp.dmarch.kochitabi;
 
 import com.wikitude.common.camera.CameraSettings;
-import java.util.Map;
 
 public class WikitudeContentsFragment {
     private static final String defaultArchitectWorldPath = "wikitude/index.html";
