@@ -32,7 +32,7 @@ public class TestActivity extends AppCompatActivity {
 
                 // すべてのデータを取得
                 ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;
-                localDataBaseTables = serverExchange.getLocalDataBaseOption();
+                localDataBaseTables = serverExchange.getLocalDataBaseTables();
 
                 String data = localDataBaseTables.toString();
                 data = data.replace("{", "{\n\t");
