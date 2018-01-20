@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
+import static android.bluetooth.BluetoothAdapter.getDefaultAdapter;
 import static android.bluetooth.BluetoothDevice.ACTION_FOUND;
 import static android.util.Half.NaN;
 
@@ -41,10 +42,12 @@ public class BluetoothAcquisition {
     Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
-    private final static int REQUEST_PERMISSION = 1000;
+    private final static int REQUEST_PERMISSION_GPS = 600;
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
         // なぜかbluetoothの計測にGPSの使用許可が必要であるためおこなう
         // Android 6.0以上の端末ならパーミッションチェックを行う
@@ -57,7 +60,7 @@ public class BluetoothAcquisition {
                 // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
                 if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     // GPSの使用許可を要求
-                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION);
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION_GPS);
                 }
 
             }
@@ -68,34 +71,16 @@ public class BluetoothAcquisition {
     /* Bluetooth接続可能な端末の検索開始 */
     public void beginSearchDevice() {
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
-
         // 端末がBluetoothに対応していなければ何もせずに終わる
         if (bluetoothAdapter == null) return;
 
         // Bluetooth機能が無効の時、有効化を促すダイアログを表示
         if (!isBluetoothAcquisition()) {
 
-            // 有効化を促すダイアログを表示
-            new AlertDialog.Builder(context)
-                    .setMessage("Bluetoothを有効にします")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            // Bluetooth機能の有効化
-                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            context.startActivity(intent);
-
-                        }
-                    })
-                    .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            return;
-                        }
-                    })
-                    .show();
+            // Bluetooth機能の有効化
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            context.startActivity(intent);
+            return;
 
         }
 
@@ -118,9 +103,6 @@ public class BluetoothAcquisition {
 
                         // 見つかった端末の電波強度を取得
                         int raspberrypiIntensity = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-
-                        Log.d("Find Device", "端末名:"+findingDeviceName+"\n電波:"+String.valueOf(raspberrypiIntensity));
-                        Toast.makeText(context, "端末名:"+findingDeviceName+"\n電波:"+String.valueOf(raspberrypiIntensity), Toast.LENGTH_LONG).show();
 
                         // 端末名と電波強度を端末リストに追加、既に取得済みの端末の場合、電波強度を更新
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
@@ -159,7 +141,7 @@ public class BluetoothAcquisition {
             bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
         }
 
-        // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+        // 再実行が必要であるフラグをtrueに
         restartFlag = true;
 
         deviceList = new HashMap<String, Integer>(); // インスタンス化
@@ -244,6 +226,12 @@ public class BluetoothAcquisition {
 
     /* アクセスポイント内にいるかを判断 */
     public String checkAccessPoint() {
+
+        // まだ検索を始めていなければ検索を開始する
+        if (!bluetoothAdapter.isDiscovering()) {
+            beginSearchDevice();
+            return null;
+        }
 
         ArrayList<String> raspberrypiNumberList =  getDeviceList(); // RaspberryPi端末リスト
 

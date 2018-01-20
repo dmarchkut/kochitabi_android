@@ -41,7 +41,7 @@ public class TestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //bluetoothAcquisition.beginSearchDevice();
-            }
+                bluetoothAcquisition.checkAccessPoint();            }
         });
 
         // endボタンを設定
