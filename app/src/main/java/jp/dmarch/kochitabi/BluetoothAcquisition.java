@@ -227,9 +227,10 @@ public class BluetoothAcquisition {
     /* アクセスポイント内にいるかを判断 */
     public String checkAccessPoint() {
 
-        // まだ検索を始めていなければ検索を開始する
+        // まだ検索を始めていなければ
         if (!bluetoothAdapter.isDiscovering()) {
-            beginSearchDevice();
+            // BluetoothがONならば検索を開始する
+            if (isBluetoothAcquisition()) beginSearchDevice();
             return null;
         }
 
