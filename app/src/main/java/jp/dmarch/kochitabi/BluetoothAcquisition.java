@@ -1,5 +1,7 @@
 package jp.dmarch.kochitabi;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,13 +10,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 import static android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED;
+import static android.bluetooth.BluetoothAdapter.getDefaultAdapter;
 import static android.bluetooth.BluetoothDevice.ACTION_FOUND;
 import static android.util.Half.NaN;
 
@@ -33,15 +42,34 @@ public class BluetoothAcquisition {
     Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
+    private final static int REQUEST_PERMISSION_GPS = 600;
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
+
+        // なぜかbluetoothの計測にGPSの使用許可が必要であるためおこなう
+        // Android 6.0以上の端末ならパーミッションチェックを行う
+        if (Build.VERSION.SDK_INT >= 23) {
+
+            // アプリでGPSの使用が許可されていないなら
+            if (PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
+                if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // GPSの使用許可を要求
+                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION_GPS);
+                }
+
+            }
+
+        }
     }
 
     /* Bluetooth接続可能な端末の検索開始 */
     public void beginSearchDevice() {
-
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
 
         // 端末がBluetoothに対応していなければ何もせずに終わる
         if (bluetoothAdapter == null) return;
@@ -49,26 +77,10 @@ public class BluetoothAcquisition {
         // Bluetooth機能が無効の時、有効化を促すダイアログを表示
         if (!isBluetoothAcquisition()) {
 
-            // 有効化を促すダイアログを表示
-            new AlertDialog.Builder(context)
-                    .setMessage("Bluetoothを有効にします")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            // Bluetooth機能の有効化
-                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            context.startActivity(intent);
-
-                        }
-                    })
-                    .setNegativeButton("キャンセル", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            return;
-                        }
-                    })
-                    .show();
+            // Bluetooth機能の有効化
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            context.startActivity(intent);
+            return;
 
         }
 
@@ -96,10 +108,10 @@ public class BluetoothAcquisition {
                         deviceList.put(findingDeviceName, raspberrypiIntensity);
 
                     }
-Log.i("testestest", deviceList.toString());
+
                     // デバイス検索終了時
                 } else if (ACTION_DISCOVERY_FINISHED.equals(action)) {
-Log.i("testestest", "再検索");
+
                     try {
 
                         // レシーバの解除
@@ -129,7 +141,7 @@ Log.i("testestest", "再検索");
             bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
         }
 
-        // endSearchDeviceから呼び出されたことを示すフラグをfalseに
+        // 再実行が必要であるフラグをtrueに
         restartFlag = true;
 
         deviceList = new HashMap<String, Integer>(); // インスタンス化
@@ -152,7 +164,7 @@ Log.i("testestest", "再検索");
 
         // endSearchDeviceから呼び出されたことを示すフラグをtrueに
         restartFlag = false;
-Log.i("testestest", "終了処理");
+
         bluetoothAdapter.cancelDiscovery(); // 端末の検索終了
 
     }
@@ -215,8 +227,15 @@ Log.i("testestest", "終了処理");
     /* アクセスポイント内にいるかを判断 */
     public String checkAccessPoint() {
 
+        // まだ検索を始めていなければ
+        if (!bluetoothAdapter.isDiscovering()) {
+            // BluetoothがONならば検索を開始する
+            if (isBluetoothAcquisition()) beginSearchDevice();
+            return null;
+        }
+
         ArrayList<String> raspberrypiNumberList =  getDeviceList(); // RaspberryPi端末リスト
-Log.i("testestest", raspberrypiNumberList.toString());
+
         // RaspberryPi端末をまだ発見していなければnullを返す
         if (raspberrypiNumberList.size() == 0) return null;
 
@@ -224,13 +243,12 @@ Log.i("testestest", raspberrypiNumberList.toString());
         for (String raspberrypiNumber : raspberrypiNumberList) {
 
             int raspberrypiIntensity = getIntensity(raspberrypiNumber); // 電波強度
-Log.i("testestest", String.valueOf(raspberrypiIntensity));
+
             // 電波強度が取得できていなければ次のアクセスポイントの判定へ
             if (raspberrypiIntensity == NaN) continue;
 
             // アクセスポイント内にいるとき、端末名を返す
             if (raspberrypiIntensity >= INNER_INTENSITY_OF_ACCESSPOINT) {
-Log.i("testestest", "アクセスポイント");
                 return raspberrypiNumber;
             }
 
