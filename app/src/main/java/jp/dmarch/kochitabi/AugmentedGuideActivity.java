@@ -1,5 +1,6 @@
 package jp.dmarch.kochitabi;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,12 +17,16 @@ import android.util.Log;
 import com.wikitude.architect.ArchitectStartupConfiguration;
 import com.wikitude.architect.ArchitectView;
 
+import java.io.IOException;
+
 public class AugmentedGuideActivity extends AppCompatActivity {
     private ArchitectView architectView;
     private TextView name;
     private TextView message;
+    private String characterFilePath;
+    private static boolean characterCondition;
     private int textNumber;
-    private final int MAX_TEXT_SIZE = 121;
+    private final int MAX_TEXT_SIZE = 120;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String accessPointId = (String)intent.getStringExtra("access_point_id");
         final String characterName = (String)intent.getStringExtra("character_name");
-        final String characterFilePath = (String)intent.getStringExtra("character_file_path");
+        characterFilePath = (String)intent.getStringExtra("character_file_path");
         final String textData = (String)intent.getStringExtra("text_data");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true); // バックボタンを追加
@@ -90,8 +95,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "データが登録されていません。他のアクセスポイントをご利用ください。", Toast.LENGTH_LONG).show();
         }
         // クリックイベントを有効にする
-        architectView.setClickable(true);
-        architectView.setOnClickListener(new View.OnClickListener() {
+        message.setClickable(true);
+        message.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateSentence(cutTextData);
             }
@@ -151,8 +156,10 @@ public class AugmentedGuideActivity extends AppCompatActivity {
 
     /* AR案内画面から強制退場 */
     private void outScreen() {
-        Toast.makeText(getApplicationContext(), "アクセスポイントの外に出ました", Toast.LENGTH_LONG).show();
-        finish();
+        if(BluetoothAdapter.getDefaultAdapter().isDiscovering()) {
+            Toast.makeText(getApplicationContext(), "アクセスポイントの外に出ました", Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     /* レシーバーの設定を行う */
@@ -177,10 +184,37 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             if (raspberrypiNumber == null) {
                 outScreen();
             } else {
-                Log.i("testestest", "アクセスポイント");
+                // ARキャラクターの描画処理
+                getCharacter(characterFilePath.toString());
+                // ARキャラクターが表示されている状態
+                characterCondition = true;
             }
         }
     };
+
+    /* ARキャラクターの追加を行う */
+    private void getCharacter(String characterFilePath) {
+        // ARキャラクターの描画処理
+        try {
+            this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath(characterFilePath)); //AR表示
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /* ARキャラクターの削除を行う */
+    private void resetCharacter() {
+        // ARキャラクターの削除処理
+        try {
+            this.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath()); //AR非表示
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    protected static boolean characterCondition() {
+        return characterCondition;
+    }
 
     @Override
     protected void onPostCreate( final Bundle savedInstanceState ) {
@@ -188,6 +222,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         if ( this.architectView != null ) {
             // call mandatory live-cycle method of architectView
             this.architectView.onPostCreate();
+            // AR表示のためにHTMLファイルを指定
+            resetCharacter();
         }
     }
 
@@ -198,6 +234,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             // onResumeメソッドでArchitectViewのonResumeメソッドを実行
             this.architectView.onResume();
         }
+        // ARキャラクターが表示されていない状態
+        characterCondition = false;
     }
 
     @Override
@@ -207,6 +245,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             // onPauseメソッドでArchitectViewのonPauseメソッドを実行
             this.architectView.onPause();
         }
+        // ARキャラクターが表示されていない状態
+        characterCondition = false;
     }
 
     @Override
