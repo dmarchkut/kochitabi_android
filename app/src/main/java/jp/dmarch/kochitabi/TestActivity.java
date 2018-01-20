@@ -20,7 +20,7 @@ public class TestActivity extends AppCompatActivity {
         dataBaseHelper = new DataBaseHelper(this);
         dataBaseHelper.setRegisterData();
 
-        ArrayList<Map<String, Object>> data = dataBaseHelper.getSpotsData();
+        Map<String, Object> data = dataBaseHelper.getEnvironmentData("en0001");
         String text;
         if (data != null) text = data.toString();
         else text = "null";
@@ -29,9 +29,10 @@ public class TestActivity extends AppCompatActivity {
         text = text.replace("}","}\n");
         Log.d("Test", text);
 
-        String data2 = dataBaseHelper.getSpotText("sp0001");
-        String text2 = "";
-        if (data2 == null) text2 = "null";
+        Map<String, Object> data2 = dataBaseHelper.getCharacterData("ac0001");
+        String text2;
+        if (data2 != null) text2 = data2.toString();
+        else text2 = "null";
         text2 = text2.replace("{", "{\n");
         text2 = text2.replace(",", ",\n");
         text2 = text2.replace("}","}\n");
