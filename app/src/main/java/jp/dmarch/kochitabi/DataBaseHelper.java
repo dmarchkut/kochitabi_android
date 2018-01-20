@@ -69,6 +69,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
 
+        Log.d("setResisterData", "start setting");
+
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
         setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
         setEnvironmentTable(localDataBaseTables.get(2)); // ローカル環境テーブルにデータを登録
