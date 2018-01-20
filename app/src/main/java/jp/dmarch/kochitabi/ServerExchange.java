@@ -54,7 +54,7 @@ public class ServerExchange {
     public final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /* サーバからすべてのテーブルデータを取得 */
-    public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseOption() {
+    public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
 
         // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
