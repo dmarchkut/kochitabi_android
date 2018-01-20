@@ -38,6 +38,16 @@ public class TestActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        Double[] currentLocation = locationAcquisition.getCurrentLocation();
+        TextView textView_currentLocation = findViewById(R.id.textView_currentLocation);
+        textView_currentLocation.setText("緯度:"+currentLocation[0].toString()
+                +"\n経度:"+currentLocation[1].toString());
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         locationAcquisition.endLocationAcquisition(); // 現在地計測終了

@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
-import android.util.Log;
 
 import static android.content.Context.WIFI_SERVICE;
 import static java.lang.Double.NaN;
@@ -37,10 +36,14 @@ public class LocationAcquisition implements LocationListener {
     private Double[] currentLocation = {NO_DATA, NO_DATA}; // 現在地
     private LocationManager locationManager;
     private Boolean hasGottenFlag; // GPSで現在地を取得したことがあるか(true:ある, false:なし)
+    private Boolean settingFlag;    // GPSの設定をしたか(設定画面を開いたか)
 
     // コンストラクタ
     public LocationAcquisition(Context context) {
+
         this.context = context;
+
+        settingFlag = false;
 
         // Android 6.0以上の端末ならパーミッションチェックを行う
         if (Build.VERSION.SDK_INT >= 23) {
@@ -58,6 +61,7 @@ public class LocationAcquisition implements LocationListener {
             }
 
         }
+
     }
 
     /* 現在地の計測を行うための設定及び、その後の計測を開始 */
@@ -70,7 +74,6 @@ public class LocationAcquisition implements LocationListener {
 
         // GPSが無効であればGPSエラーダイアログを表示
         if(!isLocationAcquisition()) {
-
             // GPSエラーダイアログを表示
             new AlertDialog.Builder(context)
                     .setMessage("位置情報が取得できませんでした\nGPSを有効にします")
@@ -167,25 +170,26 @@ public class LocationAcquisition implements LocationListener {
 
             } else { //許可されているなら
 
-                // GPSが有効なら
-                if (isLocationAcquisition()) {
+                // Wifiが無効なら有効に
+                if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 
-                    Log.d("Location", "get current location by wi-fi");
+                    WifiManager wifi = (WifiManager)context.getSystemService(WIFI_SERVICE);
+                    wifi.setWifiEnabled(true);
+                }
 
-                    try {
+                try {
 
-                        // GPSを有効するまでの時間稼ぎ
-                        if (isLocationAcquisition()) Thread.sleep(2000);
+                    // 設定画面から戻ってきたなら設定反映のため少し待つ
+                    if (settingFlag) Thread.sleep(2000);
+                    settingFlag = false;
 
-                        // Wifiで過去に取得した最新の現在地を取得
-                        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                        currentLocation[0] = location.getLatitude(); // 緯度を取得
-                        currentLocation[1] = location.getLongitude(); // 経度を取得
+                    // Wifiで過去に取得した最新の現在地を取得
+                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    currentLocation[0] = location.getLatitude(); // 緯度を取得
+                    currentLocation[1] = location.getLongitude(); // 経度を取得
 
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
 
             }
@@ -198,16 +202,11 @@ public class LocationAcquisition implements LocationListener {
     /* 現在地の位置情報を更新 */
     private void updateCurrentLocation(Location currentLocation) {
 
-        Log.d("update", "start method");
-
         this.currentLocation[0] = currentLocation.getLatitude(); // 緯度を取得
         this.currentLocation[1] = currentLocation.getLongitude(); // 経度を取得
 
         hasGottenFlag = true; // GPSで現在地を取得したことがあると設定
 
-        Log.d("update", "緯度: "+this.currentLocation[0]+"\n経度: "+this.currentLocation[1]);
-
-        Log.d("update", "end method");
     }
 
     /* 現在地と観光地との距離を計算 */
@@ -251,6 +250,9 @@ public class LocationAcquisition implements LocationListener {
 
     /* GPSの設定画面を表示 */
     private void displayLocationAcquisition() {
+
+        // GPSの設定を行ったことを示すフラグをtrueへ
+        settingFlag = true;
 
         // GPSの設定画面へ遷移
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
