@@ -13,6 +13,7 @@ public class AccessPointService extends Service {
     private Handler handler = new Handler();
     private String lastRaspberrypiNumber;
     private String nowRaspberrypiNumber;
+    private boolean characterCondition;
     private BluetoothAcquisition bluetoothAcquisition = new BluetoothAcquisition(CameraActivity.getInstance());
 
     @Override
@@ -31,10 +32,13 @@ public class AccessPointService extends Service {
             public void run(){
                 handler.post(new Runnable() {
                     public void run(){
+                        // ARキャラクターを表示可能判定
+                        characterCondition = CameraActivity.characterCondition() || AugmentedGuideActivity.characterCondition();
+
                         // アクセスポイント内：raspberrypiNumber、外：nullを受け取る
                         nowRaspberrypiNumber = bluetoothAcquisition.checkAccessPoint();
-                        // アクセスポイントに入ってとき、出たときの処理
-                        if (lastRaspberrypiNumber != nowRaspberrypiNumber) {
+                        // アクセスポイントに入ってとき、出たときの処理 || ARキャラクターが表示可能である時
+                        if (lastRaspberrypiNumber != nowRaspberrypiNumber || !characterCondition) {
                             lastRaspberrypiNumber = nowRaspberrypiNumber;
                             sendBroadCast(nowRaspberrypiNumber);
                         }

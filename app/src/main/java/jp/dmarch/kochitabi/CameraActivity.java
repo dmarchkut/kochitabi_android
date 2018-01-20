@@ -18,7 +18,6 @@ import android.content.IntentFilter;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +34,7 @@ public class CameraActivity extends AppCompatActivity {
     private ImageButton cameraButton;
     private ImageButton arguideButton;
     private DataBaseHelper dataBaseHelper;
+    private static boolean characterCondition;
     private static final int PERMISSION_CAMERA = 1;
     private static final int PERMISSION_STORAGE = 2;
 
@@ -215,7 +215,9 @@ public class CameraActivity extends AppCompatActivity {
                 final Object textData = characterGuideData.get("text_data");
 
                 // ARキャラクターの描画処理
-                addCharacter(characterFilePath.toString());
+                getCharacter(characterFilePath.toString());
+                // ARキャラクターが表示されている状態
+                characterCondition = true;
 
                 //AR案内ボタンを表示させる
                 arguideButton.setVisibility(View.VISIBLE);
@@ -238,29 +240,36 @@ public class CameraActivity extends AppCompatActivity {
                 arguideButton.setVisibility(View.GONE);
 
                 // ARキャラクターの削除処理
-                deleteCharacter();
+                resetCharacter();
+                // ARキャラクターが表示されていない状態
+                characterCondition = false;
             }
         }
     };
 
     /* ARキャラクターの追加を行う */
-    private void addCharacter(String characterFilePath) {
+    private void getCharacter(String characterFilePath) {
         // ARキャラクターの描画処理
         try {
-            architectView.load(WikitudeContentsFragment.getArchitectWorldPath(characterFilePath));  //AR表示
+            this.architectView.load(WikitudeContentsFragment.getArchitectWorldPath(characterFilePath)); //AR表示
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
     /* ARキャラクターの削除を行う */
-    private void deleteCharacter() {
+    private void resetCharacter() {
         // ARキャラクターの削除処理
         try {
-            architectView.load(WikitudeContentsFragment.resetArchitectWorldPath());    //AR非表示
+            this.architectView.load(WikitudeContentsFragment.resetArchitectWorldPath()); //AR非表示
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    /* ARキャラクターの表示状態を示す */
+    protected static boolean characterCondition() {
+        return characterCondition;
     }
 
     @Override
@@ -270,9 +279,8 @@ public class CameraActivity extends AppCompatActivity {
             // call mandatory live-cycle method of architectView
             this.architectView.onPostCreate();
             // AR表示のためにHTMLファイルを指定
-            deleteCharacter();
+            resetCharacter();
         }
-        Log.i("testestest", "onPostCreate");
         // サービスクラスを開始する
         Intent intent = new Intent(getApplication(), AccessPointService.class);
         startService(intent);
@@ -285,6 +293,8 @@ public class CameraActivity extends AppCompatActivity {
             // onResumeメソッドでArchitectViewのonResumeメソッドを実行
             this.architectView.onResume();
         }
+        // ARキャラクターが表示されていない状態
+        characterCondition = false;
     }
 
     @Override
@@ -294,6 +304,8 @@ public class CameraActivity extends AppCompatActivity {
             // onPauseメソッドでArchitectViewのonPauseメソッドを実行
             this.architectView.onPause();
         }
+        // ARキャラクターが表示されていない状態
+        characterCondition = false;
     }
 
     @Override
@@ -304,7 +316,6 @@ public class CameraActivity extends AppCompatActivity {
             // onDestroyメソッドでArchitectViewのonDestroyメソッドを実行
             this.architectView.onDestroy();
         }
-        Log.i("testestest", "onDestroy");
         // サービスクラスを終了する
         Intent intent = new Intent(getApplication(), AccessPointService.class);
         stopService(intent);
