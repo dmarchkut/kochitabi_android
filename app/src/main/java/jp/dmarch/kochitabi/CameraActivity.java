@@ -206,7 +206,7 @@ public class CameraActivity extends AppCompatActivity {
             /* アクセスポイント内にいる時の処理 */
             if (raspberrypiNumber != null) {
                 // raspberrpiNumberに対応したAR案内情報を取得する
-                final Map<String, Object> characterGuideData = dataBaseHelper.getCharacterGuide(raspberrypiNumber);
+                final Map<String, Object> characterGuideData = dataBaseHelper.getCharacterGuideData(raspberrypiNumber);
 
                 // Mapオブジェクトを分解する
                 final Object accessPointId = characterGuideData.get("access_point_id");

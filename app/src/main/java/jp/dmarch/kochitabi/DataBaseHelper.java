@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DataBaseHelper {
-    protected Map<String, Object> getCharacterGuide(String raspberrypiNumber) {
+    protected Map<String, Object> getCharacterGuideData(String raspberrypiNumber) {
         Map<String, Object> characterGuideData = new HashMap<String, Object>();
 
         String accessPointId = "ac0001";
