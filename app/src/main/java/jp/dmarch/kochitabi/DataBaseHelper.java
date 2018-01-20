@@ -69,8 +69,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
 
-        Log.d("setResisterData", "start setting");
-
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
         setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
         setEnvironmentTable(localDataBaseTables.get(2)); // ローカル環境テーブルにデータを登録
@@ -461,7 +459,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 spotData.put("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
                 spotData.put("photo_file_path", cursor.getString(cursor.getColumnIndex("photo_file_path")));
                 spotsData.add(spotData);
-                Log.d("getSpot", "add");
 
                 isEof = cursor.moveToNext();
             }

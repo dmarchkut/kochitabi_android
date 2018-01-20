@@ -32,7 +32,7 @@ import java.util.Map;
 public class ServerExchange {
 
     // ローカルDBのデータを取得するためのAPIに共通するURL部分
-    private final static String API_URL = "https://pure-tundra-22058.herokuapp.com/api/";
+    private final static String API_URL = "http://pure-tundra-22058.herokuapp.com/api/";
 
     // ローカル観光地テーブルの名前
     private final static String SPOT_TABLE_NAME = "local_spot";
@@ -58,8 +58,6 @@ public class ServerExchange {
     /* サーバからすべてのテーブルデータを取得 */
     public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
 
-        Log.d("getLocalDataBaseTables", "start method");
-
         // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
 
@@ -70,8 +68,6 @@ public class ServerExchange {
             localDataBaseTables.add(tableData);
 
         }
-
-        Log.d("getLocalDataBaseTables", "end method");
 
         return localDataBaseTables;
 
