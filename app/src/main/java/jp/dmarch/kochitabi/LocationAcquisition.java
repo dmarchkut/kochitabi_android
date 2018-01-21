@@ -1,5 +1,13 @@
 package jp.dmarch.kochitabi;
 
-public class LocationAcquisition {
+import android.content.Context;
 
+public class LocationAcquisition {
+    public LocationAcquisition(Context context) {
+
+    }
+
+    public Double getDistance(Double[] d1, Double[] d2) {
+        return 0.0;
+    }
 }
