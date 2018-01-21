@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <com.wikitude.architect.ArchitectView
+        android:id="@+id/architectView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:gravity="bottom">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center">
+            <ImageButton
+                android:id="@+id/snapshot_button"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/snapshot_button" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="right">
+        <ImageButton
+            android:id="@+id/arguide_button"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/arguide_button" />
+    </LinearLayout>
+
+</RelativeLayout>
