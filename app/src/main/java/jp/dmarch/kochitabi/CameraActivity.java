@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Environment;
-import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
@@ -38,7 +37,6 @@ public class CameraActivity extends AppCompatActivity {
     private static boolean characterCondition;
     private static final int PERMISSION_CAMERA = 1;
     private static final int PERMISSION_STORAGE = 2;
-    private static final int PERMISSION_GPS = 3;
 
     /* 外部からcontextを参照するときに使う */
     protected static Context getInstance() {
@@ -90,13 +88,6 @@ public class CameraActivity extends AppCompatActivity {
             } else {
                 //撮影ボタンを表示させる
                 cameraButton.setVisibility(View.VISIBLE);
-            }
-            // アプリでGPSの使用が許可されていないなら
-            if (PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // GPSの使用許可を要求
-                ActivityCompat.requestPermissions((Activity) this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, PERMISSION_GPS);
-
             }
         }
 
@@ -178,13 +169,7 @@ public class CameraActivity extends AppCompatActivity {
                     //撮影ボタンを表示させる
                     cameraButton.setVisibility(View.VISIBLE);
                 }
-                // アプリでGPSの使用が許可されていないなら
-                if (PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && PermissionChecker.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // GPSの使用許可を要求
-                    ActivityCompat.requestPermissions((Activity) this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, PERMISSION_GPS);
-
-                }
+                return;
             }
         }
     }
