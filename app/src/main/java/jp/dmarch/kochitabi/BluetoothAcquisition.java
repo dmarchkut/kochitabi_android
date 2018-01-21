@@ -36,30 +36,11 @@ public class BluetoothAcquisition {
     Boolean restartFlag; // 終了後に再検索開始するか示すフラグ
 
     private final static int INNER_INTENSITY_OF_ACCESSPOINT = -65; // アクセスポイント内の電波強度の最低値
-    private final static int REQUEST_PERMISSION_GPS = 600;
 
     public BluetoothAcquisition(Context context) {
         this.context = context;
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();  // Bluetoothアダプタ取得
-
-        // なぜかbluetoothの計測にGPSの使用許可が必要であるためおこなう
-        // Android 6.0以上の端末ならパーミッションチェックを行う
-        if (Build.VERSION.SDK_INT >= 23) {
-
-            // アプリでGPSの使用が許可されていないなら
-            if (PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && PermissionChecker.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-                // 再度、使用許可要求を出す必要があるか（一度拒否していたらtrue）
-                if (!ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // GPSの使用許可を要求
-                    ActivityCompat.requestPermissions((Activity) context, new String[] {Manifest.permission.ACCESS_FINE_LOCATION,}, REQUEST_PERMISSION_GPS);
-                }
-
-            }
-
-        }
     }
 
     /* Bluetooth接続可能な端末の検索開始 */
