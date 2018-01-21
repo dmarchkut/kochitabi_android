@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+<<<<<<< HEAD
+=======
+      <module fileurl="file://C:\Users\monki\AndroidStudioProjects\kochitabi_android\kochitabi.iml" filepath="C:\Users\monki\AndroidStudioProjects\kochitabi_android\kochitabi.iml" />
+>>>>>>> develop
       <module fileurl="file://$PROJECT_DIR$/kochitabi_android.iml" filepath="$PROJECT_DIR$/kochitabi_android.iml" />
     </modules>
   </component>

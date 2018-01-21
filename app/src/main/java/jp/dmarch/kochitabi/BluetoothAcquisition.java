@@ -1,5 +1,6 @@
 package jp.dmarch.kochitabi;
 
+<<<<<<< HEAD
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -228,3 +229,7 @@ public class BluetoothAcquisition {
     }
 
 }
+=======
+public class BluetoothAcquisition {
+}
+>>>>>>> develop
