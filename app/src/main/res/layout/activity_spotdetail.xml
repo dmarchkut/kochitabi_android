@@ -13,8 +13,8 @@
         <ImageView
             android:id="@+id/spotImageView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_height="0dp"
+            android:layout_weight="2.3"
             android:adjustViewBounds="true" />
 
 
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="-83dp"
+            android:layout_marginTop="-100dp"
             android:background="#00000000"
             app:srcCompat="@drawable/map_jump_button" />
 
@@ -35,24 +35,25 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="85dp"
-            android:layout_marginBottom="-85dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="-110dp"
             android:background="#F7EEE2"/>
 
         <TextView
             android:id="@+id/spotNameTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:textSize="25sp" />
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="25dp"
+            android:textSize="27sp" />
 
 
         <TextView
             android:id="@+id/spotInfoTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
             android:textSize="15sp" />
 
         <TextView
@@ -62,7 +63,7 @@
             android:layout_weight="2"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:maxLines="10"
             android:scrollbars="vertical"
             android:textSize="20sp" />
