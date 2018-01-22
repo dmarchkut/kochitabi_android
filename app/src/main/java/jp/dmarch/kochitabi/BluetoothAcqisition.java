@@ -11,10 +11,7 @@ public class BluetoothAcqisition {
         int minute = now.get(now.MINUTE);     //分を取得
         minute = minute % 2;
 
-        if (minute == 1) {
             return "pi0001";
-        }
-        return null;
     }
 
     public BluetoothAcqisition(Context context) {
