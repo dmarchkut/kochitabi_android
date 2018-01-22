@@ -1,5 +1,13 @@
 package jp.dmarch.kochitabi;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
+import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.NetworkInterface;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -53,8 +62,20 @@ public class ServerExchange {
     // 日時データのフォーマット
     public final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    private Context context;
+
+    public ServerExchange(Context context) {
+        this.context = context;
+    }
+
     /* サーバからすべてのテーブルデータを取得 */
-    public static ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
+    public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
+
+        // ネットワークに接続されていなければエラーダイアログを表示
+        if(!isUsableNetwork()) {
+            pushReConnectDialog();
+            return null;
+        }
 
         // すべてのローカルデータベーステーブルのデータを管理するためのArrayListオブジェクト
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = new ArrayList<ArrayList<Map<String,Object>>>();
@@ -72,7 +93,13 @@ public class ServerExchange {
     }
 
     /* サーバからローカル環境テーブルデータを取得 */
-    public static ArrayList<Map<String, Object>> getEnvironmentTable() {
+    public ArrayList<Map<String, Object>> getEnvironmentTable() {
+
+        // ネットワークに接続されていなければエラーダイアログを表示
+        if(!isUsableNetwork()) {
+            pushReConnectDialog();
+            return null;
+        }
 
         // ローカル環境テーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> environmentTable = getTableData(ENVIRONMENT_TABLE_NAME);
@@ -81,7 +108,13 @@ public class ServerExchange {
     }
 
     /* サーバからローカルキャラクターテーブルデータを取得 */
-    public static ArrayList<Map<String, Object>> getCharacterTable() {
+    public ArrayList<Map<String, Object>> getCharacterTable() {
+
+        // ネットワークに接続されていなければエラーダイアログを表示
+        if(!isUsableNetwork()) {
+            pushReConnectDialog();
+            return null;
+        }
 
         // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> characterTable = getTableData(CHARACTER_TABLE_NAME);
@@ -90,7 +123,7 @@ public class ServerExchange {
     }
 
     /* 特定のテーブルデータを取得 */
-    private static ArrayList<Map<String, Object>> getTableData(String tableName) {
+    private ArrayList<Map<String, Object>> getTableData(String tableName) {
         // テーブルのJSON
         JSONArray jsonData = getJSON(tableName);
 
@@ -125,7 +158,7 @@ public class ServerExchange {
     }
 
     /* 特定のテーブルのJSONデータをサーバから取得 */
-    private static JSONArray getJSON(final String tableName) {
+    private JSONArray getJSON(final String tableName) {
 
         final JSONArray[] jsonData = new JSONArray[1];
 
@@ -188,7 +221,7 @@ public class ServerExchange {
     }
 
     /* レコードのJSONをMapオブジェクトに変換するメソッド */
-    private static Map<String, Object> convertJsonToMap(JSONObject recordJson) throws JSONException, ParseException {
+    private Map<String, Object> convertJsonToMap(JSONObject recordJson) throws JSONException, ParseException {
 
         // 変換後のデータを入れるMapオブジェクト
         Map<String, Object> recordData = new HashMap<String, Object>();
@@ -216,6 +249,43 @@ public class ServerExchange {
 
         return recordData;
 
+    }
+
+    /* 再接続ダイアログを表示する */
+    private void pushReConnectDialog() {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        // アラートダイアログのメッセージを設定します
+        alertDialogBuilder.setMessage("ネットワークに接続できませんでした");
+        // アラートダイアログの肯定ボタンがクリックされた時に呼び出されるコールバックリスナーを登録します
+        alertDialogBuilder.setPositiveButton("再接続",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // データベースの削除
+                        new DataBaseHelper(context).deleteRegisterData();
+                        // データベースの作成
+                        DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
+                        // データの取得と登録
+                        dataBaseHelper.setRegisterData();
+                    }
+        });
+        // アラートダイアログのキャンセルが可能かどうかを設定します
+        alertDialogBuilder.setCancelable(false);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // アラートダイアログを表示します
+        alertDialog.show();
+
+    }
+
+    /* ネットワークが使えるか判断する */
+    private Boolean isUsableNetwork() {
+        // Wifi, Mobileともに調べる
+        ConnectivityManager connectivityManager;
+        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
     }
 
 }

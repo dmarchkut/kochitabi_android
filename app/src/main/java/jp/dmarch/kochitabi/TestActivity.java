@@ -19,7 +19,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-         serverExchange = new ServerExchange(); // インスタンス化
+         serverExchange = new ServerExchange(this); // インスタンス化
 
         // 取得したデータを表示するEditText
         final EditText editText = findViewById(R.id.editText);
@@ -34,10 +34,13 @@ public class TestActivity extends AppCompatActivity {
                 ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;
                 localDataBaseTables = serverExchange.getLocalDataBaseTables();
 
-                String data = localDataBaseTables.toString();
-                data = data.replace("{", "{\n\t");
-                data = data.replace(",", ",\n\t");
-                data = data.replace("}", "\n}");
+                String data;
+                if (localDataBaseTables != null) {
+                    data = localDataBaseTables.toString();
+                    data = data.replace("{", "{\n\t");
+                    data = data.replace(",", ",\n\t");
+                    data = data.replace("}", "\n}");
+                } else data = "null";
 
                 editText.setText(data);
 
@@ -53,10 +56,13 @@ public class TestActivity extends AppCompatActivity {
                 ArrayList<Map<String, Object>> environmentTable;
                 environmentTable = serverExchange.getEnvironmentTable();
 
-                String data = environmentTable.toString();
-                data = data.replace("{", "{\n\t");
-                data = data.replace(",", ",\n\t");
-                data = data.replace("}", "\n}");
+                String data;
+                if (environmentTable != null) {
+                    data = environmentTable.toString();
+                    data = data.replace("{", "{\n\t");
+                    data = data.replace(",", ",\n\t");
+                    data = data.replace("}", "\n}");
+                } else data = "null";
 
                 editText.setText(data);
 
@@ -70,12 +76,15 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 ArrayList<Map<String, Object>> characterTable;
-                characterTable = ServerExchange.getCharacterTable();
+                characterTable = serverExchange.getCharacterTable();
 
-                String data = characterTable.toString();
-                data = data.replace("{", "{\n\t");
-                data = data.replace(",", ",\n\t");
-                data = data.replace("}", "\n}");
+                String data;
+                if (characterTable != null) {
+                    data = characterTable.toString();
+                    data = data.replace("{", "{\n\t");
+                    data = data.replace(",", ",\n\t");
+                    data = data.replace("}", "\n}");
+                } else data = "null";
 
                 editText.setText(data);
             }
