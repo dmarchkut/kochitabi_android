@@ -620,6 +620,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
 
             cursor.close();
+        } catch (Exception error) {
+            error.printStackTrace();
         }
         finally {
             db.close(); // DBを切断
@@ -634,6 +636,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // 現在のローカルキャラクターテーブルのデータが10秒以上たっていれば
         // サーバからデータを取得する
         if (isCharacterTableTime()) {
+
             ArrayList<Map<String, Object>> characterTableData = serverExchange.getCharacterTable();
 
             // データを取得できていれば更新を行う
@@ -665,6 +668,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             characterData.put("character_file_path", cursor.getString(cursor.getColumnIndex("character_file_path")));
 
             cursor.close();
+        } catch (Exception error) {
+            error.printStackTrace();
         }
         finally {
             db.close(); // DBを切断
@@ -799,7 +804,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // 取得した数が0個であれば取得
             if (cursor.getCount() == 0) {
                 cursor.close();
-                return null;
+                return true;
             }
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
