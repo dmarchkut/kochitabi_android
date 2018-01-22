@@ -18,6 +18,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Double.NaN;
+
 /* 参考Webサイト
  * http://kuwalab.hatenablog.jp/entry/20101221/p1
  * http://javait.blog.fc2.com/blog-entry-154.html
@@ -106,8 +108,14 @@ public class SpotFragment extends Fragment {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("spot_name", (((HashMap<String, Object>)spotsData.get(i)).get("spot_name")).toString());
             map.put("spot_phoname", (((HashMap<String, Object>)spotsData.get(i)).get("spot_phoname")).toString());
-            map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")));
             map.put("weather", (((HashMap<String, Object>)spotsData.get(i)).get("weather")).toString());
+            // 距離はNaN発生の恐れがあるためエラー用ハイフンを条件分岐で設定
+            if (!((HashMap<String, Object>)spotsData.get(i)).get("distance").equals(NaN)) {
+                map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")) + " km");
+            }
+            else {
+                map.put("distance", " - ");
+            }
             // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
             if (((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path") != null) {
                 map.put("photo_file_path", this.getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));

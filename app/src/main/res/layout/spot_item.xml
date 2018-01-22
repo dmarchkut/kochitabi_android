@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="km | 天気 :"
+        android:text=" | 天気 :"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/spot_distance"
         app:layout_constraintTop_toBottomOf="@+id/spot_name" />
