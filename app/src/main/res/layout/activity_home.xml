@@ -34,7 +34,7 @@
 
         <ImageButton
             android:id="@+id/imageSpotButton"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_marginTop="5dp"
             android:layout_weight="1.25"
@@ -45,22 +45,20 @@
 
         <ImageButton
             android:id="@+id/imageCameraButton"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="4dp"
             android:layout_weight="1.25"
             android:adjustViewBounds="true"
             android:background="@null"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/home_choose_camera" />
 
         <ImageButton
             android:id="@+id/imageMapButton"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="3.4dp"
+            android:layout_marginTop="4dp"
             android:layout_weight="1.25"
             android:adjustViewBounds="true"
             android:background="@null"
@@ -70,6 +68,4 @@
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
-
-
 
