@@ -12,19 +12,13 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 
     <!--Google Maps API-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--CameraActivity-->
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <!--CameraActivity-->
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!--CameraActivity-->
-    <uses-permission android:name="android.permission.CAMERA" />
-
 
     <application
         android:allowBackup="true"
