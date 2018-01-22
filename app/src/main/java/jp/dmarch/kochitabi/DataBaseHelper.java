@@ -33,7 +33,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private final static String spotKeys[] // ローカル観光地テーブルのレコードのキー
             = new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code",
-                            "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"};
+            "latitude", "longitude", "photo_file_path", "text_data", "created_at", "updated_at"};
     private final static String accessPointKeys[] // ローカルアクセスポイントテーブルのレコードのキー
             = new String[] {"access_point_id", "spot_id", "access_point_name", "latitude", "longitude",
             "raspberry_pi_number", "text_data", "created_at", "updated_at"};
@@ -41,13 +41,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             = new String[] {"environment_id", "weather", "temperature", "created_at", "updated_at"};
     private final static String characterKeys[] // ローカルキャラクターテーブルのレコードのキー
             = new String[] {"access_point_id", "character_name", "character_file_path",
-                            "created_at", "updated_at"};
+            "created_at", "updated_at"};
 
     // コンストラクタ
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
-        serverExchange = new ServerExchange();
+        serverExchange = new ServerExchange(context);
         locationAcquisition = new LocationAcquisition(context);
     }
 
@@ -67,6 +67,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
+
+        // データが取得できていなければ登録せず終わる
+        if (localDataBaseTables == null) return;
 
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
         setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
@@ -431,11 +434,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカル観光地テーブルから観光地データをすべて取得
             Cursor cursor = db.query(   SPOT_TABLE_NAME,
-                                        new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code", "latitude", "longitude", "photo_file_path"},
-                                        null,
-                                        null,
-                                        null, null, null
-                                    );
+                    new String[] {"spot_id", "environment_id", "spot_name", "spot_phoname", "street_address", "postal_code", "latitude", "longitude", "photo_file_path"},
+                    null,
+                    null,
+                    null, null, null
+            );
 
             // 取得した数が0個であれば終了
             if (cursor.getCount() == 0) {
@@ -480,10 +483,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカル観光地テーブルから特定の観光地テキストデータを取得
             Cursor cursor = db.query(   SPOT_TABLE_NAME,
-                                        new String[] {"spot_id", "text_data"},
-                                        "spot_id == ?",
-                                        new String[] {spotId},
-                                        null, null, null
+                    new String[] {"spot_id", "text_data"},
+                    "spot_id == ?",
+                    new String[] {spotId},
+                    null, null, null
             );
 
             // 取得した数が0個であれば終了
@@ -514,10 +517,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカルアクセスポイントテーブルから特定のアクセスポイントデータをすべて取得
             Cursor cursor = db.query(   ACCESS_POINT_TABLE_NAME,
-                                        new String[]{"access_point_id", "spot_id", "latitude", "longitude"},
-                                        "spot_id == ?",
-                                        new String[] {spotId},
-                                        null, null, null
+                    new String[]{"access_point_id", "spot_id", "latitude", "longitude"},
+                    "spot_id == ?",
+                    new String[] {spotId},
+                    null, null, null
             );
 
             // 取得した数が0個であれば終了
@@ -554,10 +557,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカルアクセスポイントテーブルから特定のアクセスポイントの案内情報を取得
             Cursor cursor = db.query(   ACCESS_POINT_TABLE_NAME,
-                                        new String[] {"access_point_id", "raspberry_pi_number", "text_data"},
-                                        "raspberry_pi_number == ?",
-                                        new String[] {raspberrypiNumber},
-                                        null, null, null
+                    new String[] {"access_point_id", "raspberry_pi_number", "text_data"},
+                    "raspberry_pi_number == ?",
+                    new String[] {raspberrypiNumber},
+                    null, null, null
             );
 
             // 取得した数が0個であれば終了
@@ -587,7 +590,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバからデータを取得する
         if (isEnvironmentTableTime()) {
             ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
-            updateEnvironmentTable(environmentTableData);
+
+            // データを取得できていれば更新を行う
+            if (environmentTableData != null) updateEnvironmentTable(environmentTableData);
         }
 
         Map<String, Object> environmentData = new HashMap<String, Object>();
@@ -630,7 +635,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバからデータを取得する
         if (isCharacterTableTime()) {
             ArrayList<Map<String, Object>> characterTableData = serverExchange.getCharacterTable();
-            updateCharacterTable(characterTableData);
+
+            // データを取得できていれば更新を行う
+            if (characterTableData != null) updateCharacterTable(characterTableData);
         }
 
         Map<String, Object> characterData = new HashMap<String, Object>();
@@ -639,10 +646,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカルキャラクターテーブルから特定のキャラクターデータを取得
             Cursor cursor = db.query(   CHARACTER_TABLE_NAME,
-                                        new String[] {"access_point_id", "character_name", "character_file_path"},
-                                        "access_point_id == ?",
-                                        new String[] {accessPointId},
-                                        null, null, null
+                    new String[] {"access_point_id", "character_name", "character_file_path"},
+                    "access_point_id == ?",
+                    new String[] {accessPointId},
+                    null, null, null
             );
 
             // 取得した数が0個であれば終了
@@ -734,11 +741,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         try {
             // ローカル環境テーブルの環境データを1つ取得
             Cursor cursor = db.query(   ENVIRONMENT_TABLE_NAME,
-                                        new String[] {"environment_id", "created_at", "updated_at"},
-                                        null,
-                                        null,
-                                        null, null, "environment_id DESC",
-                                        "1"
+                    new String[] {"environment_id", "created_at", "updated_at"},
+                    null,
+                    null,
+                    null, null, "environment_id DESC",
+                    "1"
             );
 
             // 取得した数が0個であれば取得
