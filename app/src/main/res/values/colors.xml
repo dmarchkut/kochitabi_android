@@ -3,4 +3,15 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#FFFFFF</color>
+
+    <color name="colorBase">#F3971B</color>
+    <color name="colorLight">#f7eee2</color>
+
+    <color name="colorWindow">#FFFEEE</color>
+
+    <color name="colorSun">#F3971B</color>
+    <color name="colorRain">#00A0E9</color>
+    <color name="colorCroud">#717171</color>
 </resources>
