@@ -92,11 +92,8 @@ public class ServerExchange {
     /* サーバからローカル環境テーブルデータを取得 */
     public ArrayList<Map<String, Object>> getEnvironmentTable() {
 
-        // ネットワークに接続されていなければエラーダイアログを表示
-        if(!isUsableNetwork()) {
-            pushReConnectDialog();
-            return null;
-        }
+        // ネットワークに接続されていなければデータを取得せずに終わる
+        if(!isUsableNetwork()) return null;
 
         // ローカル環境テーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> environmentTable = getTableData(ENVIRONMENT_TABLE_NAME);
@@ -107,11 +104,8 @@ public class ServerExchange {
     /* サーバからローカルキャラクターテーブルデータを取得 */
     public ArrayList<Map<String, Object>> getCharacterTable() {
 
-        // ネットワークに接続されていなければエラーダイアログを表示
-        if(!isUsableNetwork()) {
-            pushReConnectDialog();
-            return null;
-        }
+        // ネットワークに接続されていなければデータを取得せずに終わる
+        if(!isUsableNetwork()) return null;
 
         // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> characterTable = getTableData(CHARACTER_TABLE_NAME);
