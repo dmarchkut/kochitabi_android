@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
-import android.provider.ContactsContract;
 import android.support.v7.app.AlertDialog;
 
 import org.json.JSONArray;
@@ -17,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.NetworkInterface;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -95,11 +92,8 @@ public class ServerExchange {
     /* サーバからローカル環境テーブルデータを取得 */
     public ArrayList<Map<String, Object>> getEnvironmentTable() {
 
-        // ネットワークに接続されていなければエラーダイアログを表示
-        if(!isUsableNetwork()) {
-            pushReConnectDialog();
-            return null;
-        }
+        // ネットワークに接続されていなければデータを取得せずに終わる
+        if(!isUsableNetwork()) return null;
 
         // ローカル環境テーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> environmentTable = getTableData(ENVIRONMENT_TABLE_NAME);
@@ -110,11 +104,8 @@ public class ServerExchange {
     /* サーバからローカルキャラクターテーブルデータを取得 */
     public ArrayList<Map<String, Object>> getCharacterTable() {
 
-        // ネットワークに接続されていなければエラーダイアログを表示
-        if(!isUsableNetwork()) {
-            pushReConnectDialog();
-            return null;
-        }
+        // ネットワークに接続されていなければデータを取得せずに終わる
+        if(!isUsableNetwork()) return null;
 
         // ローカルキャラクターテーブルを管理するためのArrayListオブジェクト
         ArrayList<Map<String, Object>> characterTable = getTableData(CHARACTER_TABLE_NAME);
