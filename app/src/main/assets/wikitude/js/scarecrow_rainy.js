@@ -9,7 +9,7 @@ var World = {
     //AR描画
     createModelAtLocation: function createModelAtLocationFn() {
         //モデルの定義
-        var model = new AR.Model("assets/scare.wt3", {
+        var model = new AR.Model("assets/scarecrow_rainy.wt3", {
             onLoaded: this.worldLoaded,
             //ARキャラの大きさ
             scale: {
