@@ -9,19 +9,7 @@
         android:layout_height="fill_parent"/>
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="right">
-        <ImageButton
-            android:id="@+id/camera_button"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/camera_button" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/screen_area"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,5 +43,18 @@
             android:textColor="#FFFDEF"
             android:background="#91040A"
             android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="right">
+        <ImageButton
+            android:id="@+id/camera_button"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/camera_button" />
     </LinearLayout>
 </RelativeLayout>
