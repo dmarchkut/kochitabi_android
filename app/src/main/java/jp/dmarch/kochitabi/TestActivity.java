@@ -18,9 +18,10 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
         dataBaseHelper = new DataBaseHelper(this);
-        dataBaseHelper.setRegisterData();
+        //dataBaseHelper.setRegisterData();
+        dataBaseHelper.deleteRegisterData();
 
-        Map<String, Object> data = dataBaseHelper.getEnvironmentData("en0001");
+/*        Map<String, Object> data = dataBaseHelper.getEnvironmentData("en0001");
         String text;
         if (data != null) text = data.toString();
         else text = "null";
@@ -37,7 +38,7 @@ public class TestActivity extends AppCompatActivity {
         text2 = text2.replace(",", ",\n");
         text2 = text2.replace("}","}\n");
 
-        Log.d("Test2", text2);
+        Log.d("Test", text2);*/
 
     }
 

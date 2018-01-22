@@ -1,6 +1,7 @@
 package jp.dmarch.kochitabi;
 
 import android.content.Context;
+
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
