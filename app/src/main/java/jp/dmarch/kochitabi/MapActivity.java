@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Double.NaN;
+
 /* 参考Webサイト
  * https://qiita.com/rkonno/items/8bec3d5a45235fc88a08
  * https://akira-watson.com/android/google-map.html
@@ -135,9 +137,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // ホーム画面から呼ばれた際
         if (preActivity == HOME_ACTIVITY) {
             Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
-            this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
-            LatLng current = new LatLng(currentLocation[0], currentLocation[1]);        // 観光地座標設定
-            mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));     // 現在地カメラ設定(12倍)
+            // 現在地が取得できるか(GPS稼働時)の判定
+            if (!currentLocation[0].equals(NaN)) {
+                this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
+                LatLng current = new LatLng(currentLocation[0], currentLocation[1]);        // 現在地座標設定
+                mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 12));     // 現在地カメラ設定(12倍)
+            }
+            else {
+                LatLng defaultSpot = new LatLng(33.567237, 133.543661);
+                mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultSpot, 12));     // 現在地カメラ設定(12倍)
+            }
 
             spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
 
@@ -167,7 +176,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
 
             Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地位置情報取得
-            this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
+            if (!currentLocation[0].equals(NaN)) {
+                this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
+            }
 
             Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);     // 観光地距離情報取得
 
@@ -203,7 +214,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // 距離設定
         TextView distanceValue = findViewById(R.id.map_distance);
-        distanceValue.setText(String.format("%.1f", distance));
+        if (!distance.equals(NaN)) {
+            distanceValue.setText(String.format("%.1f", distance) + " km");
+        }
+        else {
+            distanceValue.setText(" - ");
+        }
 
     }
 
@@ -232,7 +248,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         map.put("latitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("latitude")).toString());
                         map.put("longitude", (((HashMap<String, Object>)spotsData.get(i-1)).get("longitude")).toString());
                         map.put("weather", (((HashMap<String, Object>)spotsData.get(i-1)).get("weather")).toString());
-                        map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i-1)).get("distance")));
+                        // 距離はNaN発生の恐れがあるためエラー用ハイフンを条件分岐で設定
+                        if (!((HashMap<String, Object>)spotsData.get(i-1)).get("distance").equals(NaN)) {
+                            map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i-1)).get("distance")) + " km");
+                        }
+                        else {
+                            map.put("distance", " - ");
+                        }
                         // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
                         if (((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path") != null) {
                             map.put("photo_file_path", getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i-1)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
