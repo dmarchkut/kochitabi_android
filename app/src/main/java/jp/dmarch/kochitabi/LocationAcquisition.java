@@ -180,7 +180,11 @@ public class LocationAcquisition implements LocationListener {
                 try {
 
                     // 設定画面から戻ってきたなら設定反映のため少し待つ
-                    if (settingFlag) Thread.sleep(2000);
+                    if (settingFlag) {
+                        // まだGPSが無効であればNaNを返す
+                        if (!isLocationAcquisition()) return currentLocation;
+                        Thread.sleep(2000);
+                    }
                     settingFlag = false;
 
                     // Wifiで過去に取得した最新の現在地を取得
@@ -212,8 +216,8 @@ public class LocationAcquisition implements LocationListener {
     /* 現在地と観光地との距離を計算 */
     public Double getDistance(Double[] currentLocation, Double[] spotLocation) {
 
-        // 受け取ったデータが想定外のものである際にnullを返す
-        if ((currentLocation.length != 2) || (spotLocation.length != 2)) return null;
+        // 受け取ったデータが想定外のものである際にNaNを返す
+        if ((currentLocation.length != 2) || (spotLocation.length != 2)) return NaN;
 
         Double latitudeCurrent = currentLocation[0]; // 現在地の緯度
         Double longitudeCurrent = currentLocation[1]; // 現在地の経度
