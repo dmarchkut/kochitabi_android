@@ -1,5 +1,6 @@
 package jp.dmarch.kochitabi;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.text.ParseException;
@@ -48,7 +49,7 @@ public class ServerExchange {
 
     private Object[][] datas = {spotDatas, environmentDatas, accessPointDatas, characterDatas};
 
-    public ServerExchange() {}
+    public ServerExchange(Context context) {}
 
     public ArrayList<ArrayList<Map<String, Object>>> getLocalDataBaseTables() {
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables;
