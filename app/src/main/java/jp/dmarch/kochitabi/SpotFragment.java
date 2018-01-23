@@ -51,6 +51,13 @@ public class SpotFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         View view = inflater.inflate(R.layout.fragment_spot, container, false);     // xml読み込み
+        return view;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         // データ取得
         Bundle bundle = getArguments();
@@ -73,14 +80,6 @@ public class SpotFragment extends Fragment {
             map.put("distance", bundle.getDouble("distance"+String.valueOf(i)));
             spotsData.add(map);
         }
-
-        return view;
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
 
         if(page == 1) {
             this.sortSyllabary(spotsData);      // タブが1ページ(五十音順)ならsortSyllabary呼び出し

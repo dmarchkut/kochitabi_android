@@ -14,6 +14,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -49,11 +50,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public static final int HOME_ACTIVITY = 0;
     public static final int SPOT_DETAIL_ACTIVITY = 1;
 
+    private SupportMapFragment mMapFragment;
+
     ListView mapSpotList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // バックボタン追加
 
         // 呼び出し元Activity取得
@@ -119,7 +123,20 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
         currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
+
+        // 呼び出し元によって処理変更
+        // ホーム画面から呼ばれた際
+        if (preActivity == HOME_ACTIVITY) {
+            spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
+
+        }
+        else {
+
+        }
 
     }
 
@@ -155,8 +172,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 LatLng defaultSpot = new LatLng(33.567237, 133.543661);
                 mapData.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultSpot, 12));     // 現在地カメラ設定(12倍)
             }
-
-            spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);      // 観光地情報取得
 
             // 情報を抽出し観光地マーカ設定
             for (int i = 0; i < spotsData.size(); i++) {
