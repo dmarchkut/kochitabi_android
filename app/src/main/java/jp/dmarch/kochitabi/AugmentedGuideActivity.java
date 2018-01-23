@@ -90,7 +90,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
         }
         // 最初の表示テキスト
         if(textNumber < cutTextData.length) {
-            message.setText("　"+cutTextData[textNumber] + "。");
+            message.setText(cutTextData[textNumber] + "。");
             textNumber++;
         } else {
             name.setVisibility(View.GONE);
@@ -141,7 +141,7 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             }
             // テキストの表示を行う
             if (textNumber < cutTextData.length) {
-                message.setText("　"+cutTextData[textNumber] + "。");
+                message.setText(cutTextData[textNumber] + "。");
                 textNumber++;
             // テキストが終了したので最初に戻る
             } else {
