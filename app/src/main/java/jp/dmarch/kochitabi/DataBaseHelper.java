@@ -30,7 +30,7 @@ public class DataBaseHelper {
 
     public String getSpotText(String spotId) {
 
-        String spotText = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa   aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        String spotText = "ああああああああああああああああああああああああああああああああ。あああああああああああああああああああああああああああああああ。あああああああああああああああああああ。ああああああああああああああああああ。ああああああああああああああ。";
 
         return spotText;
     }

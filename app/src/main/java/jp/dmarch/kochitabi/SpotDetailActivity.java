@@ -146,7 +146,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();        //小数第2位で四捨五入
 
         String sep = System.getProperty("line.separator");
-        String spotIntroduce = spotText + sep + sep + "〒 " + postalCode + sep + streetAddress;
+        spotText = spotText.replace("。", "。\n\n");
+        String spotIntroduce = spotText + "〒 " + postalCode + sep + streetAddress;
 
 
         // XMLとの対応付けを行う
@@ -157,7 +158,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
 
         String distanceText;
-        if (distance == null || distance.equals(NaN)) {
+        if (distance.equals(NaN)) {
             BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
             //小数第2位で四捨五入
             distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -168,7 +169,7 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        spotInfoText.setText("距離: " + distanceText + "　|　天気: "+ weather + "　|　気温: " + String.valueOf(temperature) + " 度"); // 距離
+        spotInfoText.setText("距離: " + distanceText + "　|　気温: " + String.valueOf(temperature) + " ℃　|　天気: "+ weather); // 距離
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
         spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
