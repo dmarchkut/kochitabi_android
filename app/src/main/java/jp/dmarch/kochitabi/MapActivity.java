@@ -97,6 +97,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         locationAcquisition = new LocationAcquisition(this);
+        locationAcquisition.beginLocationAcquisition();
 
         this.setGoogleMap();        // マップ表示設定
 
@@ -118,7 +119,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        locationAcquisition.beginLocationAcquisition();
         currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
 
     }

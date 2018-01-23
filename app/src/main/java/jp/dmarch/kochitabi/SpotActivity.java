@@ -35,6 +35,7 @@ public class SpotActivity extends AppCompatActivity {
 
         // LocationAcquisionインスタンス化 & 始動設定
         locationAcquisition = new LocationAcquisition(this);
+        locationAcquisition.beginLocationAcquisition();
 
     }
 
@@ -54,14 +55,14 @@ public class SpotActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        this.setSpotFragment();     // setSpotFragment呼び出し
 
         //　現在地情報取得
-        locationAcquisition.beginLocationAcquisition();
         Double[] currentLocation = locationAcquisition.getCurrentLocation();
 
         // 観光地情報取得
         spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);
+
+        this.setSpotFragment();     // setSpotFragment呼び出し
 
     }
 
