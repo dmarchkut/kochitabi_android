@@ -19,7 +19,6 @@ import android.support.v4.content.PermissionChecker;
 
 import static android.content.Context.WIFI_SERVICE;
 import static java.lang.Double.NaN;
-import static java.lang.Math.sin;
 
 /* 距離計算(getDistance)
  * https://qiita.com/a_nishimura/items/6c2642343c0af832acd4
