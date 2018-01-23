@@ -183,7 +183,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             ArrayList<Double[]> accessPointLocations = new DataBaseHelper(this).getAccessPointLocations(spotData.get("spot_id").toString());        // アクセスポイント座標取得
 
-            Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地位置情報取得
             if (!currentLocation[0].equals(NaN)) {
                 this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
             }
