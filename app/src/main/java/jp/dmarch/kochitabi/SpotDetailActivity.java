@@ -66,16 +66,16 @@ public class SpotDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplication(), MapActivity.class); // 遷移先のMapActivityを設定する
 
                 // キーの値を全てMapから取り出す
-                final String spotId = spotData.get("spot_id").toString();
-                final String environmentId = spotData.get("environment_id").toString();
-                final String spotName = spotData.get("spot_name").toString();
-                final String spotPhoname = spotData.get("spot_phoname").toString();
-                final String streetAddress = spotData.get("street_address").toString();
-                final Integer postalCode = new Integer(spotData.get("postal_code").toString()).intValue();
-                final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-                final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+                final String spotId = (String) spotData.get("spot_id");
+                final String environmentId = (String) spotData.get("environment_id");
+                final String spotName = (String) spotData.get("spot_name");
+                final String spotPhoname = (String) spotData.get("spot_phoname");
+                final String streetAddress = (String) spotData.get("street_address");
+                final Integer postalCode = (Integer) spotData.get("postal_code");
+                final Double latitude = (Double) spotData.get("latitude");
+                final Double longitude = (Double) spotData.get("longitude");
                 String photoFilePath = null;
-                if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+                if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
                 final String activityName = "SpotDetailActivity"; // MapActivityでの遷移判断に使用する変数
 
                 // MapActivityに渡す値を付与する
@@ -99,11 +99,11 @@ public class SpotDetailActivity extends AppCompatActivity {
         super.onResume();
 
         // Mapから観光地ID・環境データを取り出す
-        final String spotId = spotData.get("spot_id").toString();
-        final String environmentId = spotData.get("environment_id").toString();
-        final String spotName = spotData.get("spot_name").toString();
-        final Double latitude = new Double(spotData.get("latitude").toString()).doubleValue();
-        final Double longitude = new Double(spotData.get("longitude").toString()).doubleValue();
+        final String spotId = (String) spotData.get("spot_id");
+        final String environmentId = (String) spotData.get("environment_id");
+        final String spotName = (String) spotData.get("spot_name");
+        final Double latitude = (Double) spotData.get("latitude");
+        final Double longitude = (Double) spotData.get("longitude");
 
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this); // DataBaseHelperをインスタンス化
 
@@ -124,8 +124,8 @@ public class SpotDetailActivity extends AppCompatActivity {
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
         if (distance == null || distance.equals(NaN)) distance = 0.0;
         BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
-        //小数第一位で四捨五入
-        distance = distanceBi.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+        //小数第2位で四捨五入
+        distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
         displaySpotDetail(spotData, environmentData, spotText, distance);
@@ -135,35 +135,42 @@ public class SpotDetailActivity extends AppCompatActivity {
     private void displaySpotDetail (Map<String, Object> spotData, Map<String, Object> environmentData, String spotText, Double distance) {
 
         // spotDataから表示を行うデータを取得する
-        String spotName = spotData.get("spot_name").toString(); // 観光地名
-        String weather = environmentData.get("weather").toString(); // 天気
-        Double temperature = new Double(environmentData.get("temperature").toString()).doubleValue(); // 気温
+        String spotName = (String) spotData.get("spot_name"); // 観光地名
+        if (spotName == null) spotName = "データがありません。";
 
-        // 気温の表示を整数値だけにするために型を変更
-        int distanceInt = distance.intValue();
+        String streetAddress = (String) spotData.get("street_address"); // 住所
+        if (streetAddress == null) streetAddress = "データがありません。";
 
-        String photoFilePath = "noimage";
-        if (spotData.get("photo_file_path") != null) photoFilePath = spotData.get("photo_file_path").toString();
+        Integer postalCode = (Integer) spotData.get("postal_code"); // 郵便番号
+
+        String weather = (String) environmentData.get("weather"); // 天気
+        if (weather == null) weather = "不明";
+
+        Double temperature = (Double) environmentData.get("temperature"); // 気温
+        BigDecimal temperatureBi = new BigDecimal(String.valueOf(temperature));
+        temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();        //小数第2位で四捨五入
+
+        String sep = System.getProperty("line.separator");
+        String spotIntroduce = spotText + sep + sep + "〒 " + postalCode + sep + streetAddress;
 
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-        TextView distanceText = (TextView)findViewById(R.id.distanceTextView); // 距離
-        TextView weatherText = (TextView)findViewById(R.id.weatherTextView);  // 天気
-        TextView temperatureText = (TextView)findViewById(R.id.temperatureTextView); // 気温
+        TextView spotInfoText = (TextView)findViewById(R.id.spotInfoTextView); // 距離
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
         ImageView spotImage = (ImageView) findViewById(R.id.spotImageView); // 観光地写真
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        distanceText.setText("距離: " + String.valueOf(distanceInt) + " km"); // 距離
-        weatherText.setText("天気: "+ weather); // 天気
-        temperatureText.setText("気温: " + String.valueOf(temperature) + " 度"); // 気温
+        spotInfoText.setText("距離: " + String.valueOf(distance) + " km　|　天気: "+ weather + "　|　気温: " + String.valueOf(temperature) + " 度"); // 距離
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
-        spotDetailText.setText(spotText); //　観光地案内テキスト
+        spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
         // 写真の表示
+        String photoFilePath = "noimage";
+        if (spotData.get("photo_file_path") != null) photoFilePath = (String) spotData.get("photo_file_path");
         int imageId = getResources().getIdentifier(photoFilePath.toString(), "drawable", "jp.dmarch.kochitabi");
+        if (imageId == 0) imageId = getResources().getIdentifier("noimage", "drawable", "jp.dmarch.kochitabi");
         spotImage.setImageResource(imageId); // 表示
     }
 

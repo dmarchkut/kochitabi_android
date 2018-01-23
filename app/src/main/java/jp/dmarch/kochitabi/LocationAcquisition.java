@@ -1,35 +1,17 @@
 package jp.dmarch.kochitabi;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.PermissionChecker;
 
 import static java.lang.Double.NaN;
-import static java.lang.Math.sin;
 
 public class LocationAcquisition implements LocationListener {
 
     private final double NO_DATA = NaN; // データが入っていない状態を示す
-    private final int REQUEST_PERMISSION = 1000;
-
-    private Context context;
-    private Double[] currentLocation = {NO_DATA, NO_DATA}; // 現在地
-    private LocationManager locationManager;
 
     public LocationAcquisition(Context context) {
-        this.context = context;
 
     }
 
@@ -43,6 +25,8 @@ public class LocationAcquisition implements LocationListener {
 
     public Double[] getCurrentLocation() {
         Double[] currentLocation = {33.567222, 133.543660};
+        //currentLocation[0] = NaN;
+        //currentLocation[1] = NaN;
 
         return currentLocation;
     }
