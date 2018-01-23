@@ -12,6 +12,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="26dp"
         android:text="TextView"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/spot_frame"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/text_distance"
         app:layout_constraintTop_toBottomOf="@+id/spot_name" />
@@ -32,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="TextView"
+        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/text_weather"
         app:layout_constraintTop_toBottomOf="@+id/spot_name" />
@@ -43,6 +46,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="距離 :"
+        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/spot_frame"
         app:layout_constraintTop_toBottomOf="@+id/spot_name" />
@@ -53,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text=" | 天気 :"
+        android:textColor="@color/black"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/spot_distance"
         app:layout_constraintTop_toBottomOf="@+id/spot_name" />
