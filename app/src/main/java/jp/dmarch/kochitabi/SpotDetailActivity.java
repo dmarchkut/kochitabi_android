@@ -158,13 +158,13 @@ public class SpotDetailActivity extends AppCompatActivity {
 
 
         String distanceText;
-        if (distance.equals(NaN)) {
+        if (!distance.equals(NaN)) {
             BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
             //小数第2位で四捨五入
             distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
             distanceText = String.valueOf(distance) + " km";
         }else{
-            distanceText = " - ";
+            distanceText = "  -  ";
         }
 
         // 表示する内容をセットする
