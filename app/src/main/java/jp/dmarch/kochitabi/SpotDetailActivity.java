@@ -152,13 +152,15 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-        TextView spotInfoText = (TextView)findViewById(R.id.spotInfoTextView); // 距離
+        TextView spotDistanceText = (TextView)findViewById(R.id.spotDistanceTextView); // 距離
+        TextView spotTempText = (TextView)findViewById(R.id.spotTempTextView); // 距離
+        TextView spotWeaText = (TextView)findViewById(R.id.spotWeaTextView); // 距離
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
         ImageView spotImage = (ImageView) findViewById(R.id.spotImageView); // 観光地写真
 
 
         String distanceText;
-        if (distance.equals(NaN)) {
+        if (!distance.equals(NaN)) {
             BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
             //小数第2位で四捨五入
             distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -169,7 +171,9 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        spotInfoText.setText("距離: " + distanceText + "　|　気温: " + String.valueOf(temperature) + " ℃　|　天気: "+ weather); // 距離
+        spotDistanceText.setText("距離: " + distanceText); // 距離
+        spotTempText.setText("|　気温: " + temperature + " ℃");
+        spotWeaText.setText("|　天気: " + weather);
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
         spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
