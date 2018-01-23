@@ -25,6 +25,8 @@ public class LocationAcquisition implements LocationListener {
 
     public Double[] getCurrentLocation() {
         Double[] currentLocation = {33.567222, 133.543660};
+        //currentLocation[0] = NaN;
+        //currentLocation[1] = NaN;
 
         return currentLocation;
     }

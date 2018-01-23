@@ -44,6 +44,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private Map<String, Object> spotData;
     private ArrayList<Map<String, Object>> spotsData;
     private ArrayList<Map<String, Object>> spotListData;
+    private Double[] currentLocation;
     private int preActivity;
     public static final int HOME_ACTIVITY = 0;
     public static final int SPOT_DETAIL_ACTIVITY = 1;
@@ -116,6 +117,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         locationAcquisition.endLocationAcquisition();
@@ -136,7 +144,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // 呼び出し元によって処理変更
         // ホーム画面から呼ばれた際
         if (preActivity == HOME_ACTIVITY) {
-            Double[] currentLocation = locationAcquisition.getCurrentLocation();        // 現在地取得
+
             // 現在地が取得できるか(GPS稼働時)の判定
             if (!currentLocation[0].equals(NaN)) {
                 this.setCurrentLocationMap(currentLocation);        // 現在地マーカ設定
