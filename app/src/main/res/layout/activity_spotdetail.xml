@@ -32,6 +32,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="5dp"
+            android:layout_marginTop="4dp"
             android:background="#FFA500"/>
 
         <View
@@ -54,26 +55,26 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:textSize="13sp"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
             android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/spotTempTextView"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginStart="125dp"
+            android:layout_marginStart="130dp"
             android:layout_marginTop="-30dp"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="#000000"/>
 
         <TextView
             android:id="@+id/spotWeaTextView"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_marginStart="232dp"
+            android:layout_marginStart="250dp"
             android:layout_marginTop="-30dp"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="#000000"/>
 
         <TextView
