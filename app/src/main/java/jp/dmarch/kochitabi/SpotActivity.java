@@ -12,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 /* 参考Webサイト
  * http://rikisha-android.hatenablog.com/entry/2014/04/04/202207
  * http://androhi.hatenablog.com/entry/2015/06/17/083000
@@ -20,12 +23,19 @@ import android.view.View;
 
 public class SpotActivity extends AppCompatActivity {
 
+    private LocationAcquisition locationAcquisition;
+    private ArrayList<Map<String, Object>> spotsData;
+
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setTitle("観光地一覧");
         setContentView(R.layout.activity_spot);     // xml読み込み
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // バックボタン追加
+
+        // LocationAcquisionインスタンス化 & 始動設定
+        locationAcquisition = new LocationAcquisition(this);
+        locationAcquisition.beginLocationAcquisition();
 
     }
 
@@ -47,6 +57,18 @@ public class SpotActivity extends AppCompatActivity {
         super.onResume();
         this.setSpotFragment();     // setSpotFragment呼び出し
 
+        //　現在地情報取得
+        Double[] currentLocation = locationAcquisition.getCurrentLocation();
+
+        // 観光地情報取得
+        spotsData = new DataBaseHelper(this).getSpotsEnvironmentDistanceData(currentLocation);
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        locationAcquisition.endLocationAcquisition();
     }
 
     /* SpotFragmenクラスを使用するための設定を行うメソッド */
@@ -66,7 +88,31 @@ public class SpotActivity extends AppCompatActivity {
             // Fragment要素取得
             @Override
             public Fragment getItem(int position) {
-                return SpotFragment.newInstance(position + 1);
+                // spotsDataをBundleに格納
+                Bundle bundle = new Bundle();
+                bundle.putInt("page", position+1);
+                bundle.putInt("data_size", spotsData.size());
+                for (int i = 0; i < spotsData.size(); i++) {
+                    bundle.putString("spot_id"+String.valueOf(i), spotsData.get(i).get("spot_id").toString());
+                    bundle.putString("environment_id"+String.valueOf(i), spotsData.get(i).get("environment_id").toString());
+                    bundle.putString("spot_name"+String.valueOf(i), spotsData.get(i).get("spot_name").toString());
+                    bundle.putString("spot_phoname"+String.valueOf(i), spotsData.get(i).get("spot_phoname").toString());
+                    bundle.putString("street_address"+String.valueOf(i), spotsData.get(i).get("street_address").toString());
+                    bundle.putInt("postal_code"+String.valueOf(i), Integer.valueOf(spotsData.get(i).get("postal_code").toString()));
+                    bundle.putDouble("latitude"+String.valueOf(i), Double.valueOf(spotsData.get(i).get("latitude").toString()));
+                    bundle.putDouble("longitude"+String.valueOf(i), Double.valueOf(spotsData.get(i).get("longitude").toString()));
+                    bundle.putString("photo_file_path"+String.valueOf(i), spotsData.get(i).get("photo_file_path").toString());
+                    bundle.putString("weather"+String.valueOf(i), spotsData.get(i).get("weather").toString());
+                    bundle.putDouble("temperature"+String.valueOf(i), Double.valueOf(spotsData.get(i).get("temperature").toString()));
+                    bundle.putDouble("distance"+String.valueOf(i), Double.valueOf(spotsData.get(i).get("distance").toString()));
+
+                }
+
+                // FragmentにBundleセット
+                SpotFragment spotFragment = new SpotFragment();
+                spotFragment.setArguments(bundle);
+
+                return spotFragment;
             }
 
             // タブ内容取得

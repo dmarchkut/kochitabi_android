@@ -18,7 +18,7 @@ public class DataBaseHelper {
     private Integer[] postal_code = {7830001, 7830002, 7830003, 7830004, 7830005, 7830006, 783007};
     private Double[] latitude = {33.620623, 33.560801, 33.560635, 33.2415162, 33.132971, 33.497154, 33.757142};
     private Double[] longitude = {133.719825, 133.531500, 133.535728, 134.176223, 132.980917, 133.574927, 133.550383};
-    private String[] photo_file_path = {"kut", "kochi", "hirome", "muroto", "shimanto", "katurahama", null};
+    private String[] photo_file_path = {"kut", "kochi", "hirome", "muroto", "shimanto", "katurahama", "sameura"};
     private String[] weather = {"雨", "晴れ", "曇り", "曇り", "晴れ", "晴れ", "霧雨"};
     private Double[] temperature = {20.0, 20.6, 19.8, 14.4, 16.0, 23.6, 17.4};
     private Double[] distance = {NaN, 20.6, 19.8, 74.4, 116.0, 23.6, 47.4};

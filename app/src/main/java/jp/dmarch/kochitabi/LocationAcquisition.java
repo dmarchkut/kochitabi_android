@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
+import android.util.Log;
 
 import static java.lang.Double.NaN;
 import static java.lang.Math.sin;
@@ -30,6 +31,7 @@ public class LocationAcquisition implements LocationListener {
 
     public LocationAcquisition(Context context) {
         this.context = context;
+        Log.v("check", "1");
 
     }
 
