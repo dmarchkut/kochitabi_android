@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="#000000" >
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_below="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:scaleType="fitCenter"
+            android:layout_marginVertical="10dp"
+            android:gravity="center_horizontal|center_vertical" />
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_above="@+id/image_view"
+            android:orientation="horizontal"
+            android:layout_height="110dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:gravity="bottom">
+            <ImageButton
+                android:id="@+id/cancel_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/cancel_button" />
+            <ImageButton
+                android:id="@+id/save_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/save_button" />
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/share_button" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

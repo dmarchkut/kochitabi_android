@@ -1,3 +1,4 @@
+
 package jp.dmarch.kochitabi;
 
 import android.content.Intent;

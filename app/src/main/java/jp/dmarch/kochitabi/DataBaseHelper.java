@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +47,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public DataBaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
-        serverExchange = new ServerExchange();
+        serverExchange = new ServerExchange(context);
         locationAcquisition = new LocationAcquisition(context);
     }
 
@@ -68,6 +67,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // サーバから4つのテーブルデータを取得
         ArrayList<ArrayList<Map<String, Object>>> localDataBaseTables = serverExchange.getLocalDataBaseTables();
+
+        // データが取得できていなければ登録せず終わる
+        if (localDataBaseTables == null) return;
 
         setSpotTable(localDataBaseTables.get(0)); // ローカル観光地テーブルにデータを登録
         setAccessPointTable(localDataBaseTables.get(1)); // ローカルアクセスポイントテーブルにデータを登録
@@ -459,7 +461,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 spotData.put("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
                 spotData.put("photo_file_path", cursor.getString(cursor.getColumnIndex("photo_file_path")));
                 spotsData.add(spotData);
-                Log.d("getSpot", "add");
 
                 isEof = cursor.moveToNext();
             }
@@ -589,7 +590,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // サーバからデータを取得する
         if (isEnvironmentTableTime()) {
             ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
-            updateEnvironmentTable(environmentTableData);
+
+            // データを取得できていれば更新を行う
+            if (environmentTableData != null) updateEnvironmentTable(environmentTableData);
         }
 
         Map<String, Object> environmentData = new HashMap<String, Object>();
@@ -617,6 +620,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             environmentData.put("temperature", cursor.getDouble(cursor.getColumnIndex("temperature")));
 
             cursor.close();
+        } catch (Exception error) {
+            error.printStackTrace();
         }
         finally {
             db.close(); // DBを切断
@@ -631,8 +636,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // 現在のローカルキャラクターテーブルのデータが10秒以上たっていれば
         // サーバからデータを取得する
         if (isCharacterTableTime()) {
+
             ArrayList<Map<String, Object>> characterTableData = serverExchange.getCharacterTable();
-            updateCharacterTable(characterTableData);
+
+            // データを取得できていれば更新を行う
+            if (characterTableData != null) updateCharacterTable(characterTableData);
         }
 
         Map<String, Object> characterData = new HashMap<String, Object>();
@@ -660,6 +668,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             characterData.put("character_file_path", cursor.getString(cursor.getColumnIndex("character_file_path")));
 
             cursor.close();
+        } catch (Exception error) {
+            error.printStackTrace();
         }
         finally {
             db.close(); // DBを切断
@@ -794,7 +804,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // 取得した数が0個であれば取得
             if (cursor.getCount() == 0) {
                 cursor.close();
-                return null;
+                return true;
             }
 
             cursor.moveToFirst(); // カーソルを一番最初に持ってくる
