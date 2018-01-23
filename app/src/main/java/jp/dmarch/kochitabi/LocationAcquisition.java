@@ -37,7 +37,7 @@ public class LocationAcquisition {
     /* 現在地と観光地との距離を計算 */
     public Double getDistance(Double[] currentLocation, Double[] spotLocation) {
 
-        Double distance = NaN;
+        Double distance = 111.0;
 
         return distance;
     }

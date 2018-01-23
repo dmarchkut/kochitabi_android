@@ -19,7 +19,7 @@ public class DataBaseHelper {
         Map<String, Object> environmentData = new HashMap<String, Object>();
 
         String a = "晴";
-        Double b = 100.0;
+        Double b = 10.0;
 
         environmentData.put("environment_id", environmentId);
         environmentData.put("weather", a);
