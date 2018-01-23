@@ -16,6 +16,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.Double.NaN;
+
 /* 参考Webサイト
  * http://kuwalab.hatenablog.jp/entry/20101221/p1
  * http://javait.blog.fc2.com/blog-entry-154.html
@@ -29,33 +31,21 @@ import java.util.Map;
 public class SpotFragment extends Fragment {
 
     // タブ切り替えページ
-    private static final String ARG_PARAM = "page";
+    private int page;
 
     // メンバ変数
     private ArrayList<Map<String, Object>> spotsData;
     private ArrayList<Map<String, Object>> spotsListData;
-    private LocationAcquisition locationAcquisition;
 
     // コンストラクタ
     public SpotFragment() {
 
     }
 
-    // フラグメント利用準備
-    public static SpotFragment newInstance(int page) {
-        SpotFragment fragment = new SpotFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_PARAM, page);
-        fragment.setArguments(args);
-        return fragment;
-
-    }
-
     @Override
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        locationAcquisition = new LocationAcquisition(getActivity());
-        locationAcquisition.beginLocationAcquisition();
+
     }
 
     @Override
@@ -69,13 +59,27 @@ public class SpotFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        int page = getArguments().getInt(ARG_PARAM, 0);     // タブページ
-
-        //　現在地情報取得
-        Double[] currentLocation = locationAcquisition.getCurrentLocation();
-
-        // 観光地情報取得
-        spotsData = new DataBaseHelper(getActivity()).getSpotsEnvironmentDistanceData(currentLocation);
+        // データ取得
+        Bundle bundle = getArguments();
+        page = bundle.getInt("page");
+        spotsData = new ArrayList<Map<String, Object>>();
+        int dataSize = bundle.getInt("data_size");
+        for (int i = 0; i < dataSize; i++) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("spot_id", bundle.getString("spot_id"+String.valueOf(i)));
+            map.put("environment_id", bundle.getString("environment_id"+String.valueOf(i)));
+            map.put("spot_name", bundle.getString("spot_name"+String.valueOf(i)));
+            map.put("spot_phoname", bundle.getString("spot_phoname"+String.valueOf(i)));
+            map.put("street_address", bundle.getString("street_address"+String.valueOf(i)));
+            map.put("postal_code", bundle.getInt("postal_code"+String.valueOf(i)));
+            map.put("latitude", bundle.getDouble("latitude"+String.valueOf(i)));
+            map.put("longitude", bundle.getDouble("longitude"+String.valueOf(i)));
+            map.put("photo_file_path", bundle.getString("photo_file_path"+String.valueOf(i)));
+            map.put("weather", bundle.getString("weather"+String.valueOf(i)));
+            map.put("temperature", bundle.getDouble("temperature"+String.valueOf(i)));
+            map.put("distance", bundle.getDouble("distance"+String.valueOf(i)));
+            spotsData.add(map);
+        }
 
         if(page == 1) {
             this.sortSyllabary(spotsData);      // タブが1ページ(五十音順)ならsortSyllabary呼び出し
@@ -88,12 +92,6 @@ public class SpotFragment extends Fragment {
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        locationAcquisition.endLocationAcquisition();
-    }
-
     /* 観光地一覧を設定、表示するためのメソッド */
     private void displaySpotsList(final ArrayList<Map<String, Object>> spotsData) {
         ListView spotsList = (ListView) getView().findViewById(R.id.spot_list);     // ListView読み込み
@@ -104,8 +102,14 @@ public class SpotFragment extends Fragment {
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("spot_name", (((HashMap<String, Object>)spotsData.get(i)).get("spot_name")).toString());
             map.put("spot_phoname", (((HashMap<String, Object>)spotsData.get(i)).get("spot_phoname")).toString());
-            map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")));
             map.put("weather", (((HashMap<String, Object>)spotsData.get(i)).get("weather")).toString());
+            // 距離はNaN発生の恐れがあるためエラー用ハイフンを条件分岐で設定
+            if (!((HashMap<String, Object>)spotsData.get(i)).get("distance").equals(NaN)) {
+                map.put("distance", String.format("%.1f", ((HashMap<String, Object>)spotsData.get(i)).get("distance")) + " km");
+            }
+            else {
+                map.put("distance", " - ");
+            }
             // 画像はnull値発生の恐れがあるためエラー用画像をnull条件分岐で設定
             if (((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path") != null) {
                 map.put("photo_file_path", this.getResources().getIdentifier((((HashMap<String, Object>)spotsData.get(i)).get("photo_file_path")).toString(), "drawable", "jp.dmarch.kochitabi"));
