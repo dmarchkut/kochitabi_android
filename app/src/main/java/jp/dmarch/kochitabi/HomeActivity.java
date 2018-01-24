@@ -111,6 +111,11 @@ public class HomeActivity extends AppCompatActivity {
         displaySlideshowPhoto(); // 写真スライドショーを表示するメソッド
     }
 
+    protected void onDestroy() {
+        super.onDestroy();
+        dataBaseHelper.deleteRegisterData();
+    }
+
     // 画面上部に表示する観光地を決定するメソッド
     private void decideSlideshowPhoto(ArrayList<Map<String, Object>> spotsData) {
 

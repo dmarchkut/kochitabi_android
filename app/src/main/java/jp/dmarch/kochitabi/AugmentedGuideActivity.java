@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
@@ -67,6 +68,9 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             }
         });
 
+        // 画面領域の設定
+        LinearLayout screenArea = (LinearLayout)this.findViewById(R.id.screen_area);
+
         // 名前テキストと紐付け
         name = (TextView)this.findViewById(R.id.name);
         name.setText(characterName);
@@ -94,8 +98,8 @@ public class AugmentedGuideActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "データが登録されていません。他のアクセスポイントをご利用ください。", Toast.LENGTH_LONG).show();
         }
         // クリックイベントを有効にする
-        message.setClickable(true);
-        message.setOnClickListener(new View.OnClickListener() {
+        screenArea.setClickable(true);
+        screenArea.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateSentence(cutTextData);
             }
