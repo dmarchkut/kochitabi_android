@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,10 +121,6 @@ public class SpotDetailActivity extends AppCompatActivity {
 
         // LocationAcquisitionのgetDistanceから現在地～観光地の距離を取得する
         Double distance = locationAcquisition.getDistance(currentLocation, spotLocation);
-        if (distance == null || distance.equals(NaN)) distance = 0.0;
-        BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
-        //小数第2位で四捨五入
-        distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 
         // 取得したデータを引数として、displaySpotDetailを呼び出し、情報を画面に表示する
         displaySpotDetail(spotData, environmentData, spotText, distance);
@@ -151,18 +146,34 @@ public class SpotDetailActivity extends AppCompatActivity {
         temperature = temperatureBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();        //小数第2位で四捨五入
 
         String sep = System.getProperty("line.separator");
-        String spotIntroduce = spotText + sep + sep + "〒 " + postalCode + sep + streetAddress;
+        spotText = spotText.replace("。", "。\n\n");
+        String spotIntroduce = spotText + "〒 " + postalCode + sep + streetAddress;
 
 
         // XMLとの対応付けを行う
         TextView spotNameText = (TextView)findViewById(R.id.spotNameTextView); // 観光地名
-        TextView spotInfoText = (TextView)findViewById(R.id.spotInfoTextView); // 距離
+        TextView spotDistanceText = (TextView)findViewById(R.id.spotDistanceTextView); // 距離
+        TextView spotTempText = (TextView)findViewById(R.id.spotTempTextView); // 距離
+        TextView spotWeaText = (TextView)findViewById(R.id.spotWeaTextView); // 距離
         TextView spotDetailText = (TextView)findViewById(R.id.spotDetailTextView); // 観光地案内テキスト
         ImageView spotImage = (ImageView) findViewById(R.id.spotImageView); // 観光地写真
 
+
+        String distanceText;
+        if (!distance.equals(NaN)) {
+            BigDecimal distanceBi = new BigDecimal(String.valueOf(distance));
+            //小数第2位で四捨五入
+            distance = distanceBi.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+            distanceText = String.valueOf(distance) + " km";
+        }else{
+            distanceText = " - ";
+        }
+
         // 表示する内容をセットする
         spotNameText.setText(spotName); // 観光地名
-        spotInfoText.setText("距離: " + String.valueOf(distance) + " km　|　天気: "+ weather + "　|　気温: " + String.valueOf(temperature) + " 度"); // 距離
+        spotDistanceText.setText("距離: " + distanceText); // 距離
+        spotTempText.setText("|　気温: " + temperature + " ℃");
+        spotWeaText.setText("|　天気: " + weather);
         spotDetailText.setMovementMethod(ScrollingMovementMethod.getInstance()); // 観光地案内テキスト(スクロール)
         spotDetailText.setText(spotIntroduce); //　観光地案内テキスト
 
