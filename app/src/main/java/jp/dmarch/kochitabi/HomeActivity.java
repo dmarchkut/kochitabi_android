@@ -63,6 +63,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+
         // 画面上部の観光地の写真をタップした際に観光地詳細(SpotDetailActivity)に飛ぶボタン
         spotImage = (ImageView)findViewById(R.id.spotImageView);
         spotImage.setOnClickListener(new View.OnClickListener() {
