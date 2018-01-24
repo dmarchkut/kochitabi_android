@@ -30,16 +30,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestActivity"
+        <activity android:name=".HomeActivity"
                    android:screenOrientation="portrait"
-                   android:resizeableActivity="false"> <!-- 画面縦固定, マルチウィンドウ禁止 -->
+                   android:resizeableActivity="false">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
         </activity>
-        <!--<activity android:name=".SpotActivity"
+        <activity android:name=".SpotActivity"
             android:label="@string/app_name" />
         <activity android:name=".SpotDetailActivity"
             android:label="@string/app_name" />
@@ -51,7 +51,7 @@
             android:label="@string/app_name" />
         <activity android:name=".AugmentedGuideActivity"
             android:configChanges="screenSize|orientation" />
-        <service android:name=".AccessPointService"/>-->
+        <service android:name=".AccessPointService"/>
     </application>
 
 </manifest>
