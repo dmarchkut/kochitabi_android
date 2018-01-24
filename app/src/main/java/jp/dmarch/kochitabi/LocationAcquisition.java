@@ -154,8 +154,8 @@ public class LocationAcquisition implements LocationListener {
     /* 現在地の位置情報を取得 */
     public Double[] getCurrentLocation() {
         Double[] currentLocation = {33.567222, 133.543660};
-        //currentLocation[0] = NaN;
-        //currentLocation[1] = NaN;
+        currentLocation[0] = NaN;
+        currentLocation[1] = NaN;
 
 
         // 現在地の測定がまだ行われていないならば
