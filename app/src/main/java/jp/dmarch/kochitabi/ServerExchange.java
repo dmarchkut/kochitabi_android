@@ -31,7 +31,7 @@ public class ServerExchange {
     String date = "2018-01-16 02:17:00.624643";
 
     private Object spotDatas[]
-            = {"sp0001", "en0001", "高知工科大学","コウチコウカダイガク", "高知県〇〇市", new Integer(1002345),
+            = {"sp0001", "en0001", "高知", "コウチコウカダイガク", "高知県〇〇市", new Integer(1002345),
                 new Double(54.0), new Double(325.0), "kut", "ここは高知工科大学です。",date , date};
     private Object environmentDatas[]
             = {"en0001", "晴", new Double(10.5), date, date};

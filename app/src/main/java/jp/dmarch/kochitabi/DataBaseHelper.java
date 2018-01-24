@@ -173,7 +173,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(SPOT_TABLE_NAME, null, insertValues);
+                    db.replace(SPOT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -220,7 +220,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(ACCESS_POINT_TABLE_NAME, null, insertValues);
+                    db.replace(ACCESS_POINT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -267,7 +267,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
+                    db.replace(ENVIRONMENT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -313,7 +313,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(CHARACTER_TABLE_NAME, null, insertValues);
+                    db.replace(CHARACTER_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
