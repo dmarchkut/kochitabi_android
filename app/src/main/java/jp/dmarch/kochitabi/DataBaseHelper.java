@@ -173,7 +173,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(SPOT_TABLE_NAME, null, insertValues);
+                    db.replace(SPOT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -220,7 +220,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(ACCESS_POINT_TABLE_NAME, null, insertValues);
+                    db.replace(ACCESS_POINT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -267,7 +267,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(ENVIRONMENT_TABLE_NAME, null, insertValues);
+                    db.replace(ENVIRONMENT_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
             }
@@ -313,113 +313,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             // レコードの追加
             if (insertFlag) {
                 try {
-                    db.insert(CHARACTER_TABLE_NAME, null, insertValues);
+                    db.replace(CHARACTER_TABLE_NAME, null, insertValues);
                 }
                 catch (Error error) {}
-            }
-        }
-        db.close(); // データベースと接続
-    }
-
-    /* ローカルDBのローカル環境テーブルを更新 */
-    private void updateEnvironmentTable(ArrayList<Map<String, Object>> environmentTable) {
-
-        SQLiteDatabase db = this.getWritableDatabase(); // データベースと接続
-
-        ContentValues insertValues; // 更新するデータ
-        Boolean insertFlag; // 更新しても良いレコードか否か
-
-        for (Map<String, Object> environmentData: environmentTable) {
-
-            // 1つのレコードの更新準備
-            insertValues = new ContentValues();
-            insertFlag = true;
-
-            for (String key: environmentData.keySet()) {
-                Object obj = environmentData.get(key);
-                // Object型からそれぞれの型に変換し、追加データとして設定
-                if (obj instanceof String) insertValues.put(key, (String)obj);
-                else if (obj instanceof Double) insertValues.put(key, (Double)obj);
-                else {
-                    insertFlag = false; // 追加してはいけないデータとして設定
-                    break;
-                }
-            }
-
-            // すべてのキーの要素を設定できたか確認
-            for (String key: environmentKeys) {
-                if (!(insertValues.containsKey(key))) {
-                    insertFlag = false;
-                    break;
-                }
-            }
-
-            // キーの要素数が適切か確認
-            if (insertValues.size() != environmentKeys.length) insertFlag = false;
-
-            // レコードの追加
-            if (insertFlag) {
-                try {
-                    db.replace(ENVIRONMENT_TABLE_NAME,
-                            null,
-                            insertValues);
-                }
-                catch (Error error) {
-                    error.printStackTrace();
-                }
-
-            }
-        }
-        db.close(); // データベースと接続
-
-    }
-
-    /* ローカルDBのローカルキャラクターテーブルを更新 */
-    private void updateCharacterTable(ArrayList<Map<String, Object>> characterTable) {
-
-        SQLiteDatabase db = this.getWritableDatabase(); // データベースと接続
-
-        ContentValues insertValues; // 更新するデータ
-        Boolean insertFlag; // 更新しても良いレコードか否か
-
-        for (Map<String, Object> characterData: characterTable) {
-
-            // 1つのレコードの更新準備
-            insertValues = new ContentValues();
-            insertFlag = true;
-
-            for (String key: characterData.keySet()) {
-                Object obj = characterData.get(key);
-                // Object型からそれぞれの型に変換し、追加データとして設定
-                if (obj instanceof String) insertValues.put(key, (String)obj);
-                else {
-                    insertFlag = false; // 追加してはいけないデータとして設定
-                    break;
-                }
-            }
-
-            // すべてのキーの要素を設定できたか確認
-            for (String key: characterKeys) {
-                if (!(insertValues.containsKey(key))) {
-                    insertFlag = false;
-                    break;
-                }
-            }
-
-            // キーの要素数が適切か確認
-            if (insertValues.size() != characterKeys.length) insertFlag = false;
-
-            // レコードの追加
-            if (insertFlag) {
-                try {
-                    db.replace(CHARACTER_TABLE_NAME,
-                            null,
-                            insertValues);
-                }
-                catch (Error error) {
-                    error.printStackTrace();
-                }
-
             }
         }
         db.close(); // データベースと接続
@@ -592,7 +488,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             ArrayList<Map<String, Object>> environmentTableData = serverExchange.getEnvironmentTable();
 
             // データを取得できていれば更新を行う
-            if (environmentTableData != null) updateEnvironmentTable(environmentTableData);
+            if (environmentTableData != null) setEnvironmentTable(environmentTableData);
         }
 
         Map<String, Object> environmentData = new HashMap<String, Object>();
@@ -640,7 +536,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             ArrayList<Map<String, Object>> characterTableData = serverExchange.getCharacterTable();
 
             // データを取得できていれば更新を行う
-            if (characterTableData != null) updateCharacterTable(characterTableData);
+            if (characterTableData != null) setCharacterTable(characterTableData);
         }
 
         Map<String, Object> characterData = new HashMap<String, Object>();
