@@ -7,11 +7,11 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
-    <color name="colorAction">#FEFCF0</color>
-    <color name="colorSystem">#a9a9a9</color>
+    <color name="colorAction">#FFA46C</color>
+    <color name="colorSystem">#000000</color>
 
     <color name="colorBase">#F3971B</color>
-    <color name="colorLight">#f7eee2</color>
+    <color name="colorLight">#F7EEE2</color>
 
     <color name="colorWindow">#FFFEEE</color>
 
